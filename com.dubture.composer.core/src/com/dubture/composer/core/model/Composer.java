@@ -150,6 +150,10 @@ public class Composer implements NamespaceResolverInterface
     @Override
     public IPath resolve(IResource resource)
     {
+        if (autoload == null) {
+            return null;
+        }
+        
         IPath ns = null;
         IPath path = resource.getFullPath();
         IPath composerPath = getPath();

@@ -1,3 +1,12 @@
+/*
+ * This file is part of the Composer Eclipse Plugin.
+ *
+ * (c) Robert Gruendler <r.gruendler@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+package com.dubture.composer.test;
 import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.resources.IFile;
@@ -15,15 +24,6 @@ import com.dubture.composer.core.model.Composer;
 import com.dubture.composer.core.model.ModelAccess;
 
 import junit.framework.TestCase;
-
-/*
- * This file is part of the Composer Eclipse Plugin.
- *
- * (c) Robert Gruendler <r.gruendler@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 /**
  *
