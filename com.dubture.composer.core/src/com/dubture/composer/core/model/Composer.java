@@ -8,14 +8,22 @@
  */
 package com.dubture.composer.core.model;
 
+import java.io.InputStreamReader;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+
+import com.dubture.composer.core.builder.ComposerFieldNamingStrategy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  *
  */
-public class Composer
+public class Composer implements NamespaceResolverInterface
 {
     private String name;
     private String type;
@@ -88,5 +96,70 @@ public class Composer
     public void setFile(IFile file)
     {
         this.file = file;
+    }
+    
+    public IPath getPath()
+    {
+        if (file == null)
+            return null;
+        
+        return file.getFullPath().removeLastSegments(1);
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public static Composer fromJson(IFile input) throws CoreException
+    {
+        Gson gson = getBuilder();
+        InputStreamReader reader = new InputStreamReader(input.getContents());
+        Composer composer = gson.fromJson(reader, Composer.class);
+        composer.setFile(input);
+        
+        return composer;
+
+    }
+    
+    protected static Gson getBuilder() 
+    {
+        return new GsonBuilder()
+            .setFieldNamingStrategy(new ComposerFieldNamingStrategy())
+            .create();
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (!(obj instanceof Composer)) {
+            return false;
+        }
+        
+        Composer other = (Composer) obj;
+        return getPath().equals(other.getPath()) 
+                && getName().equals(other.getName()); 
+    }
+    
+    @Override
+    public int hashCode()
+    {
+        return name.hashCode();
+    }
+
+    @Override
+    public IPath resolve(IResource resource)
+    {
+        IPath ns = null;
+        IPath path = resource.getFullPath();
+        IPath composerPath = getPath();
+        IPath psr0Path = composerPath.append(autoload.getPSR0Path());
+        int segments = psr0Path.segmentCount();
+        
+        if (path.matchingFirstSegments(psr0Path) == segments) {
+            ns = path.removeFirstSegments(psr0Path.segmentCount());
+        }
+        
+        return ns;
     }
 }

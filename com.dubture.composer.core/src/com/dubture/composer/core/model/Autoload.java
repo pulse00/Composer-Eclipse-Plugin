@@ -18,18 +18,22 @@ public class Autoload
 {
     private Map<String, String> psr_0;
     
-    @Override
-    public String toString()
+    public String getPSR0Path()
     {
-        if (psr_0 != null) {
-            Iterator<String> it = psr_0.keySet().iterator();
-            while(it.hasNext()) {
-                String key = it.next();
-                String val = psr_0.get(key);
-                return key + " => " + val;
-            }
+        Iterator<String> it = getPsr_0().keySet().iterator();
+        while(it.hasNext()) {
+            return psr_0.get(it.next());
         }
-        
         return null;
+    }
+
+    public Map<String, String> getPsr_0()
+    {
+        return psr_0;
+    }
+
+    public void setPsr_0(Map<String, String> psr_0)
+    {
+        this.psr_0 = psr_0;
     }
 }
