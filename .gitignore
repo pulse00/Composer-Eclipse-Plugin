@@ -6,4 +6,6 @@ com.dubture.composer.ui/bin/*
 com.dubture.composer.ui/target/*
 com.dubture.composer.test/bin/*
 com.dubture.composer.test/target/*
+com.dubture.composer.feature/target/*
+
 
