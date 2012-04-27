@@ -65,7 +65,7 @@ public class ModelAccess implements NamespaceResolverInterface
     @Override
     public IPath resolve(IResource resource)
     {
-        for (Composer composer : packages) {
+        for (Composer composer : getPackages()) {
             IPath ns = composer.resolve(resource);
             if (ns != null) {
                 return ns;

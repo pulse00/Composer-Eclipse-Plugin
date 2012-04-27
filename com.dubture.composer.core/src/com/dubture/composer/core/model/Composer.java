@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 import com.dubture.composer.core.builder.ComposerFieldNamingStrategy;
 import com.google.gson.Gson;
@@ -31,6 +32,7 @@ public class Composer implements NamespaceResolverInterface
     private String homepage;
     private Map<String, String> require;
     private Autoload autoload;
+    private String targetDir;
     private IFile file;
     
     public String toString()
@@ -161,9 +163,26 @@ public class Composer implements NamespaceResolverInterface
         int segments = psr0Path.segmentCount();
         
         if (path.matchingFirstSegments(psr0Path) == segments) {
-            ns = path.removeFirstSegments(psr0Path.segmentCount());
+            
+            if (targetDir != null && targetDir.length() > 0) {
+                Path target = new Path(targetDir);
+                ns = target.append(path.removeFirstSegments(psr0Path.segmentCount()));    
+            } else {
+                ns = path.removeFirstSegments(psr0Path.segmentCount());
+            }
+            
         }
         
         return ns;
+    }
+
+    public String getTargetDir()
+    {
+        return targetDir;
+    }
+
+    public void setTargetDir(String targetDir)
+    {
+        this.targetDir = targetDir;
     }
 }

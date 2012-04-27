@@ -23,6 +23,9 @@ public class ComposerFieldNamingStrategy implements FieldNamingStrategy
     {
         if (field.getName() == "psr_0") {
             return "psr-0";
+        } else if (field.getName() == "targetDir") {
+            
+            return "target-dir";
         }
         return field.getName();
     }
