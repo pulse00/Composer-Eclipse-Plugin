@@ -1,0 +1,4 @@
+0.0.2
+
+* Refactored indexing to use com.dubture.indexing framework
+* removed ui components, not needed anymore

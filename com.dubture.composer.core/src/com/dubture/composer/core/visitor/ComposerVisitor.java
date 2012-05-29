@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.dubture.composer.core.visitor;
 
+import org.eclipse.core.resources.IFile;
+
 import com.dubture.composer.core.model.Composer;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
@@ -36,6 +38,12 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
     @Override
     public void visit(Object object)
     {
+        IFile file = (IFile) getResource();
+        
+        if (file == null || "composer.json".equals(file.getName()) == false) {
+            return;
+        }
+        
         Composer composer = (Composer) object;
         
         if (composer != null) {
