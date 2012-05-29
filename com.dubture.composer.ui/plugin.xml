@@ -1,22 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="com.dubture.composer.core.composerToggle"
-            nameFilter="*"
-            objectClass="org.eclipse.core.resources.IProject">
-         <action
-               class="com.dubture.composer.ui.builder.ToggleNatureAction"
-               enablesFor="1"
-               id="com.dubture.composer.core.addRemoveNatureAction"
-               label="Convert to Composer project"
-               menubarPath="org.eclipse.ui.projectConfigure/additions">
-         </action>
-      </objectContribution>
-   </extension>
 
 
 </plugin>

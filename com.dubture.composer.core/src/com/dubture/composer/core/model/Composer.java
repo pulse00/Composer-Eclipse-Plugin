@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
-import com.dubture.composer.core.builder.ComposerFieldNamingStrategy;
+import com.dubture.composer.core.visitor.ComposerFieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -30,10 +30,10 @@ public class Composer implements NamespaceResolverInterface
     private String type;
     private String description;
     private String homepage;
+    private String fullPath;
     private Map<String, String> require;
     private Autoload autoload;
     private String targetDir;
-    private IFile file;
     
     public String toString()
     {
@@ -89,23 +89,11 @@ public class Composer implements NamespaceResolverInterface
     {
         this.autoload = autoload;
     }
-
-    public IFile getFile()
-    {
-        return file;
-    }
-
-    public void setFile(IFile file)
-    {
-        this.file = file;
-    }
     
+
     public IPath getPath()
     {
-        if (file == null)
-            return null;
-        
-        return file.getFullPath().removeLastSegments(1);
+        return new Path(fullPath);
     }
     
     public String getName()
@@ -118,7 +106,7 @@ public class Composer implements NamespaceResolverInterface
         Gson gson = getBuilder();
         InputStreamReader reader = new InputStreamReader(input.getContents());
         Composer composer = gson.fromJson(reader, Composer.class);
-        composer.setFile(input);
+        composer.setFullPath(input.getFullPath().toString());
         
         return composer;
 
@@ -184,5 +172,15 @@ public class Composer implements NamespaceResolverInterface
     public void setTargetDir(String targetDir)
     {
         this.targetDir = targetDir;
+    }
+    
+    public String getFullPath()
+    {
+        return fullPath;
+    }
+
+    public void setFullPath(String fullPath)
+    {
+        this.fullPath = fullPath;
     }
 }

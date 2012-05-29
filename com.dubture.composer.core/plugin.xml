@@ -2,17 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="composerBuilder"
-         name="Composer Project Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="com.dubture.composer.core.builder.ComposerBuilder">
-         </run>
-      </builder>
-   </extension>
-   <extension
          id="composerNature"
          name="Composer Project Nature"
          point="org.eclipse.core.resources.natures">
@@ -21,26 +10,12 @@
                class="com.dubture.composer.core.builder.ComposerNature">
          </run>
       </runtime>
-      <builder
-            id="com.dubture.composer.core.composerBuilder">
-      </builder>
-   </extension>
-   <extension
-         id="xmlProblem"
-         name="XML Problem"
-         point="org.eclipse.core.resources.markers">
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <persistent
-            value="true">
-      </persistent>
    </extension>
    <extension
          point="com.dubture.indexing.core.buildParticipant">
       <participant
             file_extensions="xml"
-            json_visitor="com.dubture.composer.core.builder.ComposerVisitor"
+            json_visitor="com.dubture.composer.core.visitor.ComposerVisitor"
             nature_id="com.dubture.composer.core.composerNature">
       </participant>
    </extension>
