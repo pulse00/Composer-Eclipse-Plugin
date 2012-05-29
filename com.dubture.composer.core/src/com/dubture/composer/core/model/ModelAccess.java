@@ -21,6 +21,10 @@ import com.dubture.indexing.core.search.SearchEngine;
 import com.google.gson.Gson;
 
 /**
+ * 
+ * Main ModelAccess to the workspaces composer model.
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
  *
  */
 public class ModelAccess implements NamespaceResolverInterface
