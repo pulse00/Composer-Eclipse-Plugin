@@ -13,4 +13,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core,
- com.dubture.composer.core.model
+ com.dubture.composer.core.model,
+ com.dubture.composer.core.visitor

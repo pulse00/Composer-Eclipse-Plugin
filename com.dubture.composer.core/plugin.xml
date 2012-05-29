@@ -2,16 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         id="composerNature"
-         name="Composer Project Nature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="com.dubture.composer.core.builder.ComposerNature">
-         </run>
-      </runtime>
-   </extension>
-   <extension
          point="com.dubture.indexing.core.buildParticipant">
       <participant
             file_extensions="xml"
