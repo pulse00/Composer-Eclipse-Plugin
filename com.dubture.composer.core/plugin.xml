@@ -36,5 +36,13 @@
             value="true">
       </persistent>
    </extension>
+   <extension
+         point="com.dubture.indexing.core.buildParticipant">
+      <participant
+            file_extensions="xml"
+            json_visitor="com.dubture.composer.core.builder.ComposerVisitor"
+            nature_id="com.dubture.composer.core.composerNature">
+      </participant>
+   </extension>
 
 </plugin>

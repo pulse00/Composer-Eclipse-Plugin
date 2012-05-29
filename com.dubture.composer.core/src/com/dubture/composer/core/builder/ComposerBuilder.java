@@ -8,6 +8,7 @@
  */
 package com.dubture.composer.core.builder;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -22,6 +23,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.dubture.composer.core.model.Composer;
 import com.dubture.composer.core.model.ModelAccess;
+import com.dubture.indexing.core.index.ReferenceInfo;
+import com.dubture.indexing.core.search.SearchEngine;
 
 public class ComposerBuilder extends IncrementalProjectBuilder {
 
@@ -70,6 +73,7 @@ public class ComposerBuilder extends IncrementalProjectBuilder {
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
             throws CoreException {
+        
         if (kind == FULL_BUILD) {
             fullBuild(monitor);
         } else {
@@ -84,6 +88,21 @@ public class ComposerBuilder extends IncrementalProjectBuilder {
     }
 
     void parseJSON(IResource resource) {
+
+        if (resource instanceof IFile) {
+            try {
+                
+                SearchEngine engine = SearchEngine.getInstance();
+                List<ReferenceInfo> references = engine.findReferences((IFile) resource);
+                
+                System.err.println(resource.getFullPath().removeLastSegments(1).toString() + " " + " INDEX HAS " + references.size()+ " references");
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+            
+        }
+                
         if (resource instanceof IFile && resource.getName().equals("composer.json")) {
 
             try {

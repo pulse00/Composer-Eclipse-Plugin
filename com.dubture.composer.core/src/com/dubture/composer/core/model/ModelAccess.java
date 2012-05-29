@@ -47,7 +47,6 @@ public class ModelAccess implements NamespaceResolverInterface
             packages.remove(composer);
         }
         
-        System.err.println("Adding Composer :" + composer.getName());
         packages.add(composer);
         
         return this;
