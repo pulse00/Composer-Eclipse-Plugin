@@ -9,5 +9,16 @@
             nature_id="com.dubture.composer.core.composerNature">
       </participant>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.eclipse.ui"
+            class="com.dubture.composer.core.ui.DependencyGraphPart"
+            id="com.dubture.composer.core.dependencyGraph"
+            name="Dependency Graph"
+            restorable="true">
+      </view>
+   </extension>
 
 </plugin>
