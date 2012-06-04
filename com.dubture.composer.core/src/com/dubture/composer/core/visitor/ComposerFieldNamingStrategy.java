@@ -13,7 +13,8 @@ import java.lang.reflect.Field;
 import com.google.gson.FieldNamingStrategy;
 
 /**
- *
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
  */
 public class ComposerFieldNamingStrategy implements FieldNamingStrategy
 {
@@ -24,9 +25,11 @@ public class ComposerFieldNamingStrategy implements FieldNamingStrategy
         if (field.getName() == "psr_0") {
             return "psr-0";
         } else if (field.getName() == "targetDir") {
-            
             return "target-dir";
+        } else if (field.getName() == "requireDev") {
+            return "require-dev";
         }
+        
         return field.getName();
     }
 }

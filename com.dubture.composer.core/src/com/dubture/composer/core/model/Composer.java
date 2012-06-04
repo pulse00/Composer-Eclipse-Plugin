@@ -32,6 +32,7 @@ public class Composer implements NamespaceResolverInterface
     private String homepage;
     private String fullPath;
     private Map<String, String> require;
+    private Map<String, String> requireDev;
     private Autoload autoload;
     private String targetDir;
     
@@ -182,5 +183,15 @@ public class Composer implements NamespaceResolverInterface
     public void setFullPath(String fullPath)
     {
         this.fullPath = fullPath;
+    }
+
+    public Map<String, String> getRequireDev()
+    {
+        return requireDev;
+    }
+
+    public void setRequireDev(Map<String, String> requireDev)
+    {
+        this.requireDev = requireDev;
     }
 }
