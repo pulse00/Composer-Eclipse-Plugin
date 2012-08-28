@@ -141,7 +141,7 @@ public class Composer implements NamespaceResolverInterface
     @Override
     public IPath resolve(IResource resource)
     {
-        if (autoload == null) {
+        if (autoload == null || autoload.getPSR0Path() == null) {
             return null;
         }
         
