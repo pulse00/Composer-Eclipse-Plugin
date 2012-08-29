@@ -20,6 +20,9 @@ public class Autoload
     
     public String getPSR0Path()
     {
+        if (psr_0 == null) {
+            return null;
+        }
         Iterator<String> it = getPsr_0().keySet().iterator();
         while(it.hasNext()) {
             return psr_0.get(it.next());
