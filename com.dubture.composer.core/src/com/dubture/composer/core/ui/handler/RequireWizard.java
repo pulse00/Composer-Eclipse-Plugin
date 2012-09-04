@@ -28,4 +28,10 @@ public class RequireWizard extends Wizard
     {
         return firstPage.doFinish();
     }
+    
+    @Override
+    public boolean needsProgressMonitor()
+    {
+        return true;
+    }
 }

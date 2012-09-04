@@ -38,6 +38,15 @@ public class PHPPackage implements NamespaceResolverInterface, InstallableItem
     private Autoload autoload;
     private String targetDir;
     
+    public String version;
+    public String versionNormalized;
+    
+    public String[] license;
+    
+    public String[] keywords;
+    
+    public Map<String, PHPPackage> versions;
+    
     public String toString()
     {
         return getName();

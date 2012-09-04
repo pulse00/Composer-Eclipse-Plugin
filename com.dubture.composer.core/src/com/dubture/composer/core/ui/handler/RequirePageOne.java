@@ -13,13 +13,14 @@ import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
 import com.dubture.composer.core.model.PHPPackage;
-import com.dubture.composer.core.packagist.PackageDownloader;
+import com.dubture.composer.core.packagist.SearchResultDownloader;
 
 public class RequirePageOne extends MultiItemInstallerPage
 {
     protected RequirePageOne()
     {
         super("Search for items on packagist.org");
+        setDescription("Search for composer packages on packagist.org");
     }
 
     @Override
@@ -38,7 +39,7 @@ public class RequirePageOne extends MultiItemInstallerPage
                 
                 if (!RequirePageOne.this.previousFilterText .equals(text)) {
                     
-                    PackageDownloader downloader = new PackageDownloader();
+                    SearchResultDownloader downloader = new SearchResultDownloader();
                     items = new ArrayList<InstallableItem>();
                     
                     try {
@@ -74,5 +75,10 @@ public class RequirePageOne extends MultiItemInstallerPage
         }
         
         return true;
+    }
+    
+    public List<? extends InstallableItem> getSelectedItems()
+    {
+        return selectedItems;
     }
 }

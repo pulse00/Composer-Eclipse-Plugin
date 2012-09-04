@@ -9,7 +9,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 public class Downloader
 {
-    private String url;
+    protected String url;
 
     public Downloader(String url)
     {

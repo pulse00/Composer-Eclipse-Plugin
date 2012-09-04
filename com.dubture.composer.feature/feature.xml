@@ -29,6 +29,22 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
       <discovery label="Composer website" url="http://getcomposer.org/"/>
    </url>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="com.dubture.indexing.core"/>
+      <import plugin="com.dubture.indexing.gson"/>
+      <import plugin="org.pex.core"/>
+      <import plugin="org.pex.ui"/>
+      <import plugin="org.eclipse.dltk.core"/>
+      <import plugin="org.apache.commons.httpclient"/>
+      <import plugin="com.dubture.indexing.gson" version="0.0.12" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.zest.core" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.zest.layouts" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.dltk.ui"/>
+   </requires>
+
    <plugin
          id="com.dubture.composer.core"
          download-size="0"

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-import com.dubture.composer.core.packagist.PackageDownloader;
+import com.dubture.composer.core.packagist.SearchResultDownloader;
 
 public class CorePlugin extends Plugin {
 
@@ -24,7 +24,7 @@ public class CorePlugin extends Plugin {
 
     private static final String DEBUG = "com.dubture.composer.core/debug";
     
-    private PackageDownloader packageDownloader = null;
+    private SearchResultDownloader packageDownloader = null;
 
 	/*
 	 * (non-Javadoc)
@@ -72,12 +72,12 @@ public class CorePlugin extends Plugin {
         plugin.getLog().log(status);
     }
     
-    public PackageDownloader getPackageDownloader() {
+    public SearchResultDownloader getPackageDownloader() {
         
         if (packageDownloader != null) {
             return packageDownloader;
         }
         
-        return packageDownloader = new PackageDownloader();
+        return packageDownloader = new SearchResultDownloader();
     }
 }

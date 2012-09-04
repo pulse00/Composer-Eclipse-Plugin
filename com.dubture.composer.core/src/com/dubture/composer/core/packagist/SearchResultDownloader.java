@@ -17,11 +17,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 
 @SuppressWarnings("restriction")
-public class PackageDownloader extends Downloader
+public class SearchResultDownloader extends Downloader
 {
     protected LRUCache searchCache;
 
-    public PackageDownloader()
+    public SearchResultDownloader()
     {
         super(ComposerConstants.searchURL);
         searchCache = new LRUCache();

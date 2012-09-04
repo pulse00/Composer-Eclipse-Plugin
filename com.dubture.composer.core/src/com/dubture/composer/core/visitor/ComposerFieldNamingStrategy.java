@@ -28,6 +28,8 @@ public class ComposerFieldNamingStrategy implements FieldNamingStrategy
             return "target-dir";
         } else if (field.getName() == "requireDev") {
             return "require-dev";
+        } else if (field.getName() == "phpPackage") {
+            return "package";
         }
         
         return field.getName();
