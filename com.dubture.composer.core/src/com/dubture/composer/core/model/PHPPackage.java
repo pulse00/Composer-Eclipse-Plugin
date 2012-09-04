@@ -1,5 +1,5 @@
 /*
- * This file is part of the Composer Eclipse Plugin.
+ * This file is part of the PHPPackage Eclipse Plugin.
  *
  * (c) Robert Gruendler <r.gruendler@gmail.com>
  *
@@ -16,6 +16,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.pex.core.model.InstallableItem;
 
 import com.dubture.composer.core.visitor.ComposerFieldNamingStrategy;
 import com.google.gson.Gson;
@@ -24,12 +25,13 @@ import com.google.gson.GsonBuilder;
 /**
  *
  */
-public class Composer implements NamespaceResolverInterface
+public class PHPPackage implements NamespaceResolverInterface, InstallableItem
 {
     private String name;
     private String type;
     private String description;
     private String homepage;
+    private String url;
     private String fullPath;
     private Map<String, String> require;
     private Map<String, String> requireDev;
@@ -38,7 +40,7 @@ public class Composer implements NamespaceResolverInterface
     
     public String toString()
     {
-        return name;
+        return getName();
     }
 
     public String getType()
@@ -94,7 +96,11 @@ public class Composer implements NamespaceResolverInterface
 
     public IPath getPath()
     {
-        return new Path(fullPath);
+        if (fullPath != null) {
+            return new Path(fullPath);
+        }
+        
+        return null;
     }
     
     public String getName()
@@ -102,14 +108,14 @@ public class Composer implements NamespaceResolverInterface
         return name;
     }
     
-    public static Composer fromJson(IFile input) throws CoreException
+    public static PHPPackage fromJson(IFile input) throws CoreException
     {
         Gson gson = getBuilder();
         InputStreamReader reader = new InputStreamReader(input.getContents());
-        Composer composer = gson.fromJson(reader, Composer.class);
-        composer.setFullPath(input.getFullPath().toString());
+        PHPPackage pHPPackage = gson.fromJson(reader, PHPPackage.class);
+        pHPPackage.setFullPath(input.getFullPath().toString());
         
-        return composer;
+        return pHPPackage;
 
     }
     
@@ -123,11 +129,18 @@ public class Composer implements NamespaceResolverInterface
     @Override
     public boolean equals(Object obj)
     {
-        if (!(obj instanceof Composer)) {
+        if (!(obj instanceof PHPPackage)) {
             return false;
         }
         
-        Composer other = (Composer) obj;
+        PHPPackage other = (PHPPackage) obj;
+        
+        IPath path = getPath();
+        
+        if (path == null) {
+            return getName().equals(other.getName());
+        }
+        
         return getPath().equals(other.getPath()) 
                 && getName().equals(other.getName()); 
     }
@@ -135,7 +148,7 @@ public class Composer implements NamespaceResolverInterface
     @Override
     public int hashCode()
     {
-        return name.hashCode();
+        return getName().hashCode();
     }
 
     @Override
@@ -193,5 +206,20 @@ public class Composer implements NamespaceResolverInterface
     public void setRequireDev(Map<String, String> requireDev)
     {
         this.requireDev = requireDev;
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
+    public String getUrl()
+    {
+        return url;
+    }
+
+    public void setUrl(String url)
+    {
+        this.url = url;
     }
 }

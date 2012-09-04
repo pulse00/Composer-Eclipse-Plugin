@@ -40,6 +40,11 @@
                   label="Update dependencies"
                   style="push">
             </command>
+            <command
+                  commandId="com.dubture.composer.core.command.adddependency"
+                  label="Add dependency"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -55,6 +60,10 @@
             id="com.dubture.composer.core.command.update"
             name="Update dependencies">
       </command>
+      <command
+            id="com.dubture.composer.core.command.adddependency"
+            name="Add dependency">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -66,6 +75,21 @@
             class="com.dubture.composer.core.handler.UpdateHandler"
             commandId="com.dubture.composer.core.command.update">
       </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.RequireHandler"
+            commandId="com.dubture.composer.core.command.adddependency">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.eclipse.ui"
+            class="com.dubture.composer.core.ui.DependencyGraphPart"
+            id="com.dubture.composer.core.dependencyGraph"
+            name="Dependency Graph"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

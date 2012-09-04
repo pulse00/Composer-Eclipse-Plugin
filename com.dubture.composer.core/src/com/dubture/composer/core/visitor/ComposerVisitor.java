@@ -1,5 +1,5 @@
 /*******************************************************************************
- * This file is part of the Composer eclipse plugin.
+ * This file is part of the PHPPackage eclipse plugin.
  * 
  * (c) Robert Gruendler <r.gruendler@gmail.com>
  * 
@@ -10,7 +10,7 @@ package com.dubture.composer.core.visitor;
 
 import org.eclipse.core.resources.IFile;
 
-import com.dubture.composer.core.model.Composer;
+import com.dubture.composer.core.model.PHPPackage;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
@@ -44,12 +44,12 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
             return;
         }
         
-        Composer composer = (Composer) object;
+        PHPPackage pHPPackage = (PHPPackage) object;
         
-        if (composer != null) {
-            composer.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());
-            String data = gson.toJson(composer);
-            ReferenceInfo info = new ReferenceInfo(REFERENCE_ID, composer.getName(), data);
+        if (pHPPackage != null) {
+            pHPPackage.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());
+            String data = gson.toJson(pHPPackage);
+            ReferenceInfo info = new ReferenceInfo(REFERENCE_ID, pHPPackage.getName(), data);
             requestor.addReference(info);
         }        
     }
@@ -63,6 +63,6 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
     @Override
     public Class<?> getTransformerClass()
     {
-        return Composer.class;
+        return PHPPackage.class;
     }
 }

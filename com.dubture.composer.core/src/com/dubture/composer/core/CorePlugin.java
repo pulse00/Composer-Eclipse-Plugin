@@ -1,5 +1,5 @@
 /*******************************************************************************
- * This file is part of the Composer eclipse plugin.
+ * This file is part of the PHPPackage eclipse plugin.
  * 
  * (c) Robert Gruendler <r.gruendler@gmail.com>
  * 
@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
+import com.dubture.composer.core.packagist.PackageDownloader;
+
 public class CorePlugin extends Plugin {
 
     private static CorePlugin plugin;
@@ -21,6 +23,8 @@ public class CorePlugin extends Plugin {
     public static final String ID = "com.dubture.composer.core";
 
     private static final String DEBUG = "com.dubture.composer.core/debug";
+    
+    private PackageDownloader packageDownloader = null;
 
 	/*
 	 * (non-Javadoc)
@@ -66,5 +70,14 @@ public class CorePlugin extends Plugin {
     {
         IStatus status = new Status(Status.ERROR, CorePlugin.ID, e.getMessage(), e); 
         plugin.getLog().log(status);
+    }
+    
+    public PackageDownloader getPackageDownloader() {
+        
+        if (packageDownloader != null) {
+            return packageDownloader;
+        }
+        
+        return packageDownloader = new PackageDownloader();
     }
 }

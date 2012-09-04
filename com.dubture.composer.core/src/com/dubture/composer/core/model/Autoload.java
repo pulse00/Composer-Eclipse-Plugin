@@ -1,5 +1,5 @@
 /*
- *  * This file is part of the Composer Eclipse Plugin.
+ *  * This file is part of the PHPPackage Eclipse Plugin.
  *
  * (c) Robert Gruendler <r.gruendler@gmail.com>
  *

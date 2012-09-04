@@ -1,5 +1,5 @@
 /*
- * This file is part of the Composer Eclipse Plugin.
+ * This file is part of the PHPPackage Eclipse Plugin.
  *
  * (c) Robert Gruendler <r.gruendler@gmail.com>
  *
@@ -61,9 +61,9 @@ public class ModelAccess implements NamespaceResolverInterface
             return null;
         }
         
-        for (Composer composer : getPackages(resource.getProject().getFullPath())) {
+        for (PHPPackage pHPPackage : getPackages(resource.getProject().getFullPath())) {
             
-            IPath ns = composer.resolve(resource);
+            IPath ns = pHPPackage.resolve(resource);
             if (ns != null) {
                 return ns;
             }
@@ -72,10 +72,10 @@ public class ModelAccess implements NamespaceResolverInterface
         return null;
     }
 
-    public List<Composer> getPackages(IPath path)
+    public List<PHPPackage> getPackages(IPath path)
     {
         List<ReferenceInfo> references;
-        List<Composer> packages = new ArrayList<Composer>();
+        List<PHPPackage> packages = new ArrayList<PHPPackage>();
 
         try {
             references = search.findReferences(path, ComposerVisitor.REFERENCE_ID);
@@ -86,8 +86,8 @@ public class ModelAccess implements NamespaceResolverInterface
         
         for (ReferenceInfo info : references) {
             String meta = info.getMetadata();
-            Composer composer = gson.fromJson(meta, Composer.class);
-            packages.add(composer);
+            PHPPackage pHPPackage = gson.fromJson(meta, PHPPackage.class);
+            packages.add(pHPPackage);
         }
         
         return packages;
