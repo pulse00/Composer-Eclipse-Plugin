@@ -1,11 +1,15 @@
 package com.dubture.composer.core.ui.wizard.require;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
@@ -13,37 +17,82 @@ import org.pex.ui.wizards.iteminstaller.ItemInstaller;
 
 import com.dubture.composer.core.model.PHPPackage;
 
+/**
+ * 
+ * Represents a row in the "Add dependency" Wizards second page.
+ * 
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 public class PackageItemUI extends AbstractDescriptorItemUi
 {
-    
-    private Composite checkboxContainer;
     private Label nameLabel;
-
-    public PackageItemUI(ItemInstaller installer, PHPPackage item, Composite parent, Color color, Font h1Font, Font h2Font)
+    
+    private PHPPackage composerPackage;
+    
+    private Combo versionDropdown;
+    
+    private VersionChangeListener listener;
+    
+    
+    public PackageItemUI(ItemInstaller installer, PHPPackage item, Composite parent, Color color)
     {
         super(installer, item, parent, color);
+        composerPackage = item;
+        
+        doCreateBody(parent);
+    }
+    
+    protected void createBody(Composite parent) {
 
-        connectorContainer = new Composite(parent, SWT.NULL);
+    }
+    
+    @SuppressWarnings("rawtypes")
+    protected void doCreateBody(Composite parent)
+    {
+        itemContainer = new Composite(parent, SWT.NULL);
 
-        GridDataFactory.fillDefaults().grab(true, false)
-                .applyTo(getConnectorContainer());
+        installer.configureLook(getItemContainer(), background);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(itemContainer);
         GridLayout layout = new GridLayout(4, false);
         layout.marginLeft = 7;
         layout.marginTop = 2;
         layout.marginBottom = 2;
-        getConnectorContainer().setLayout(layout);
+        itemContainer.setLayout(layout);
 
-        checkboxContainer = new Composite(getConnectorContainer(), SWT.NULL);
-        GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING)
-                .span(1, 2).applyTo(checkboxContainer);
-        GridLayoutFactory.fillDefaults().spacing(1, 1).numColumns(2)
-                .applyTo(checkboxContainer);
-
-        nameLabel = new Label(getConnectorContainer(), SWT.NULL);
+        nameLabel = new Label(itemContainer, SWT.NULL);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(nameLabel);
-        nameLabel.setFont(h2Font);
-        nameLabel.setText(item.getName());
+        nameLabel.setFont(installer.getH1Font());
+        nameLabel.setText(composerPackage.getName());
+        
+        Map<String, PHPPackage> versions = composerPackage.versions;
+        
+        Iterator it = versions.keySet().iterator();
+        
+        versionDropdown = new Combo(itemContainer, SWT.SINGLE | SWT.BORDER | SWT.READ_ONLY);
+        
+        while (it.hasNext()) {
+            String versionName = (String) it.next();
+            versionDropdown.add(versionName);
+        }
+        
+        versionDropdown.select(0);
+        versionDropdown.addSelectionListener(new VersionListener());
+    }
+    
+    private class VersionListener extends SelectionAdapter {
 
-    }    
+        @Override
+        public void widgetSelected(SelectionEvent e)
+        {
+            String version = versionDropdown.getItem(versionDropdown.getSelectionIndex());
+            listener.versionChanged(composerPackage, version);
+        }
+    }
 
+    public void setVersionChangeListener(VersionChangeListener listener)
+    {
+        this.listener = listener;
+    }
 }

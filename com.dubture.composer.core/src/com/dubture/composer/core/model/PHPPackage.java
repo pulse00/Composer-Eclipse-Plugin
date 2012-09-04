@@ -231,4 +231,18 @@ public class PHPPackage implements NamespaceResolverInterface, InstallableItem
     {
         this.url = url;
     }
+    
+    public String getDefaultVersion()
+    {
+        return versions.keySet().iterator().next();
+    }
+    
+    public String getPackageName(String version) throws Exception
+    {
+        if (!versions.containsKey(version)) {
+            throw new Exception("Invalid version " + version + " for package " + name);
+        }
+        
+        return String.format("%s:%s", name, version);
+    }
 }
