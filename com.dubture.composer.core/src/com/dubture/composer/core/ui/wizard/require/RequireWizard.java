@@ -1,7 +1,10 @@
 package com.dubture.composer.core.ui.wizard.require;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.wizard.Wizard;
+
+import com.dubture.composer.core.ComposerPluginImages;
 
 public class RequireWizard extends Wizard
 {
@@ -11,9 +14,13 @@ public class RequireWizard extends Wizard
     
     public RequireWizard(IResource composer)
     {
+        setDefaultPageImageDescriptor(ComposerPluginImages.DESC_WIZBAN_ADD_DEPENDENCY);
+        setDialogSettings(DLTKUIPlugin.getDefault().getDialogSettings());
+        setWindowTitle("Search packagist.org");
+        
         this.setComposer(composer);
     }
-
+    
     @Override
     public String getWindowTitle()
     {

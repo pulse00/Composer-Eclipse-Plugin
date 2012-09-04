@@ -40,6 +40,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     {
         super("");
         
+        setTitle("Select versions");
         setDescription("Choose the versions to install for the selected packages");
         this.firstPage = pageOne;
         packages = new HashMap<PHPPackage, String>();

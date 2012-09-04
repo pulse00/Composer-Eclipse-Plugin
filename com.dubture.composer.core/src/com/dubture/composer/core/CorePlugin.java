@@ -10,13 +10,13 @@ package com.dubture.composer.core;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.dubture.composer.core.packagist.SearchResultDownloader;
 
-public class CorePlugin extends Plugin {
+public class CorePlugin extends AbstractUIPlugin {
 
     private static CorePlugin plugin;
     

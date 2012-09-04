@@ -20,6 +20,7 @@ public class RequirePageOne extends MultiItemInstallerPage
     protected RequirePageOne()
     {
         super("Search for items on packagist.org");
+        setTitle("Add composer dependencies");
         setDescription("Search for composer packages on packagist.org");
     }
 
