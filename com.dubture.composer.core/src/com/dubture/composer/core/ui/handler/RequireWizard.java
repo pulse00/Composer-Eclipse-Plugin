@@ -5,6 +5,7 @@ import org.eclipse.jface.wizard.Wizard;
 public class RequireWizard extends Wizard
 {
     private RequirePageOne firstPage;
+    private RequirePageTwo secondPage;
     
     @Override
     public String getWindowTitle()
@@ -13,8 +14,12 @@ public class RequireWizard extends Wizard
     }
 
     public void addPages() {
+        
         firstPage = new RequirePageOne();
         addPage(firstPage);
+        
+        secondPage = new RequirePageTwo(firstPage);
+        addPage(secondPage);
     }
     
     
