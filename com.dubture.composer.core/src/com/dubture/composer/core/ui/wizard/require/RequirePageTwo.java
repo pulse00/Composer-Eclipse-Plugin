@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.handler;
+package com.dubture.composer.core.ui.wizard.require;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -10,37 +10,33 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.IWizardContainer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.pex.core.log.Logger;
 import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
 import org.pex.ui.wizards.iteminstaller.AbstractItemInstallerPage;
-import org.pex.ui.wizards.iteminstaller.ItemInstaller;
 
 import com.dubture.composer.core.model.PHPPackage;
 import com.dubture.composer.core.packagist.PackageDownloader;
 
 public class RequirePageTwo extends AbstractItemInstallerPage implements IPageChangedListener
 {
-    private RequirePageOne pageOne;
+    private RequirePageOne firstPage;
 
     private List<PHPPackage> packages;
 
     protected RequirePageTwo(RequirePageOne pageOne)
     {
         super("Select the versions from your packages");
+        
         setDescription("Choose the versions to install for the selected packages");
-        this.pageOne = pageOne;
+        this.firstPage = pageOne;
         packages = new ArrayList<PHPPackage>();
     }
 
@@ -55,13 +51,13 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
             ((IPageChangeProvider) wizardContainer)
                     .addPageChangedListener(this);
         } else {
-            System.err.println("no change");
+            Logger.debug("Unable to retrieve IPageChangeProvider");
         }
     }
 
     protected void createHeader(Composite container)
     {
-
+        // no header needed
     }
     
     protected void loadPackages()
@@ -76,7 +72,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                 {
                     
                     items.clear();
-                    List<PHPPackage> rawPackages = (List<PHPPackage>) RequirePageTwo.this.pageOne
+                    List<PHPPackage> rawPackages = (List<PHPPackage>) RequirePageTwo.this.firstPage
                             .getSelectedItems();
                     monitor.beginTask(
                             "Retrieving package info from packagist.org...",
@@ -98,37 +94,20 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                     }
 
                     monitor.done();
-
                     items = packages;
-                    System.err.println("ITEMS: " + items.size());
                     
                     Display.getDefault().asyncExec(new Runnable()
                     {
-
                         @Override
                         public void run()
                         {
-                            try {
-
-                                if (categoryChildrenContainer.isDisposed()) {
-                                    return;
-                                }
-
-                                createBodyContents();
-                                // createPackages(categoryChildrenContainer);
-
-                            } catch (Exception e) {
-                                Logger.logException(e);
-                            }
+                            createBodyContents();
                         }
                     });
-
                 }
             });
-        } catch (InvocationTargetException e1) {
-            e1.printStackTrace();
-        } catch (InterruptedException e1) {
-            e1.printStackTrace();
+        } catch (Exception e) {
+            Logger.logException(e);
         }
     }
 
@@ -144,41 +123,6 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
             Composite container, Color background)
     {
         return new AbstractDescriptorItemUi(this, item, container, background);
-    }
-
-    public class PackageItemUI extends AbstractDescriptorItemUi
-    {
-
-        private Composite checkboxContainer;
-        private Label nameLabel;
-
-        public PackageItemUI(ItemInstaller installer, PHPPackage item,
-                Composite parent)
-        {
-            super(installer, item, parent, colorCategoryGradientEnd);
-
-            connectorContainer = new Composite(parent, SWT.NULL);
-
-            GridDataFactory.fillDefaults().grab(true, false)
-                    .applyTo(getConnectorContainer());
-            GridLayout layout = new GridLayout(4, false);
-            layout.marginLeft = 7;
-            layout.marginTop = 2;
-            layout.marginBottom = 2;
-            getConnectorContainer().setLayout(layout);
-
-            checkboxContainer = new Composite(getConnectorContainer(), SWT.NULL);
-            GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING)
-                    .span(1, 2).applyTo(checkboxContainer);
-            GridLayoutFactory.fillDefaults().spacing(1, 1).numColumns(2)
-                    .applyTo(checkboxContainer);
-
-            nameLabel = new Label(getConnectorContainer(), SWT.NULL);
-            GridDataFactory.fillDefaults().grab(true, false).applyTo(nameLabel);
-            nameLabel.setFont(h2Font);
-            nameLabel.setText(item.getName());
-
-        }
     }
 
     @Override

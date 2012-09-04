@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.handler;
+package com.dubture.composer.core.ui.wizard.require;
 
 import java.io.IOException;
 import java.util.ArrayList;
