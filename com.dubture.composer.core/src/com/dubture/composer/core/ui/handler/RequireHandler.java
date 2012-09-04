@@ -6,7 +6,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import com.dubture.composer.core.handler.ComposerHandler;
 import com.dubture.composer.core.ui.wizard.require.RequireWizard;
 
 public class RequireHandler extends ComposerHandler

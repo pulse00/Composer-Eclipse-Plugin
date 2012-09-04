@@ -1,11 +1,11 @@
-package com.dubture.composer.core.handler;
+package com.dubture.composer.core.ui.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
 
-import com.dubture.composer.core.handler.job.DownloadJob;
-import com.dubture.composer.core.handler.job.UpdateJob;
+import com.dubture.composer.core.job.DownloadJob;
+import com.dubture.composer.core.job.UpdateJob;
 
 public class UpdateHandler extends ComposerHandler
 {

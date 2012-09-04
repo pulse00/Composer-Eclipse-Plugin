@@ -68,11 +68,11 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="com.dubture.composer.core.handler.InstallHandler"
+            class="com.dubture.composer.core.ui.handler.InstallHandler"
             commandId="com.dubture.composer.core.command.install">
       </handler>
       <handler
-            class="com.dubture.composer.core.handler.UpdateHandler"
+            class="com.dubture.composer.core.ui.handler.UpdateHandler"
             commandId="com.dubture.composer.core.command.update">
       </handler>
       <handler
@@ -85,7 +85,7 @@
       <view
             allowMultiple="false"
             category="org.eclipse.ui"
-            class="com.dubture.composer.core.ui.DependencyGraphPart"
+            class="com.dubture.composer.core.ui.view.DependencyGraphPart"
             id="com.dubture.composer.core.dependencyGraph"
             name="Dependency Graph"
             restorable="true">

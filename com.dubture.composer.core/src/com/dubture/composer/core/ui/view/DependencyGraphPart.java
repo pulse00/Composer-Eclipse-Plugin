@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui;
+package com.dubture.composer.core.ui.view;
 
 import java.util.HashMap;
 import java.util.Iterator;

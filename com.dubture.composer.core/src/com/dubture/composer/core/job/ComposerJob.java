@@ -1,4 +1,4 @@
-package com.dubture.composer.core.handler.job;
+package com.dubture.composer.core.job;
 
 import java.io.IOException;
 

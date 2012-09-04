@@ -1,4 +1,4 @@
-package com.dubture.composer.core.handler;
+package com.dubture.composer.core.ui.handler;
 
 import java.util.Iterator;
 
