@@ -64,8 +64,9 @@ public class RequireWizard extends Wizard
                 int count = secondPage.getPackages().size();
 
                 Iterator it = secondPage.getPackages().keySet().iterator();
-                monitor.beginTask("Installing composer packages - ", count + 1);
+                monitor.beginTask("Installing composer packages - ", count + 2 );
 
+                monitor.worked(1);
                 while (it.hasNext()) {
                     PHPPackage composerPackage = (PHPPackage) it.next();
                     String version = secondPage.getPackages().get(

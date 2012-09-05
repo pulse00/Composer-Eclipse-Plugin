@@ -15,8 +15,7 @@ public class RequireHandler extends ComposerHandler
     {
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         init(event);
-        WizardDialog dialog = new WizardDialog(shell, new RequireWizard(composer));
-        dialog.open();
+        new WizardDialog(shell, new RequireWizard(composer)).open();
         return null;
     }
 }
