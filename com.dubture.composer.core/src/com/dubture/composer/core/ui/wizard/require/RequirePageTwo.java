@@ -40,10 +40,10 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     {
         super("");
         
-        setTitle("Select versions");
+        setTitle("Select package versions");
         setDescription("Choose the versions to install for the selected packages");
         this.firstPage = pageOne;
-        packages = new HashMap<PHPPackage, String>();
+        setPackages(new HashMap<PHPPackage, String>());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                 {
                     
                     items.clear();
-                    packages.clear();
+                    getPackages().clear();
                     List<PHPPackage> rawPackages = (List<PHPPackage>) RequirePageTwo.this.firstPage
                             .getSelectedItems();
                     monitor.beginTask(
@@ -91,7 +91,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                             PackageDownloader downloader = new PackageDownloader(
                                     item.getUrl());
                             PHPPackage phpPackage = downloader.getPackage(new NullProgressMonitor());
-                            packages.put(phpPackage, phpPackage.getDefaultVersion());
+                            getPackages().put(phpPackage, phpPackage.getDefaultVersion());
                         } catch (IOException e) {
                             Logger.logException(e);
                         }
@@ -100,7 +100,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                     }
 
                     monitor.done();
-                    items = new ArrayList<InstallableItem>(packages.keySet());
+                    items = new ArrayList<InstallableItem>(getPackages().keySet());
                     
                     Display.getDefault().asyncExec(new Runnable()
                     {
@@ -147,16 +147,16 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                 public void run(IProgressMonitor monitor) throws InvocationTargetException,
                         InterruptedException
                 {
-                    int count = packages.size();
+                    int count = getPackages().size();
                     int current = 0;
                     
-                    Iterator it = packages.keySet().iterator();
+                    Iterator it = getPackages().keySet().iterator();
                     
                     monitor.beginTask("Installing composer dependencies...", count);
                     
                     while(it.hasNext()) {
                         PHPPackage composerPackage = (PHPPackage) it.next();
-                        String version = packages.get(composerPackage);
+                        String version = getPackages().get(composerPackage);
                         
                         try {
                             String dependency = composerPackage.getPackageName(version);
@@ -203,6 +203,16 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     @Override
     public void versionChanged(PHPPackage packageName, String versionName)
     {
-        packages.put(packageName, versionName);
+        getPackages().put(packageName, versionName);
+    }
+
+    public Map<PHPPackage, String> getPackages()
+    {
+        return packages;
+    }
+
+    public void setPackages(Map<PHPPackage, String> packages)
+    {
+        this.packages = packages;
     }
 }
