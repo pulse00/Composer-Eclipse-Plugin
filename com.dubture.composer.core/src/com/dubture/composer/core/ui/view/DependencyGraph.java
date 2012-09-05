@@ -5,11 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphConnection;
@@ -18,22 +21,56 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.pex.core.log.Logger;
 
-import com.dubture.composer.core.model.PHPPackage;
 import com.dubture.composer.core.model.ModelAccess;
+import com.dubture.composer.core.model.PHPPackage;
 
-public class DependencyGraphPart extends ViewPart
+public class DependencyGraph extends ViewPart
 {
+    public static String VIEW_ID = "com.dubture.composer.core.dependencyGraph";
+    
+    private IProject project;
+    
     private Graph graph;
     private int layout = 1;
     private Map<String, GraphNode> nodes;
+    
+    private Composite parent;
 
     @Override
     public void createPartControl(Composite parent)
     {
+        this.parent = parent;
+        
+        update();
+    }
+    
+    protected void update() {
+
+        if (graph != null) {
+            for (Control child : graph.getChildren()) {
+                if (!child.isDisposed()) {
+                    child.dispose();
+                }
+            }
+            
+            if (!graph.isDisposed()) {
+                graph.dispose();
+            }
+        }
+        
         graph = new Graph(parent, SWT.NONE);
         
-        List<PHPPackage> packages = ModelAccess.getInstance().getPackages(new Path("/sfsta"));
+        if (project == null) {
+            Logger.debug("Unable to retrieve project in dependency graph");
+            return;
+        }
+        
+        IPath path = project.getProjectRelativePath();
+        
+        System.err.println(path);
+        List<PHPPackage> packages = ModelAccess.getInstance().getPackages(new Path("/" + project.getName()));
         nodes = new HashMap<String, GraphNode>();
         
         // first pass
@@ -74,6 +111,8 @@ public class DependencyGraphPart extends ViewPart
             }
 
         });        
+        
+            
     }
     
     protected void addRequire(Map<String, String> require, PHPPackage pHPPackage ) 
@@ -108,5 +147,11 @@ public class DependencyGraphPart extends ViewPart
     public void setFocus()
     {
 
+    }
+
+    public void setProject(IProject project)
+    {
+        this.project = project;
+        update();
     }
 }

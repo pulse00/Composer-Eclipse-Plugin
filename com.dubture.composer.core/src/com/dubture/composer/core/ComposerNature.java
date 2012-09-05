@@ -6,6 +6,8 @@ import org.eclipse.core.runtime.CoreException;
 
 public class ComposerNature implements IProjectNature
 {
+    public static final String NATURE_ID = "com.dubture.composer.core.composerNature";
+    
     private IProject project;
 
     @Override

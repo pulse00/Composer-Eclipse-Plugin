@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.dubture.composer.core.model.ComposerFieldNamingStrategy;
 import com.dubture.composer.core.model.PHPPackage;
-import com.dubture.composer.core.visitor.ComposerFieldNamingStrategy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;

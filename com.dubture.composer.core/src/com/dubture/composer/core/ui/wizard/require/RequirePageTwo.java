@@ -78,6 +78,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                 {
                     
                     items.clear();
+                    packages.clear();
                     List<PHPPackage> rawPackages = (List<PHPPackage>) RequirePageTwo.this.firstPage
                             .getSelectedItems();
                     monitor.beginTask(

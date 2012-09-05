@@ -45,7 +45,21 @@
                   label="Add dependency"
                   style="push">
             </command>
+            <command
+                  commandId="com.dubture.composer.core.command.graph"
+                  label="Dependency Graph"
+                  style="push">
+            </command>
          </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="com.dubture.composer.core.command.projectnature"
+               label="Convert to Composer project"
+               style="push">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -64,6 +78,14 @@
             id="com.dubture.composer.core.command.adddependency"
             name="Add dependency">
       </command>
+      <command
+            id="com.dubture.composer.core.command.graph"
+            name="Dependency Graph">
+      </command>
+      <command
+            id="com.dubture.composer.core.command.projectnature"
+            name="Convert to composer nature">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -79,13 +101,22 @@
             class="com.dubture.composer.core.ui.handler.RequireHandler"
             commandId="com.dubture.composer.core.command.adddependency">
       </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.DependencyGraphHandler"
+            commandId="com.dubture.composer.core.command.graph">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.AddNatureHandler"
+            commandId="com.dubture.composer.core.command.projectnature">
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
             category="org.eclipse.ui"
-            class="com.dubture.composer.core.ui.view.DependencyGraphPart"
+            class="com.dubture.composer.core.ui.view.DependencyGraph"
+            icon="ico/full/obj16/icon-logo-composer.png"
             id="com.dubture.composer.core.dependencyGraph"
             name="Dependency Graph"
             restorable="true">

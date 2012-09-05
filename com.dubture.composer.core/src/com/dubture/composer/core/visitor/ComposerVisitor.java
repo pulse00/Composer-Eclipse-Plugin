@@ -9,7 +9,9 @@
 package com.dubture.composer.core.visitor;
 
 import org.eclipse.core.resources.IFile;
+import org.pex.core.log.Logger;
 
+import com.dubture.composer.core.model.ComposerFieldNamingStrategy;
 import com.dubture.composer.core.model.PHPPackage;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
@@ -50,6 +52,7 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
             pHPPackage.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());
             String data = gson.toJson(pHPPackage);
             ReferenceInfo info = new ReferenceInfo(REFERENCE_ID, pHPPackage.getName(), data);
+            Logger.debug("Adding composer reference " + pHPPackage.getName());
             requestor.addReference(info);
         }        
     }
