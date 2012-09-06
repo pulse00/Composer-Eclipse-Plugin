@@ -1,4 +1,4 @@
-package com.dubture.composer.core;
+package com.dubture.composer.eclipse;
 
 public class ComposerConstants
 {

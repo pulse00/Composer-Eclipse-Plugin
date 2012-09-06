@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.handler;
+package com.dubture.composer.eclipse.ui.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -6,7 +6,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
-import com.dubture.composer.core.ui.wizard.require.RequireWizard;
+import com.dubture.composer.eclipse.ui.wizard.require.RequireWizard;
 
 public class RequireHandler extends ComposerHandler
 {

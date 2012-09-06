@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.handler;
+package com.dubture.composer.eclipse.ui.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -7,7 +7,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import com.dubture.composer.core.ui.view.DependencyGraph;
+import com.dubture.composer.eclipse.ui.view.DependencyGraph;
 
 public class DependencyGraphHandler extends ComposerHandler implements IHandler
 {

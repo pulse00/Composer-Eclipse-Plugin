@@ -1,4 +1,4 @@
-package com.dubture.composer.core;
+package com.dubture.composer.eclipse;
 
 import java.net.URL;
 
@@ -27,7 +27,7 @@ public class ComposerPluginImages
     {
         IPath path = ICONS_PATH.append(prefix).append(name);
 
-        return createImageDescriptor(CorePlugin.getDefault().getBundle(), path,
+        return createImageDescriptor(ComposerPlugin.getDefault().getBundle(), path,
                 useMissingImageDescriptor);
     }
 

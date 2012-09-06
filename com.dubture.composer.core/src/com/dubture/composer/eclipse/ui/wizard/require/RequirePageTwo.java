@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.wizard.require;
+package com.dubture.composer.eclipse.ui.wizard.require;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,6 +19,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.getcomposer.core.PHPPackage;
+import org.getcomposer.core.PackageInterface;
+import org.getcomposer.core.packagist.PackageDownloader;
 import org.pex.core.launch.ConsoleResponseHandler;
 import org.pex.core.launch.DefaultExecutableLauncher;
 import org.pex.core.log.Logger;
@@ -26,10 +29,7 @@ import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
 import org.pex.ui.wizards.iteminstaller.AbstractItemInstallerPage;
 
-import com.dubture.composer.PHPPackage;
-import com.dubture.composer.PackageInterface;
-import com.dubture.composer.core.model.EclipsePHPPackage;
-import com.dubture.composer.core.packagist.PackageDownloader;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 
 public class RequirePageTwo extends AbstractItemInstallerPage implements IPageChangedListener, VersionChangeListener
 {

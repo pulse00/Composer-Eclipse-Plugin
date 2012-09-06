@@ -6,14 +6,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  ******************************************************************************/
-package com.dubture.composer.core.visitor;
+package com.dubture.composer.eclipse.visitor;
 
 import org.eclipse.core.resources.IFile;
+import org.getcomposer.core.ComposerFieldNamingStrategy;
+import org.getcomposer.core.PHPPackage;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.ComposerFieldNamingStrategy;
-import com.dubture.composer.PHPPackage;
-import com.dubture.composer.core.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
@@ -29,7 +29,7 @@ import com.google.gson.Gson;
  */
 public class ComposerVisitor extends AbstractIndexingVisitor implements JsonIndexingVisitor
 {
-    public static final String REFERENCE_ID = "com.dubture.composer.package";
+    public static final String REFERENCE_ID = "com.dubture.composer.lib.package";
     
     protected Gson gson;
     

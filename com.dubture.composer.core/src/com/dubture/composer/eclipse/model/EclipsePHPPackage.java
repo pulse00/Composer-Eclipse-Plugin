@@ -1,11 +1,10 @@
-package com.dubture.composer.core.model;
+package com.dubture.composer.eclipse.model;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
+import org.getcomposer.core.PackageInterface;
 import org.pex.core.model.InstallableItem;
-
-import com.dubture.composer.PackageInterface;
 
 public class EclipsePHPPackage implements
         NamespaceResolverInterface, InstallableItem

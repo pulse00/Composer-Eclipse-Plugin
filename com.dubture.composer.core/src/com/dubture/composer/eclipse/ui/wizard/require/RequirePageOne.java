@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.wizard.require;
+package com.dubture.composer.eclipse.ui.wizard.require;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,13 +8,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.WorkbenchJob;
+import org.getcomposer.core.PackageInterface;
+import org.getcomposer.core.packagist.SearchResultDownloader;
 import org.pex.core.log.Logger;
 import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
-import com.dubture.composer.PackageInterface;
-import com.dubture.composer.core.model.EclipsePHPPackage;
-import com.dubture.composer.core.packagist.SearchResultDownloader;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 
 public class RequirePageOne extends MultiItemInstallerPage
 {

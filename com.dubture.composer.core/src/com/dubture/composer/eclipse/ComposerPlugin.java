@@ -6,23 +6,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  ******************************************************************************/
-package com.dubture.composer.core;
+package com.dubture.composer.eclipse;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.getcomposer.core.packagist.SearchResultDownloader;
 import org.osgi.framework.BundleContext;
 
-import com.dubture.composer.core.packagist.SearchResultDownloader;
+public class ComposerPlugin extends AbstractUIPlugin {
 
-public class CorePlugin extends AbstractUIPlugin {
-
-    private static CorePlugin plugin;
+    private static ComposerPlugin plugin;
     
-    public static final String ID = "com.dubture.composer.core";
+    public static final String ID = "com.dubture.composer.eclipse";
 
-    private static final String DEBUG = "com.dubture.composer.core/debug";
+    private static final String DEBUG = "com.dubture.composer.eclipse/debug";
     
     private SearchResultDownloader packageDownloader = null;
 
@@ -46,7 +45,7 @@ public class CorePlugin extends AbstractUIPlugin {
 	    plugin = null;
 	}
 	
-	public static CorePlugin getDefault()
+	public static ComposerPlugin getDefault()
 	{
 	    return plugin;
 	}
@@ -68,7 +67,7 @@ public class CorePlugin extends AbstractUIPlugin {
     
     public static void logException(Exception e) 
     {
-        IStatus status = new Status(Status.ERROR, CorePlugin.ID, e.getMessage(), e); 
+        IStatus status = new Status(Status.ERROR, ComposerPlugin.ID, e.getMessage(), e); 
         plugin.getLog().log(status);
     }
     

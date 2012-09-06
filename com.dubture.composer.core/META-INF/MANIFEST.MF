@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Composer Core Plugin
-Bundle-SymbolicName: com.dubture.composer.core;singleton:=true
+Bundle-Name: Composer Eclipse Plugin
+Bundle-SymbolicName: com.dubture.composer.eclipse;singleton:=true
 Bundle-Version: 0.0.3
-Bundle-Activator: com.dubture.composer.core.CorePlugin
+Bundle-Activator: com.dubture.composer.eclipse.ComposerPlugin
 Bundle-Vendor: https://github.com/pulse00
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -17,11 +17,11 @@ Require-Bundle: org.eclipse.core.runtime,
  com.dubture.indexing.gson;bundle-version="0.0.12",
  org.eclipse.zest.core;bundle-version="1.3.0",
  org.eclipse.zest.layouts;bundle-version="1.1.0",
- org.eclipse.dltk.ui
+ org.eclipse.dltk.ui,
+ org.getcomposer.core;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: com.dubture.composer.core,
- com.dubture.composer.core.model,
- com.dubture.composer.core.visitor
-Import-Package: com.dubture.composer,
- com.dubture.composer.core.packagist
+Export-Package: com.dubture.composer.eclipse,
+ com.dubture.composer.eclipse.model,
+ com.dubture.composer.eclipse.visitor
+

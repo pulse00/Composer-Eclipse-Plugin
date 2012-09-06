@@ -1,4 +1,4 @@
-package com.dubture.composer.core.job;
+package com.dubture.composer.eclipse.job;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;

@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.dubture.composer</groupId>
+    <groupId>com.dubture.composer.lib</groupId>
     <artifactId>parent</artifactId>
     <version>0.0.3</version>
   </parent>
 
-  <artifactId>com.dubture.composer.test</artifactId>
+  <artifactId>com.dubture.composer.lib.test</artifactId>
   <packaging>eclipse-test-plugin</packaging>
   
   <build>

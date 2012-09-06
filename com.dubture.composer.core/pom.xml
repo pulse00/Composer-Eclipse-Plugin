@@ -8,7 +8,7 @@
     <version>0.0.3</version>
   </parent>
 
-  <artifactId>com.dubture.composer.core</artifactId>
+  <artifactId>com.dubture.composer.eclipse</artifactId>
   <packaging>eclipse-plugin</packaging>
 
 </project>

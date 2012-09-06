@@ -1,4 +1,4 @@
-package com.dubture.composer.core.job;
+package com.dubture.composer.eclipse.job;
 
 import java.io.IOException;
 
@@ -8,13 +8,13 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.pex.core.launch.ConsoleResponseHandler;
 import org.pex.core.launch.DefaultExecutableLauncher;
 
-import com.dubture.composer.core.CorePlugin;
+import com.dubture.composer.eclipse.ComposerPlugin;
 
 abstract public class ComposerJob extends Job
 {
     protected String composer;
     
-    protected static final IStatus ERROR_STATUS = new Status(Status.ERROR, CorePlugin.ID, 
+    protected static final IStatus ERROR_STATUS = new Status(Status.ERROR, ComposerPlugin.ID, 
             "Error installing composer dependencies, see log for details");
 
     public ComposerJob(String name)

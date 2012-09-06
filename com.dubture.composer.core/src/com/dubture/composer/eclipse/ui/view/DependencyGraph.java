@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.view;
+package com.dubture.composer.eclipse.ui.view;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,15 +21,15 @@ import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
+import org.getcomposer.core.PackageInterface;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.PackageInterface;
-import com.dubture.composer.core.model.EclipsePHPPackage;
-import com.dubture.composer.core.model.ModelAccess;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.model.ModelAccess;
 
 public class DependencyGraph extends ViewPart
 {
-    public static String VIEW_ID = "com.dubture.composer.core.dependencyGraph";
+    public static String VIEW_ID = "com.dubture.composer.eclipse.dependencyGraph";
     
     private IProject project;
     

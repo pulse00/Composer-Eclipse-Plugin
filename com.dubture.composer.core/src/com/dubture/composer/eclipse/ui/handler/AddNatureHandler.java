@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.handler;
+package com.dubture.composer.eclipse.ui.handler;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -7,7 +7,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.core.ComposerNature;
+import com.dubture.composer.eclipse.ComposerNature;
 
 public class AddNatureHandler extends ComposerHandler implements IHandler
 {

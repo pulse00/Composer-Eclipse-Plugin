@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.wizard.require;
+package com.dubture.composer.eclipse.ui.wizard.require;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
@@ -11,12 +11,12 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
+import org.getcomposer.core.PHPPackage;
 import org.pex.core.launch.ConsoleResponseHandler;
 import org.pex.core.launch.DefaultExecutableLauncher;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.PHPPackage;
-import com.dubture.composer.core.ComposerPluginImages;
+import com.dubture.composer.eclipse.ComposerPluginImages;
 
 public class RequireWizard extends Wizard
 {

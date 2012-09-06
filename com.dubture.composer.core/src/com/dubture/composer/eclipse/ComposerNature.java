@@ -1,4 +1,4 @@
-package com.dubture.composer.core;
+package com.dubture.composer.eclipse;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.CoreException;
 
 public class ComposerNature implements IProjectNature
 {
-    public static final String NATURE_ID = "com.dubture.composer.core.composerNature";
+    public static final String NATURE_ID = "com.dubture.composer.eclipse.composerNature";
     
     private IProject project;
 

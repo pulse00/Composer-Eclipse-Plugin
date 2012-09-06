@@ -6,17 +6,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.dubture.composer.core.model;
+package com.dubture.composer.eclipse.model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.getcomposer.core.PHPPackage;
 
-import com.dubture.composer.PHPPackage;
-import com.dubture.composer.core.CorePlugin;
-import com.dubture.composer.core.visitor.ComposerVisitor;
+import com.dubture.composer.eclipse.ComposerPlugin;
+import com.dubture.composer.eclipse.visitor.ComposerVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
 import com.dubture.indexing.core.search.SearchEngine;
 import com.google.gson.Gson;
@@ -42,7 +42,7 @@ public class ModelAccess implements NamespaceResolverInterface
             search = SearchEngine.getInstance();
             gson = new Gson();
         } catch (Exception e) {
-            CorePlugin.logException(e);
+            ComposerPlugin.logException(e);
         }
     }
 
@@ -81,7 +81,7 @@ public class ModelAccess implements NamespaceResolverInterface
         try {
             references = search.findReferences(path, ComposerVisitor.REFERENCE_ID);
         } catch (Exception e) {
-            CorePlugin.logException(e);
+            ComposerPlugin.logException(e);
             return null;
         }
         

@@ -6,7 +6,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-package com.dubture.composer.core.model;
+package com.dubture.composer.eclipse.model;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;

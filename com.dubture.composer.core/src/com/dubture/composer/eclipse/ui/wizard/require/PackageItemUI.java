@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.wizard.require;
+package com.dubture.composer.eclipse.ui.wizard.require;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -12,12 +12,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.getcomposer.core.PHPPackage;
+import org.getcomposer.core.PackageInterface;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
 import org.pex.ui.wizards.iteminstaller.ItemInstaller;
 
-import com.dubture.composer.PHPPackage;
-import com.dubture.composer.PackageInterface;
-import com.dubture.composer.core.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 
 /**
  * 

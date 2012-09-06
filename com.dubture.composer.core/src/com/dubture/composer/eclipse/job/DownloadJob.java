@@ -1,4 +1,4 @@
-package com.dubture.composer.core.job;
+package com.dubture.composer.eclipse.job;
 
 import java.io.InputStream;
 
@@ -10,10 +10,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.getcomposer.core.packagist.PharDownloader;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.core.CorePlugin;
-import com.dubture.composer.core.packagist.PharDownloader;
+import com.dubture.composer.eclipse.ComposerPlugin;
 
 public class DownloadJob extends Job
 {
@@ -46,7 +46,7 @@ public class DownloadJob extends Job
             
         } catch (Exception e) {
             Logger.logException(e);
-            return new Status(Status.ERROR, CorePlugin.ID, "Error while downloading composer.phar. See {workspace}/.metadata/.log for details");
+            return new Status(Status.ERROR, ComposerPlugin.ID, "Error while downloading composer.phar. See {workspace}/.metadata/.log for details");
         } finally {
             monitor.done();
         }
