@@ -21,9 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 
-import com.dubture.composer.core.model.PHPPackage;
-import com.dubture.composer.core.model.ModelAccess;
-
 /**
  *
  */
@@ -79,8 +76,8 @@ public class ComposerTest extends TestCase
             IFolder folder = project.getFolder("lib/Acme/Demo");
             folder.create(true, false, monitor);
             
-            PHPPackage pHPPackage = PHPPackage.fromJson(file);
-            ModelAccess model = ModelAccess.getInstance();
+//            PHPPackage pHPPackage = PHPPackage.fromJson(file);
+//            ModelAccess model = ModelAccess.getInstance();
             
             
         } catch (CoreException e) {

@@ -1,8 +1,8 @@
 package com.dubture.composer.core.ui.wizard.require;
 
-import com.dubture.composer.core.model.PHPPackage;
+import com.dubture.composer.PackageInterface;
 
 public interface VersionChangeListener
 {
-    void versionChanged(PHPPackage phpPackage, String versionName);
+    void versionChanged(PackageInterface phpPackage, String versionName);
 }

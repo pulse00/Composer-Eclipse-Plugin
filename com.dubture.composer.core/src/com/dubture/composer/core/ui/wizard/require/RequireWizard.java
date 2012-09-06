@@ -15,8 +15,8 @@ import org.pex.core.launch.ConsoleResponseHandler;
 import org.pex.core.launch.DefaultExecutableLauncher;
 import org.pex.core.log.Logger;
 
+import com.dubture.composer.PHPPackage;
 import com.dubture.composer.core.ComposerPluginImages;
-import com.dubture.composer.core.model.PHPPackage;
 
 public class RequireWizard extends Wizard
 {

@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
+import com.dubture.composer.PHPPackage;
 import com.dubture.composer.core.CorePlugin;
 import com.dubture.composer.core.visitor.ComposerVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
@@ -61,7 +62,7 @@ public class ModelAccess implements NamespaceResolverInterface
             return null;
         }
         
-        for (PHPPackage pHPPackage : getPackages(resource.getProject().getFullPath())) {
+        for (EclipsePHPPackage pHPPackage : getPackages(resource.getProject().getFullPath())) {
             
             IPath ns = pHPPackage.resolve(resource);
             if (ns != null) {
@@ -72,10 +73,10 @@ public class ModelAccess implements NamespaceResolverInterface
         return null;
     }
 
-    public List<PHPPackage> getPackages(IPath path)
+    public List<EclipsePHPPackage> getPackages(IPath path)
     {
         List<ReferenceInfo> references;
-        List<PHPPackage> packages = new ArrayList<PHPPackage>();
+        List<EclipsePHPPackage> packages = new ArrayList<EclipsePHPPackage>();
 
         try {
             references = search.findReferences(path, ComposerVisitor.REFERENCE_ID);
@@ -86,7 +87,8 @@ public class ModelAccess implements NamespaceResolverInterface
         
         for (ReferenceInfo info : references) {
             String meta = info.getMetadata();
-            PHPPackage pHPPackage = gson.fromJson(meta, PHPPackage.class);
+            PHPPackage json = gson.fromJson(meta, PHPPackage.class);
+            EclipsePHPPackage pHPPackage = new EclipsePHPPackage(json);
             packages.add(pHPPackage);
         }
         

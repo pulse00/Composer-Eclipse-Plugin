@@ -23,8 +23,9 @@ import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.pex.core.log.Logger;
 
+import com.dubture.composer.PackageInterface;
+import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.core.model.ModelAccess;
-import com.dubture.composer.core.model.PHPPackage;
 
 public class DependencyGraph extends ViewPart
 {
@@ -70,11 +71,11 @@ public class DependencyGraph extends ViewPart
         IPath path = project.getProjectRelativePath();
         
         System.err.println(path);
-        List<PHPPackage> packages = ModelAccess.getInstance().getPackages(new Path("/" + project.getName()));
+        List<EclipsePHPPackage> packages = ModelAccess.getInstance().getPackages(new Path("/" + project.getName()));
         nodes = new HashMap<String, GraphNode>();
         
         // first pass
-        for (PHPPackage pHPPackage : packages) {
+        for (EclipsePHPPackage pHPPackage : packages) {
             if (pHPPackage.getName() != null) {
                 String name = pHPPackage.getName();
                 if (nodes.containsKey(name) == false) {
@@ -85,17 +86,19 @@ public class DependencyGraph extends ViewPart
         
 
         // 2nd pass
-        for (PHPPackage pHPPackage : packages) {
+        for (EclipsePHPPackage pHPPackage : packages) {
+            
+            
             if (pHPPackage.getName() != null) {
                 
-                Map<String, String> require = pHPPackage.getRequire();
+                Map<String, String> require = pHPPackage.getPhpPackage().getRequire();
                 
                 if (require != null) {
-                    addRequire(require, pHPPackage);
+                    addRequire(require, pHPPackage.getPhpPackage());
                 }
                 
-                if (pHPPackage.getRequireDev() != null) {
-                    addRequire(pHPPackage.getRequireDev(), pHPPackage);
+                if (pHPPackage.getPhpPackage().getRequireDev() != null) {
+                    addRequire(pHPPackage.getPhpPackage().getRequireDev(), pHPPackage.getPhpPackage());
                 }
             }
         }
@@ -115,7 +118,7 @@ public class DependencyGraph extends ViewPart
             
     }
     
-    protected void addRequire(Map<String, String> require, PHPPackage pHPPackage ) 
+    protected void addRequire(Map<String, String> require, PackageInterface pHPPackage ) 
     {
         Iterator<?> reIt = require.keySet().iterator();
         while (reIt.hasNext()) {

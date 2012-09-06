@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
@@ -27,14 +26,16 @@ import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
 import org.pex.ui.wizards.iteminstaller.AbstractItemInstallerPage;
 
-import com.dubture.composer.core.model.PHPPackage;
+import com.dubture.composer.PHPPackage;
+import com.dubture.composer.PackageInterface;
+import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.core.packagist.PackageDownloader;
 
 public class RequirePageTwo extends AbstractItemInstallerPage implements IPageChangedListener, VersionChangeListener
 {
     private RequirePageOne firstPage;
 
-    private Map<PHPPackage, String> packages;
+    private Map<EclipsePHPPackage, String> packages;
 
     protected RequirePageTwo(RequirePageOne pageOne)
     {
@@ -43,7 +44,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
         setTitle("Select package versions");
         setDescription("Choose the versions to install for the selected packages");
         this.firstPage = pageOne;
-        setPackages(new HashMap<PHPPackage, String>());
+        setPackages(new HashMap<EclipsePHPPackage, String>());
     }
 
     @Override
@@ -79,19 +80,18 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                     
                     items.clear();
                     getPackages().clear();
-                    List<PHPPackage> rawPackages = (List<PHPPackage>) RequirePageTwo.this.firstPage
+                    List<InstallableItem> rawPackages = RequirePageTwo.this.firstPage
                             .getSelectedItems();
                     monitor.beginTask(
                             "Retrieving package info from packagist.org...",
                             rawPackages.size());
                     int i = 0;
 
-                    for (PHPPackage item : rawPackages) {
+                    for (InstallableItem item : rawPackages) {
                         try {
-                            PackageDownloader downloader = new PackageDownloader(
-                                    item.getUrl());
-                            PHPPackage phpPackage = downloader.getPackage(new NullProgressMonitor());
-                            getPackages().put(phpPackage, phpPackage.getDefaultVersion());
+                            PackageDownloader downloader = new PackageDownloader(item.getUrl());
+                            PackageInterface phpPackage = downloader.getPackage();
+                            packages.put(new EclipsePHPPackage(phpPackage), phpPackage.getDefaultVersion());
                         } catch (IOException e) {
                             Logger.logException(e);
                         }
@@ -128,7 +128,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     protected AbstractDescriptorItemUi getItemUI(InstallableItem item,
             Composite container, Color background)
     {
-        PackageItemUI ui = new PackageItemUI(this, (PHPPackage) item, container, background);
+        PackageItemUI ui = new PackageItemUI(this, (EclipsePHPPackage) item, container, background);
         ui.setVersionChangeListener(this);
         return ui;
     }
@@ -201,17 +201,17 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     }
 
     @Override
-    public void versionChanged(PHPPackage packageName, String versionName)
+    public void versionChanged(PackageInterface packageName, String versionName)
     {
-        getPackages().put(packageName, versionName);
+        packages.put(new EclipsePHPPackage(packageName), versionName);
     }
 
-    public Map<PHPPackage, String> getPackages()
+    public Map<EclipsePHPPackage, String> getPackages()
     {
         return packages;
     }
 
-    public void setPackages(Map<PHPPackage, String> packages)
+    public void setPackages(Map<EclipsePHPPackage, String> packages)
     {
         this.packages = packages;
     }

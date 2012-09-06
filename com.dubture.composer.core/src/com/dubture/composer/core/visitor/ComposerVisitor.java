@@ -11,8 +11,9 @@ package com.dubture.composer.core.visitor;
 import org.eclipse.core.resources.IFile;
 import org.pex.core.log.Logger;
 
-import com.dubture.composer.core.model.ComposerFieldNamingStrategy;
-import com.dubture.composer.core.model.PHPPackage;
+import com.dubture.composer.ComposerFieldNamingStrategy;
+import com.dubture.composer.PHPPackage;
+import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
@@ -46,7 +47,7 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
             return;
         }
         
-        PHPPackage pHPPackage = (PHPPackage) object;
+        EclipsePHPPackage pHPPackage = (EclipsePHPPackage) object;
         
         if (pHPPackage != null) {
             pHPPackage.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());

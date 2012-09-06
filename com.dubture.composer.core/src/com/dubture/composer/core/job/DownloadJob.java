@@ -2,8 +2,6 @@ package com.dubture.composer.core.job;
 
 import java.io.InputStream;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -15,6 +13,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.pex.core.log.Logger;
 
 import com.dubture.composer.core.CorePlugin;
+import com.dubture.composer.core.packagist.PharDownloader;
 
 public class DownloadJob extends Job
 {
@@ -30,25 +29,28 @@ public class DownloadJob extends Job
     protected IStatus run(IProgressMonitor monitor)
     {
         try {
-            HttpClient client = new HttpClient();
-            GetMethod get = new GetMethod("http://getcomposer.org/composer.phar");
             
-            monitor.worked(40);
-            client.executeMethod(get);
+            monitor.beginTask("Downloading composer.phar from getcomposer.org", 3);
             
-            InputStream stream = get.getResponseBodyAsStream();
+            PharDownloader downloader = new PharDownloader();
+            InputStream resource = downloader.downloadResource();
             
-            monitor.worked(80);
-            
+            monitor.worked(1);
             IFile file = project.getFile("composer.phar");
-            file.create(stream, true, new NullProgressMonitor());
+            monitor.worked(1);
+            
+            file.create(resource, true, new NullProgressMonitor());
             file.refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
-            monitor.worked(100);
+            
+            monitor.worked(1);
             
         } catch (Exception e) {
             Logger.logException(e);
             return new Status(Status.ERROR, CorePlugin.ID, "Error while downloading composer.phar. See {workspace}/.metadata/.log for details");
+        } finally {
+            monitor.done();
         }
+        
         return Status.OK_STATUS;
     }
 }

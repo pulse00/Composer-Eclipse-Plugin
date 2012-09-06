@@ -15,7 +15,9 @@ import org.eclipse.swt.widgets.Label;
 import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
 import org.pex.ui.wizards.iteminstaller.ItemInstaller;
 
-import com.dubture.composer.core.model.PHPPackage;
+import com.dubture.composer.PHPPackage;
+import com.dubture.composer.PackageInterface;
+import com.dubture.composer.core.model.EclipsePHPPackage;
 
 /**
  * 
@@ -29,17 +31,20 @@ public class PackageItemUI extends AbstractDescriptorItemUi
 {
     private Label nameLabel;
     
-    private PHPPackage composerPackage;
+    private EclipsePHPPackage phpPackage;
+    
+    private PackageInterface composerPackage;
     
     private Combo versionDropdown;
     
     private VersionChangeListener listener;
     
     
-    public PackageItemUI(ItemInstaller installer, PHPPackage item, Composite parent, Color color)
+    public PackageItemUI(ItemInstaller installer, EclipsePHPPackage item, Composite parent, Color color)
     {
         super(installer, item, parent, color);
-        composerPackage = item;
+        phpPackage = item;
+        composerPackage = item.getPhpPackage();
         
         doCreateBody(parent);
     }
@@ -66,7 +71,7 @@ public class PackageItemUI extends AbstractDescriptorItemUi
         nameLabel.setFont(installer.getH1Font());
         nameLabel.setText(composerPackage.getName());
         
-        Map<String, PHPPackage> versions = composerPackage.versions;
+        Map<String, PHPPackage> versions = composerPackage.getVersions();
         
         Iterator it = versions.keySet().iterator();
         

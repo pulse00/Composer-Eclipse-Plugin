@@ -12,7 +12,8 @@ import org.pex.core.log.Logger;
 import org.pex.core.model.InstallableItem;
 import org.pex.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
-import com.dubture.composer.core.model.PHPPackage;
+import com.dubture.composer.PackageInterface;
+import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.core.packagist.SearchResultDownloader;
 
 public class RequirePageOne extends MultiItemInstallerPage
@@ -22,13 +23,13 @@ public class RequirePageOne extends MultiItemInstallerPage
         super("Search for items on packagist.org");
         setTitle("Add composer dependencies");
         setDescription("Search for composer packages on packagist.org");
+        
     }
 
     @Override
     protected void createRefreshJob()
     {
         refreshJob = new WorkbenchJob("filter") { //$NON-NLS-1$
-            @SuppressWarnings("unchecked")
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                 if (RequirePageOne.this.filterText.isDisposed()) {
@@ -45,12 +46,18 @@ public class RequirePageOne extends MultiItemInstallerPage
                     
                     try {
                         if (text != null && text.length() > 0) {
-                            items = (List<InstallableItem>) downloader.searchPackages(text, monitor);
+                            List<PackageInterface> searchPackages = downloader.searchPackages(text);
+                            
+                            for (PackageInterface p : searchPackages) {
+                                EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(p);
+                                items.add(eclipsePackage);
+                            }
                         }
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
+                    
                     
                     if (items == null) {
                         Logger.debug("Error downloading pakages");
@@ -68,18 +75,14 @@ public class RequirePageOne extends MultiItemInstallerPage
         refreshJob.setSystem(true);
     }
 
-    public boolean doFinish()
-    {
-        for (InstallableItem item : selectedItems) {
-            PHPPackage packageItem = (PHPPackage) item;
-            System.err.println(packageItem.getName());
-        }
-        
-        return true;
-    }
-    
-    public List<? extends InstallableItem> getSelectedItems()
+    public List<InstallableItem> getSelectedItems()
     {
         return selectedItems;
+    }
+
+    @Override
+    public boolean doFinish()
+    {
+        return true;
     }
 }

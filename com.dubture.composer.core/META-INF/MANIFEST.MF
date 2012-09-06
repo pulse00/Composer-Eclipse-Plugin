@@ -23,3 +23,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core,
  com.dubture.composer.core.model,
  com.dubture.composer.core.visitor
+Import-Package: com.dubture.composer,
+ com.dubture.composer.core.packagist
