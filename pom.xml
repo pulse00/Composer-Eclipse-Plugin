@@ -6,7 +6,7 @@
   <version>0.0.3</version>
   <packaging>pom</packaging>
   <modules>
-    <module>Composer-Java-Bindings</module>
+    <module>org.getcomposer.core</module>
     <module>com.dubture.composer.eclipse</module>
     <module>com.dubture.composer.test</module>
     <module>com.dubture.composer.feature</module>

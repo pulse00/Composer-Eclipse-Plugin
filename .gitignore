@@ -1,8 +1,8 @@
 .DS_Store
 
-com.dubture.composer.core/bin/*
-com.dubture.composer.core/.options
-com.dubture.composer.core/target/*
+com.dubture.composer.eclipse/bin/*
+com.dubture.composer.eclipse/.options
+com.dubture.composer.eclipse/target/*
 com.dubture.composer.ui/bin/*
 com.dubture.composer.ui/target/*
 com.dubture.composer.test/bin/*
