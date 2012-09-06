@@ -6,9 +6,11 @@
   <version>0.0.3</version>
   <packaging>pom</packaging>
   <modules>
-    <module>com.dubture.composer.core</module>
+    <module>Composer-Java-Bindings</module>
+    <module>com.dubture.composer.eclipse</module>
     <module>com.dubture.composer.test</module>
     <module>com.dubture.composer.feature</module>
+    
   </modules>
 
   <properties>
@@ -26,6 +28,12 @@
      <layout>p2</layout>
      <url>http://download.eclipse.org/releases/indigo</url>
    </repository>	
+
+  <repository>
+	<id>orbit</id>
+	<layout>p2</layout>
+	<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20110523182458/repository/</url>
+  </repository>
   </repositories>
 
   <build>
