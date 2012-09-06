@@ -1,0 +1,3 @@
+[submodule "Composer-Java-Bindings"]
+	path = Composer-Java-Bindings
+	url = git@github.com:pulse00/Composer-Java-Bindings.git
