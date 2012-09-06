@@ -1,0 +1,53 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.dubture.composer</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.3</version>
+	</parent>
+
+	<groupId>org.getcomposer</groupId>
+	<artifactId>org.getcomposer.core</artifactId>
+	<packaging>eclipse-plugin</packaging>
+
+
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Java Composer API</name>
+	<description>Javabindings for the PHP dependency manager composer.</description>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+	</dependencies>
+	<organization>
+		<name>PDT Extension Group</name>
+		<url>http://pdt-extensions.org/</url>
+	</organization>
+	<scm>
+		<url>https://github.com/pulse00/Composer-Java-Bindings.git</url>
+		<connection>git</connection>
+		<developerConnection>Robert Gründler</developerConnection>
+		<tag>composer</tag>
+	</scm>
+	<ciManagement>
+		<system>travis-ci.org</system>
+		<url>http://travis-ci.org/#!/pulse00/Composer-Java-Bindings</url>
+	</ciManagement>
+	<url>https://github.com/pulse00/Composer-Java-Bindings</url>
+
+
+</project>
