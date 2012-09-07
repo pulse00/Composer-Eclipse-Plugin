@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Composer Test plugin
-Bundle-SymbolicName: com.dubture.composer.lib.test
+Bundle-SymbolicName: com.dubture.composer.test
 Bundle-Version: 0.0.3
 Bundle-Vendor: https://github.com/pulse00
 Fragment-Host: com.dubture.composer.eclipse;bundle-version="0.0.1"

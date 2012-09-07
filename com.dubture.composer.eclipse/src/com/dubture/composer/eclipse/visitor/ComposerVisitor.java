@@ -11,7 +11,7 @@ package com.dubture.composer.eclipse.visitor;
 import org.eclipse.core.resources.IFile;
 import org.getcomposer.core.ComposerFieldNamingStrategy;
 import org.getcomposer.core.PHPPackage;
-import org.pex.core.log.Logger;
+import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;

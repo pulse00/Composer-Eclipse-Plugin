@@ -22,12 +22,12 @@ import org.eclipse.swt.widgets.Display;
 import org.getcomposer.core.PHPPackage;
 import org.getcomposer.core.PackageInterface;
 import org.getcomposer.core.packagist.PackageDownloader;
-import org.pex.core.launch.ConsoleResponseHandler;
-import org.pex.core.launch.DefaultExecutableLauncher;
-import org.pex.core.log.Logger;
-import org.pex.core.model.InstallableItem;
-import org.pex.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
-import org.pex.ui.wizards.iteminstaller.AbstractItemInstallerPage;
+import org.pdtextensions.core.launch.ConsoleResponseHandler;
+import org.pdtextensions.core.launch.DefaultExecutableLauncher;
+import org.pdtextensions.core.log.Logger;
+import org.pdtextensions.core.model.InstallableItem;
+import org.pdtextensions.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
+import org.pdtextensions.ui.wizards.iteminstaller.AbstractItemInstallerPage;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 

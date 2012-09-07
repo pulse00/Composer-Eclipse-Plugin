@@ -5,7 +5,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.pex.core.log.Logger;
+import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.ComposerNature;
 

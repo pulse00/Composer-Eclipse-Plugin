@@ -3,7 +3,7 @@ package com.dubture.composer.eclipse.job;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.pex.core.log.Logger;
+import org.pdtextensions.core.log.Logger;
 
 public class UpdateJob extends ComposerJob
 {

@@ -37,11 +37,4 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
       <import plugin="com.dubture.indexing.gson" version="0.0.12" match="greaterOrEqual"/>
    </requires>
 
-   <plugin
-         id="com.dubture.composer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
 </feature>

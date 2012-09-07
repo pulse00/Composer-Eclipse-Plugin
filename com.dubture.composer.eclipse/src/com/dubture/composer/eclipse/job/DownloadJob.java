@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.getcomposer.core.packagist.PharDownloader;
-import org.pex.core.log.Logger;
+import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.ComposerPlugin;
 

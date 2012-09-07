@@ -10,9 +10,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.getcomposer.core.PackageInterface;
 import org.getcomposer.core.packagist.SearchResultDownloader;
-import org.pex.core.log.Logger;
-import org.pex.core.model.InstallableItem;
-import org.pex.ui.wizards.iteminstaller.MultiItemInstallerPage;
+import org.pdtextensions.core.log.Logger;
+import org.pdtextensions.core.model.InstallableItem;
+import org.pdtextensions.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 

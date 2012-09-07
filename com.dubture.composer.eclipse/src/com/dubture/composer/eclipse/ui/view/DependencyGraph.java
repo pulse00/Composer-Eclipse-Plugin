@@ -22,7 +22,7 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.getcomposer.core.PackageInterface;
-import org.pex.core.log.Logger;
+import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 import com.dubture.composer.eclipse.model.ModelAccess;

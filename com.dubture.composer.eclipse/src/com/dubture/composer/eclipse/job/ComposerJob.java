@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.pex.core.launch.ConsoleResponseHandler;
-import org.pex.core.launch.DefaultExecutableLauncher;
+import org.pdtextensions.core.launch.ConsoleResponseHandler;
+import org.pdtextensions.core.launch.DefaultExecutableLauncher;
 
 import com.dubture.composer.eclipse.ComposerPlugin;
 
