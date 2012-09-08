@@ -10,11 +10,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.WorkbenchJob;
 import org.getcomposer.core.PackageInterface;
 import org.getcomposer.core.packagist.SearchResultDownloader;
-import org.pdtextensions.core.log.Logger;
-import org.pdtextensions.core.model.InstallableItem;
-import org.pdtextensions.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
+import com.dubture.composer.eclipse.log.Logger;
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.model.InstallableItem;
+import com.dubture.composer.eclipse.ui.wizards.iteminstaller.MultiItemInstallerPage;
 
 public class RequirePageOne extends MultiItemInstallerPage
 {

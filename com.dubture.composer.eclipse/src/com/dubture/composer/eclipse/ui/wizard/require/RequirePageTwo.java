@@ -22,14 +22,14 @@ import org.eclipse.swt.widgets.Display;
 import org.getcomposer.core.PHPPackage;
 import org.getcomposer.core.PackageInterface;
 import org.getcomposer.core.packagist.PackageDownloader;
-import org.pdtextensions.core.launch.ConsoleResponseHandler;
-import org.pdtextensions.core.launch.DefaultExecutableLauncher;
-import org.pdtextensions.core.log.Logger;
-import org.pdtextensions.core.model.InstallableItem;
-import org.pdtextensions.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
-import org.pdtextensions.ui.wizards.iteminstaller.AbstractItemInstallerPage;
 
+import com.dubture.composer.eclipse.launch.ConsoleResponseHandler;
+import com.dubture.composer.eclipse.launch.DefaultExecutableLauncher;
+import com.dubture.composer.eclipse.log.Logger;
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.model.InstallableItem;
+import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
+import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractItemInstallerPage;
 
 public class RequirePageTwo extends AbstractItemInstallerPage implements IPageChangedListener, VersionChangeListener
 {

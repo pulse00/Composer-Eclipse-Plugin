@@ -14,10 +14,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.getcomposer.core.PHPPackage;
 import org.getcomposer.core.PackageInterface;
-import org.pdtextensions.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
-import org.pdtextensions.ui.wizards.iteminstaller.ItemInstaller;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
+import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
+import com.dubture.composer.eclipse.ui.wizards.iteminstaller.ItemInstaller;
 
 /**
  * 

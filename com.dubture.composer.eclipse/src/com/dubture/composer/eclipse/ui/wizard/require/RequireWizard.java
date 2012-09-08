@@ -12,11 +12,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
 import org.getcomposer.core.PHPPackage;
-import org.pdtextensions.core.launch.ConsoleResponseHandler;
-import org.pdtextensions.core.launch.DefaultExecutableLauncher;
-import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.ComposerPluginImages;
+import com.dubture.composer.eclipse.launch.ConsoleResponseHandler;
+import com.dubture.composer.eclipse.launch.DefaultExecutableLauncher;
+import com.dubture.composer.eclipse.log.Logger;
 
 public class RequireWizard extends Wizard
 {

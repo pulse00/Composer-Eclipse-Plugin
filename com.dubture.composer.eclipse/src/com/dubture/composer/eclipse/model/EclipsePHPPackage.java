@@ -4,7 +4,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.getcomposer.core.PackageInterface;
-import org.pdtextensions.core.model.InstallableItem;
 
 public class EclipsePHPPackage implements
         NamespaceResolverInterface, InstallableItem

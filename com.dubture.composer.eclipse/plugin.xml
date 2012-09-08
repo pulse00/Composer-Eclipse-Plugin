@@ -26,8 +26,9 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.pdtextensions.ui.menu?after=additions">
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
+               icon="ico/full/obj16/icon-logo-composer.png"
                id="com.dubture.composer.lib.ui.menu"
                label="Composer">
             <command
@@ -60,13 +61,6 @@
                label="Convert to Composer project"
                style="push">
          </command>
-      </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
-               label="Foobar">
-         </menu>
       </menuContribution>
    </extension>
    <extension

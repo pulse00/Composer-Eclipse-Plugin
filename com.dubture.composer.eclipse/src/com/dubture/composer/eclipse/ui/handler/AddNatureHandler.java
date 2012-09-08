@@ -5,9 +5,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.ComposerNature;
+import com.dubture.composer.eclipse.log.Logger;
 
 public class AddNatureHandler extends ComposerHandler implements IHandler
 {

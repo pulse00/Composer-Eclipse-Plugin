@@ -11,9 +11,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.getcomposer.core.packagist.PharDownloader;
-import org.pdtextensions.core.log.Logger;
 
 import com.dubture.composer.eclipse.ComposerPlugin;
+import com.dubture.composer.eclipse.log.Logger;
 
 public class DownloadJob extends Job
 {
