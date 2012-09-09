@@ -17,14 +17,19 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
     {
         try {
             init(event);
-            
-            if (project != null && ! project.hasNature(ComposerNature.NATURE_ID)) {
-                toggleNature();
-            } else {
-                Logger.debug("No composer nature set");
-            }
         } catch (Exception e) {
             Logger.logException(e);
+        } finally {
+            try {
+                if (project != null && ! project.hasNature(ComposerNature.NATURE_ID)) {
+                    toggleNature();
+                } else {
+                    Logger.debug("No composer nature set");
+                }
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return null;
     }

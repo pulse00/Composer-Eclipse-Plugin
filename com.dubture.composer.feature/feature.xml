@@ -37,7 +37,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
       <import plugin="com.dubture.indexing.gson" version="0.0.12" match="greaterOrEqual"/>
       <import plugin="org.apache.httpcomponents.httpclient"/>
       <import plugin="org.apache.httpcomponents.httpcore"/>
-      <import feature="org.eclipse.php" version="3.1.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.php" version="3.0.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -48,7 +48,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          unpack="false"/>
 
    <plugin
-         id="com.dubture.composer.eclipse"
+         id="com.dubture.composer.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
