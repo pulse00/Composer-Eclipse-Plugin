@@ -19,7 +19,7 @@
       <participant
             file_extensions="xml"
             json_visitor="com.dubture.composer.eclipse.visitor.ComposerVisitor"
-            nature_id="com.dubture.composer.eclipse.core.composerNature">
+            nature_id="com.dubture.composer.eclipse.composerNature">
       </participant>
    </extension>
    <extension
