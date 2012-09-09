@@ -6,13 +6,11 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
-import org.getcomposer.core.PHPPackage;
 
 import com.dubture.composer.eclipse.ComposerPluginImages;
 import com.dubture.composer.eclipse.launch.ConsoleResponseHandler;
@@ -80,7 +78,6 @@ public class RequireWizard extends Wizard
                         monitor.subTask("(require " + dependency + ")");
                         DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                         String[] arg = new String[]{"require", dependency};
-                        IPath location = composer.getLocation();
                         launcher.launch(composer.getLocation().toOSString(),
                                 arg, new ConsoleResponseHandler());
 
@@ -93,16 +90,18 @@ public class RequireWizard extends Wizard
                 
                 IProject project = composer.getProject();
                 IResource vendor = project.findMember("vendor");
-                
-                if (vendor != null) {
-                    try {
+
+                try {
+                    if (vendor != null) {
                         vendor.refreshLocal(IResource.DEPTH_ONE, monitor);
-                        monitor.worked(1);
-                    } catch (CoreException e) {
-                        Logger.logException(e);
-                    } finally {
-                        monitor.done();
+                    } else {
+                        project.refreshLocal(IResource.DEPTH_ONE, monitor);
                     }
+                } catch (CoreException e) {
+                    Logger.logException(e);
+                } finally {
+                    monitor.worked(1);
+                    monitor.done();
                 }
             }
         };

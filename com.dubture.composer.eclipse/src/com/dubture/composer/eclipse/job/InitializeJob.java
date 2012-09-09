@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -16,6 +17,7 @@ import com.dubture.composer.eclipse.log.Logger;
 public class InitializeJob extends ComposerJob
 {
     private final PHPPackage phpPackage;
+    private IProject project;
     
     public InitializeJob(IProject project, PHPPackage phpPackage)
     {
@@ -25,6 +27,7 @@ public class InitializeJob extends ComposerJob
         Assert.isNotNull(project);
         
         this.phpPackage = phpPackage;
+        this.project = project;
         composer = project.findMember("composer.phar").getLocation().toOSString();
     }
 
@@ -32,26 +35,30 @@ public class InitializeJob extends ComposerJob
     protected IStatus run(IProgressMonitor monitor)
     {
         try {
-            monitor.beginTask("Running composer.phar init", 2);
+            monitor.beginTask("Running composer.phar init", 3);
             monitor.worked(1);
             
             List<String> args = new ArrayList<String>();
             
-            args.add("--name='" + phpPackage.name + "'");
-            args.add(String.format("--description='%s'", phpPackage.description));
+            args.add("--name=" + phpPackage.name);
+            args.add(String.format("--description=%s", phpPackage.description));
             
             if (phpPackage.authors != null && phpPackage.authors.length > 0) {
                 Author author = phpPackage.authors[0];
                 args.add(String.format("--author=%s", author.getInitString()));
             }
             
-            args.add("--minimum-stability='" + phpPackage.minimumStability + "'");
+            args.add("--minimum-stability=" + phpPackage.minimumStability);
             args.add("--no-interaction");
             
             
             execute("init", args.toArray(new String[args.size()]));
-            
             monitor.worked(2);
+            
+            project.refreshLocal(IResource.DEPTH_ONE, monitor);
+            
+            monitor.worked(3);
+            
         } catch (Exception e) {
             e.printStackTrace();
             Logger.logException(e);
