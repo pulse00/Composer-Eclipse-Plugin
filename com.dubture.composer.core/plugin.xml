@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+
+   <extension
+         id="composerNature"
+         name="Composer Project Nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.dubture.composer.core.ComposerNature">
+         </run>
+      </runtime>
+   </extension>
+
+   <extension
+         point="com.dubture.indexing.core.buildParticipant">
+      <participant
+            file_extensions="xml"
+            json_visitor="com.dubture.composer.core.visitor.ComposerVisitor"
+            nature_id="com.dubture.composer.core.composerNature">
+      </participant>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="ico/full/obj16/icon-logo-composer.png"
+               id="com.dubture.composer.lib.ui.menu"
+               label="Composer">
+            <command
+                  commandId="com.dubture.composer.core.command.install"
+                  label="Install dependencies"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.dubture.composer.core.command.update"
+                  label="Update dependencies"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.dubture.composer.core.command.adddependency"
+                  label="Add dependency"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.dubture.composer.core.command.graph"
+                  label="Dependency Graph"
+                  style="push">
+            </command>
+            <command
+                  commandId="com.dubture.composer.core.command.init"
+                  label="Initialize composer"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="com.dubture.composer.core.command.projectnature"
+               label="Convert to Composer project"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Run composer.phar with the install option"
+            id="com.dubture.composer.core.command.install"
+            name="Install dependencies">
+      </command>
+      <command
+            description="Run composer.phar with the update option"
+            id="com.dubture.composer.core.command.update"
+            name="Update dependencies">
+      </command>
+      <command
+            id="com.dubture.composer.core.command.adddependency"
+            name="Add dependency">
+      </command>
+      <command
+            id="com.dubture.composer.core.command.graph"
+            name="Dependency Graph">
+      </command>
+      <command
+            id="com.dubture.composer.core.command.projectnature"
+            name="Convert to composer nature">
+      </command>
+      <command
+            id="com.dubture.composer.core.command.init"
+            name="Initialize composer">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.dubture.composer.core.ui.handler.InstallHandler"
+            commandId="com.dubture.composer.core.command.install">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.UpdateHandler"
+            commandId="com.dubture.composer.core.command.update">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.RequireHandler"
+            commandId="com.dubture.composer.core.command.adddependency">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.DependencyGraphHandler"
+            commandId="com.dubture.composer.core.command.graph">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.AddNatureHandler"
+            commandId="com.dubture.composer.core.command.projectnature">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.InitHandler"
+            commandId="com.dubture.composer.core.command.init">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="org.eclipse.ui"
+            class="com.dubture.composer.core.ui.view.DependencyGraph"
+            icon="ico/full/obj16/icon-logo-composer.png"
+            id="com.dubture.composer.core.dependencyGraph"
+            name="Dependency Graph"
+            restorable="true">
+      </view>
+   </extension>
+
+</plugin>
