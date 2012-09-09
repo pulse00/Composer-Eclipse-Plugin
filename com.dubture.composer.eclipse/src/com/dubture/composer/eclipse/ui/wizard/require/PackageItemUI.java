@@ -16,8 +16,8 @@ import org.getcomposer.core.PHPPackage;
 import org.getcomposer.core.PackageInterface;
 
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
-import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
-import com.dubture.composer.eclipse.ui.wizards.iteminstaller.ItemInstaller;
+import com.dubture.composer.eclipse.ui.wizard.iteminstaller.AbstractDescriptorItemUi;
+import com.dubture.composer.eclipse.ui.wizard.iteminstaller.ItemInstaller;
 
 /**
  * 

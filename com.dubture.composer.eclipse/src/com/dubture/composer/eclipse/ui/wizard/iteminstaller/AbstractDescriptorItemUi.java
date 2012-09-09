@@ -1,4 +1,4 @@
-package com.dubture.composer.eclipse.ui.wizards.iteminstaller;
+package com.dubture.composer.eclipse.ui.wizard.iteminstaller;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

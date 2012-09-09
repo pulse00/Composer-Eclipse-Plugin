@@ -13,6 +13,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.eclipse.log.Logger;
 import com.dubture.composer.eclipse.ui.ExecutableNotFoundException;
@@ -44,6 +49,28 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			Logger.debug("Getting default executable");
 			phpExe = LaunchUtil.getPHPExecutable();
 		} catch (ExecutableNotFoundException e) {
+		    
+		    IWorkbench workbench = PlatformUI.getWorkbench();
+		    
+		    if (workbench == null) {
+		        Logger.debug("Error retrieving executable");
+		        return;
+		    }
+		    
+		    IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		    
+		    if (window == null) {
+		        Logger.debug("Error retrieving executable");
+		        return;
+		    }
+		    
+		    
+            MessageBox dialog = new MessageBox(
+                    window.getShell(), SWT.ICON_QUESTION
+                            | SWT.OK);
+            dialog.setText("PHP executable not found");
+            dialog.setMessage("Your PHP executable has not been configured properly.");
+            dialog.open();
 			Logger.debug("Error retrieving executable");
 			Logger.logException(e);
 			return;
@@ -58,7 +85,9 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 		System.arraycopy(arguments, 0, args, 2, arguments.length);
 		
 		Runtime runtime = Runtime.getRuntime();
+		//TODO: validate script exists
 		Path path = new Path(scriptPath);
+		
 		Process p = runtime.exec(args, new String[]{}, new File(path.removeLastSegments(1).toOSString()));
 		
 		if (async == false) {
@@ -75,7 +104,18 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			}
 			temp=output.readLine();
 		}
-		
+
+        BufferedReader errOutput=new BufferedReader(new InputStreamReader(p
+                .getErrorStream()));
+        String errResult="";
+        String errTemp=output.readLine();
+        while (errTemp != null) {
+            if (errTemp.trim().length() > 0) {
+                errResult=errResult + "\n" + errTemp;
+            }
+            errTemp=errOutput.readLine();
+        }
+        
 		if (handler != null) {
 			handler.handle(result.trim());
 		}

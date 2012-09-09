@@ -1,4 +1,4 @@
-package com.dubture.composer.eclipse.ui.wizards.iteminstaller;
+package com.dubture.composer.eclipse.ui.wizard.iteminstaller;
 
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;

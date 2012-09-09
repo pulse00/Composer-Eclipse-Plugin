@@ -1,4 +1,4 @@
-package com.dubture.composer.eclipse.ui.wizards.iteminstaller;
+package com.dubture.composer.eclipse.ui.wizard.iteminstaller;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;

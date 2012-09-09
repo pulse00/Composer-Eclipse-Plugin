@@ -7,6 +7,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.dubture.composer.eclipse.ui.PharNotFoundException;
 import com.dubture.composer.eclipse.ui.view.DependencyGraph;
 
 public class DependencyGraphHandler extends ComposerHandler implements IHandler
@@ -16,9 +17,10 @@ public class DependencyGraphHandler extends ComposerHandler implements IHandler
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         try {
-            init(event);
-            
-            if (composer == null) {
+            try {
+                init(event);
+            } catch (PharNotFoundException e) {
+                installPharDialog(event);
                 return null;
             }
             

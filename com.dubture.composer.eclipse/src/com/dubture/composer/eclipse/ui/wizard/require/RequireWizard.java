@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -17,6 +18,7 @@ import com.dubture.composer.eclipse.ComposerPluginImages;
 import com.dubture.composer.eclipse.launch.ConsoleResponseHandler;
 import com.dubture.composer.eclipse.launch.DefaultExecutableLauncher;
 import com.dubture.composer.eclipse.log.Logger;
+import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 
 public class RequireWizard extends Wizard
 {
@@ -68,17 +70,17 @@ public class RequireWizard extends Wizard
 
                 monitor.worked(1);
                 while (it.hasNext()) {
-                    PHPPackage composerPackage = (PHPPackage) it.next();
-                    String version = secondPage.getPackages().get(
-                            composerPackage);
+                    
+                    EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
+                    String version = secondPage.getPackages().get(composerPackage);
 
                     try {
-                        String dependency = composerPackage
-                                .getPackageName(version);
-
+                        
+                        String dependency = composerPackage.getPhpPackage().getPackageName(version);
                         monitor.subTask("(require " + dependency + ")");
                         DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                         String[] arg = new String[]{"require", dependency};
+                        IPath location = composer.getLocation();
                         launcher.launch(composer.getLocation().toOSString(),
                                 arg, new ConsoleResponseHandler());
 

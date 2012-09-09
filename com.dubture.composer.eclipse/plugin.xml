@@ -51,6 +51,11 @@
                   label="Dependency Graph"
                   style="push">
             </command>
+            <command
+                  commandId="com.dubture.composer.eclipse.command.init"
+                  label="Initialize composer"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
       <menuContribution
@@ -87,6 +92,10 @@
             id="com.dubture.composer.eclipse.command.projectnature"
             name="Convert to composer nature">
       </command>
+      <command
+            id="com.dubture.composer.eclipse.command.init"
+            name="Initialize composer">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -109,6 +118,10 @@
       <handler
             class="com.dubture.composer.eclipse.ui.handler.AddNatureHandler"
             commandId="com.dubture.composer.eclipse.command.projectnature">
+      </handler>
+      <handler
+            class="com.dubture.composer.eclipse.ui.handler.InitHandler"
+            commandId="com.dubture.composer.eclipse.command.init">
       </handler>
    </extension>
    <extension

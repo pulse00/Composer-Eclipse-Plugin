@@ -28,8 +28,8 @@ import com.dubture.composer.eclipse.launch.DefaultExecutableLauncher;
 import com.dubture.composer.eclipse.log.Logger;
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 import com.dubture.composer.eclipse.model.InstallableItem;
-import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractDescriptorItemUi;
-import com.dubture.composer.eclipse.ui.wizards.iteminstaller.AbstractItemInstallerPage;
+import com.dubture.composer.eclipse.ui.wizard.iteminstaller.AbstractDescriptorItemUi;
+import com.dubture.composer.eclipse.ui.wizard.iteminstaller.AbstractItemInstallerPage;
 
 public class RequirePageTwo extends AbstractItemInstallerPage implements IPageChangedListener, VersionChangeListener
 {
@@ -73,7 +73,6 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
             getContainer().run(true, true, new IRunnableWithProgress()
             {
                 @Override
-                @SuppressWarnings("unchecked")
                 public void run(IProgressMonitor monitor)
                         throws InvocationTargetException, InterruptedException
                 {

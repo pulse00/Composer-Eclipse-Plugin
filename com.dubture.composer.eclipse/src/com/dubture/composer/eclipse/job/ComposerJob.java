@@ -13,8 +13,9 @@ import com.dubture.composer.eclipse.launch.DefaultExecutableLauncher;
 abstract public class ComposerJob extends Job
 {
     protected String composer;
-    
-    protected static final IStatus ERROR_STATUS = new Status(Status.ERROR, ComposerPlugin.ID, 
+
+    protected static final IStatus ERROR_STATUS = new Status(Status.ERROR,
+            ComposerPlugin.ID,
             "Error installing composer dependencies, see log for details");
 
     public ComposerJob(String name)
@@ -22,11 +23,23 @@ abstract public class ComposerJob extends Job
         super(name);
     }
 
-    protected void execute(String argument) throws IOException, InterruptedException
+    protected void execute(String argument) throws IOException,
+            InterruptedException
     {
-        DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
-        String[] arg = new String[]{argument};
-        launcher.launch(composer, arg, new ConsoleResponseHandler());
+        doExecute(new String[]{argument});
+    }
 
+    protected void execute(String argument, String[] composerArgs)
+            throws IOException, InterruptedException
+    {
+        String[] args = new String[composerArgs.length + 1];
+        args[0] = argument;
+        System.arraycopy(composerArgs, 0, args, 1, composerArgs.length);
+        doExecute(args);
+    }
+    
+    private void doExecute(String[] arguments) throws IOException, InterruptedException 
+    {
+        new DefaultExecutableLauncher().launch(composer, arguments, new ConsoleResponseHandler());
     }
 }

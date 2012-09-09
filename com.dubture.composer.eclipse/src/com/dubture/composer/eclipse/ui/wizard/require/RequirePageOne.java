@@ -14,7 +14,7 @@ import org.getcomposer.core.packagist.SearchResultDownloader;
 import com.dubture.composer.eclipse.log.Logger;
 import com.dubture.composer.eclipse.model.EclipsePHPPackage;
 import com.dubture.composer.eclipse.model.InstallableItem;
-import com.dubture.composer.eclipse.ui.wizards.iteminstaller.MultiItemInstallerPage;
+import com.dubture.composer.eclipse.ui.wizard.iteminstaller.MultiItemInstallerPage;
 
 public class RequirePageOne extends MultiItemInstallerPage
 {
