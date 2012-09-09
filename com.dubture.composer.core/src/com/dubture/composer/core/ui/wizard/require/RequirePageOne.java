@@ -54,10 +54,8 @@ public class RequirePageOne extends MultiItemInstallerPage
                             }
                         }
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Logger.logException(e);
                     }
-                    
                     
                     if (items == null) {
                         Logger.debug("Error downloading pakages");

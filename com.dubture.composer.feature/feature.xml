@@ -35,6 +35,8 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
       <import plugin="org.eclipse.ui"/>
       <import plugin="com.dubture.indexing.core"/>
       <import plugin="com.dubture.indexing.gson" version="0.0.12" match="greaterOrEqual"/>
+      <import plugin="org.apache.httpcomponents.httpclient"/>
+      <import plugin="org.apache.httpcomponents.httpcore"/>
    </requires>
 
    <plugin
