@@ -36,4 +36,4 @@ your project.
 This plugin is still beta.
 
 
-To see the plugin in action, checkout this [screencast](https://www.youtube.com/watch?v=PFxQ2Yw_fuI&feature=plcp)
+To see the plugin in action, checkout this [screencast](https://vimeo.com/49147387)
