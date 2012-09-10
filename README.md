@@ -25,7 +25,11 @@ Install via updatesite:
 Usage
 =====
 
-To make the dependency graph work, you need to add the Composer nature to your project via `Right-Click on project -> Configure -> Add Composer nature` and rebuild
+
+### Prerequisites
+
+* You need to setup a working PHP executable in the PHP preference page "PHP executables" so `composer.phar` can be executed properly.
+* To make the dependency graph work, you need to add the Composer nature to your project via `Right-Click on project -> Configure -> Add Composer nature` and rebuild
 your project.
 
 
