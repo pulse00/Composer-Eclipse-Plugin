@@ -18,6 +18,7 @@ import com.dubture.composer.core.log.Logger;
 public class DownloadJob extends Job
 {
     private IProject project;
+    private PharDownloader downloader;
 
     public DownloadJob(IProject project, String name)
     {
@@ -32,7 +33,7 @@ public class DownloadJob extends Job
             
             monitor.beginTask("Downloading composer.phar from getcomposer.org", 3);
             
-            PharDownloader downloader = new PharDownloader();
+            downloader = new PharDownloader();
             InputStream resource = downloader.downloadResource();
             
             monitor.worked(1);
@@ -52,5 +53,12 @@ public class DownloadJob extends Job
         }
         
         return Status.OK_STATUS;
+    }
+    
+    @Override
+    protected void canceling()
+    {
+        super.canceling();
+        downloader.abort();
     }
 }

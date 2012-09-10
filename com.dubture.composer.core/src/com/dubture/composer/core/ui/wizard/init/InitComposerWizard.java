@@ -1,7 +1,10 @@
 package com.dubture.composer.core.ui.wizard.init;
 
+import java.io.FileNotFoundException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -12,6 +15,7 @@ import org.getcomposer.core.PHPPackage;
 
 import com.dubture.composer.core.job.DownloadJob;
 import com.dubture.composer.core.job.InitializeJob;
+import com.dubture.composer.core.log.Logger;
 
 public class InitComposerWizard extends Wizard implements INewWizard
 {
@@ -53,7 +57,11 @@ public class InitComposerWizard extends Wizard implements INewWizard
                 @Override
                 public void done(IJobChangeEvent event)
                 {
-                    initJson();
+                    IStatus result = event.getResult();
+                    
+                    if (result != null && result.isOK()) {
+                        initJson();
+                    }
                 }
             });
             
@@ -67,8 +75,10 @@ public class InitComposerWizard extends Wizard implements INewWizard
     
     protected void initJson() {
 
-        new InitializeJob(project, page.getPhpPackage()).schedule();
-        
+        try {
+            new InitializeJob(project, page.getPhpPackage()).schedule();
+        } catch (FileNotFoundException e) {
+            Logger.logException(e);
+        }
     }
-
 }

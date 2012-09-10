@@ -1,5 +1,6 @@
 package com.dubture.composer.core.job;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class InitializeJob extends ComposerJob
     private IProject project;
     private IResource json = null;
     
-    public InitializeJob(IProject project, PHPPackage phpPackage)
+    public InitializeJob(IProject project, PHPPackage phpPackage) throws FileNotFoundException
     {
         super("Installing composer dependencies...");
         
@@ -37,7 +38,14 @@ public class InitializeJob extends ComposerJob
         
         this.phpPackage = phpPackage;
         this.project = project;
-        composer = project.findMember("composer.phar").getLocation().toOSString();
+        
+        IResource phar = project.findMember("composer.phar");
+        
+        if (phar == null) {
+            throw new FileNotFoundException("Cannot initialize a project without composer.phar");
+        }
+        
+        composer = phar.getLocation().toOSString();
     }
 
     @Override

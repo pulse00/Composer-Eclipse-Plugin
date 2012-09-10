@@ -22,22 +22,18 @@ public class InitHandler extends ComposerHandler
                 .getActiveWorkbenchWindow().getShell();
 
         try {
-
             init(event);
-
-            if (json instanceof IResource) {
-                MessageBox dialog = new MessageBox(
-                        HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
-                                | SWT.OK);
-                dialog.setText("Composer already installed");
-                dialog.setMessage("It seems composer is already installed in this project (" + composer.getFullPath().toOSString() + ")");
-                return null;
-            }
-
-        } catch (PharNotFoundException e) {
-            
-        }
+        } catch (PharNotFoundException e) { }
         
+        if (json instanceof IResource) {
+            MessageBox dialog = new MessageBox(
+                    HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
+                            | SWT.OK);
+            dialog.setText("Composer already installed");
+            dialog.setMessage("It seems composer is already installed in this project (" + composer.getFullPath().toOSString() + ")");
+            return null;
+        }
+
         if (project == null) {
             MessageBox dialog = new MessageBox(
                     HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION

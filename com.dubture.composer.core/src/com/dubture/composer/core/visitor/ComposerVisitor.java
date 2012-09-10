@@ -20,7 +20,6 @@ import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * 

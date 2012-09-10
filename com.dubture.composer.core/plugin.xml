@@ -17,9 +17,11 @@
    <extension
          point="com.dubture.indexing.core.buildParticipant">
       <participant
-            file_extensions="xml"
+            file_extensions="json"
             json_visitor="com.dubture.composer.core.visitor.ComposerVisitor"
-            nature_id="com.dubture.composer.core.composerNature">
+            name="ComposerBuildParticipant"
+            nature_id="com.dubture.composer.core.composerNature"
+            visitor="com.dubture.composer.core.visitor.ComposerVisitor">
       </participant>
    </extension>
    <extension

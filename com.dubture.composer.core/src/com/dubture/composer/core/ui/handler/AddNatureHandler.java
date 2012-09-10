@@ -1,5 +1,7 @@
 package com.dubture.composer.core.ui.handler;
 
+import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
@@ -8,6 +10,8 @@ import org.eclipse.core.runtime.CoreException;
 
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.indexing.core.ExtensionManager;
+import com.dubture.indexing.core.build.BuildParticipant;
 
 public class AddNatureHandler extends ComposerHandler implements IHandler
 {
@@ -60,6 +64,18 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
             newNatures[natures.length] = ComposerNature.NATURE_ID;
             description.setNatureIds(newNatures);
             project.setDescription(description, null);
+            
+            // add the lucene builder
+            ExtensionManager manager = ExtensionManager.getInstance();
+            List<BuildParticipant> participants = manager.getBuildParticipants();
+            
+            for (BuildParticipant participant : participants) {
+                
+                if (ComposerNature.NATURE_ID.equals(participant.getNature())) {
+                    participant.addBuilder(project);
+                    break;
+                }
+            }
 
         } catch (CoreException e) {
 
