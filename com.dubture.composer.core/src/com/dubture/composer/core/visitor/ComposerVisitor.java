@@ -78,4 +78,10 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements JsonInde
     {
         return PHPPackage.getBuilder();
     }
+
+    @Override
+    public void resourceDeleted(IFile file)
+    {
+        requestor.deleteReferences(file, REFERENCE_ID);
+    }
 }
