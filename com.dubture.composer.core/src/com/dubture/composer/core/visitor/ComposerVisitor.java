@@ -26,39 +26,39 @@ import com.google.gson.Gson;
  * Lucene indexing visitor for composer.json files.
  * 
  * @author Robert Gruendler <r.gruendler@gmail.com>
- *
+ * 
  */
-public class ComposerVisitor extends AbstractIndexingVisitor implements JsonIndexingVisitor
+public class ComposerVisitor extends AbstractIndexingVisitor implements
+        JsonIndexingVisitor
 {
     public static final String REFERENCE_ID = "com.dubture.composer.lib.package";
-    
+
     protected Gson gson;
-    
+
     public ComposerVisitor()
     {
         gson = new Gson();
     }
-    
+
     @Override
     public void visit(Object object)
     {
         IFile file = (IFile) getResource();
-        
-        if (file == null || "composer.json".equals(file.getName()) == false) {
+
+        if (file == null || "composer.json".equals(file.getName()) == false
+                || !(object instanceof PackageInterface)) {
             return;
         }
-        
+
         PackageInterface pHPPackage = (PackageInterface) object;
-        
-        if (pHPPackage != null) {
-            
-            EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(pHPPackage);
-            eclipsePackage.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());
-            String data = gson.toJson(pHPPackage);
-            ReferenceInfo info = new ReferenceInfo(REFERENCE_ID, pHPPackage.getName(), data);
-            Logger.debug("Adding composer reference " + pHPPackage.getName());
-            requestor.addReference(info);
-        }        
+        EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(pHPPackage);
+        eclipsePackage.setFullPath(getResource().getFullPath()
+                .removeLastSegments(1).toString());
+        String data = gson.toJson(pHPPackage);
+        ReferenceInfo info = new ReferenceInfo(REFERENCE_ID,
+                pHPPackage.getName(), data);
+        Logger.debug("Adding composer reference " + pHPPackage.getName());
+        requestor.addReference(info);
     }
 
     @Override

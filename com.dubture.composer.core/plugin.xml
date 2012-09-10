@@ -14,11 +14,9 @@
       </runtime>
    </extension>
 
-   <extension
-         point="com.dubture.indexing.core.buildParticipant">
+   <extension point="com.dubture.indexing.core.buildParticipant">
       <participant
             file_extensions="json"
-            json_visitor="com.dubture.composer.core.visitor.ComposerVisitor"
             name="ComposerBuildParticipant"
             nature_id="com.dubture.composer.core.composerNature"
             visitor="com.dubture.composer.core.visitor.ComposerVisitor">
