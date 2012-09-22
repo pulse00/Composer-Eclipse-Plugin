@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Composer Eclipse Plugin
 Bundle-SymbolicName: com.dubture.composer.core;singleton:=true
-Bundle-Version: 0.0.4
+Bundle-Version: 0.0.5
 Bundle-Activator: com.dubture.composer.core.ComposerPlugin
 Bundle-Vendor: https://github.com/pulse00
 Require-Bundle: org.eclipse.core.runtime,

@@ -1,3 +1,7 @@
+0.0.5
+
+* fixed namespace resolver
+
 0.0.2
 
 * Refactored indexing to use com.dubture.indexing framework

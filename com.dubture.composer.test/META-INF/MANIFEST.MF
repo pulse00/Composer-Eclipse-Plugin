@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Composer Test plugin
 Bundle-SymbolicName: com.dubture.composer.test
-Bundle-Version: 0.0.4
+Bundle-Version: 0.0.5
 Bundle-Vendor: https://github.com/pulse00
 Fragment-Host: com.dubture.composer.core;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
