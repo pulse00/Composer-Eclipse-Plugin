@@ -51,14 +51,15 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
         }
 
         PackageInterface pHPPackage = (PackageInterface) object;
-        EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(pHPPackage);
-        eclipsePackage.setFullPath(getResource().getFullPath()
-                .removeLastSegments(1).toString());
-        String data = gson.toJson(pHPPackage);
-        ReferenceInfo info = new ReferenceInfo(REFERENCE_ID,
-                pHPPackage.getName(), data);
-        Logger.debug("Adding composer reference " + pHPPackage.getName());
-        requestor.addReference(info);
+        
+        if (pHPPackage != null) {
+            
+            EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(pHPPackage);
+            eclipsePackage.setFullPath(getResource().getFullPath().removeLastSegments(1).toString());
+            ReferenceInfo info = new ReferenceInfo(REFERENCE_ID, pHPPackage.getName(), gson.toJson(eclipsePackage));
+            Logger.debug("Adding composer reference " + pHPPackage.getName());
+            requestor.addReference(info);
+        }        
     }
 
     @Override

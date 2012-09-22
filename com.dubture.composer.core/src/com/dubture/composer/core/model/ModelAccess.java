@@ -13,13 +13,15 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
-import org.getcomposer.core.PHPPackage;
+import org.getcomposer.core.PackageInterface;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.visitor.ComposerVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
 import com.dubture.indexing.core.search.SearchEngine;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 
@@ -39,8 +41,13 @@ public class ModelAccess implements NamespaceResolverInterface
     private ModelAccess()
     {
         try {
+            
             search = SearchEngine.getInstance();
-            gson = new Gson();
+            gson = new GsonBuilder()
+                .registerTypeAdapter(PackageInterface.class, new PackageDeserializer())
+                .registerTypeAdapter(IPath.class, new PathDeserializer())
+                .create();
+            
         } catch (Exception e) {
             ComposerPlugin.logException(e);
         }
@@ -62,8 +69,10 @@ public class ModelAccess implements NamespaceResolverInterface
             return null;
         }
         
+        Logger.debug("Resolving namespace of resource " + resource.getFullPath());
         for (EclipsePHPPackage pHPPackage : getPackages(resource.getProject().getFullPath())) {
             
+            Logger.debug("Trying to resolve using " + pHPPackage.getName());
             IPath ns = pHPPackage.resolve(resource);
             if (ns != null) {
                 return ns;
@@ -87,8 +96,8 @@ public class ModelAccess implements NamespaceResolverInterface
         
         for (ReferenceInfo info : references) {
             String meta = info.getMetadata();
-            PHPPackage json = gson.fromJson(meta, PHPPackage.class);
-            EclipsePHPPackage pHPPackage = new EclipsePHPPackage(json);
+            
+            EclipsePHPPackage pHPPackage = gson.fromJson(meta, EclipsePHPPackage.class);
             packages.add(pHPPackage);
         }
         
