@@ -20,7 +20,7 @@ public class InstallJob extends ComposerJob
         try {
             monitor.beginTask("Running composer.phar install", 2);
             monitor.worked(1);
-            execute("install");
+            execute("install", monitor);
             monitor.worked(2);
         } catch (Exception e) {
             Logger.logException(e);
