@@ -71,7 +71,7 @@ public class InitializeJob extends ComposerJob
             args.add("--no-interaction");
             
             
-            execute("init", args.toArray(new String[args.size()]));
+            execute("init", args.toArray(new String[args.size()]), monitor);
             monitor.worked(2);
             
             project.refreshLocal(IResource.DEPTH_ONE, monitor);

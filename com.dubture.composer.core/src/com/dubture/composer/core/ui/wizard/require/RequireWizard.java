@@ -79,7 +79,7 @@ public class RequireWizard extends Wizard
                         DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                         String[] arg = new String[]{"require", dependency};
                         launcher.launch(composer.getLocation().toOSString(),
-                                arg, new ConsoleResponseHandler());
+                                arg, new ConsoleResponseHandler(monitor));
 
                         monitor.worked(1);
                         
