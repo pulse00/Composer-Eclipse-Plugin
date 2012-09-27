@@ -23,7 +23,9 @@ public class UpdateHandler extends ComposerHandler
         if (json == null && ask(event, "No composer.json found", "Would you like to create one?") == SWT.OK) {
             //TODO: create dialog and initialize composer.json
         } else {
-            new UpdateJob(composer.getLocation().toOSString()).schedule();
+            UpdateJob job = new UpdateJob(composer.getLocation().toOSString());
+            job.setUser(true);
+            job.schedule();
         }
             
         

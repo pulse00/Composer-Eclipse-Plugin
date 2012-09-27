@@ -2,6 +2,7 @@ package com.dubture.composer.core.job;
 
 import java.io.IOException;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
@@ -23,23 +24,23 @@ abstract public class ComposerJob extends Job
         super(name);
     }
 
-    protected void execute(String argument) throws IOException,
+    protected void execute(String argument, IProgressMonitor monitor) throws IOException,
             InterruptedException
     {
-        doExecute(new String[]{argument});
+        doExecute(new String[]{argument}, monitor);
     }
 
-    protected void execute(String argument, String[] composerArgs)
+    protected void execute(String argument, String[] composerArgs, IProgressMonitor monitor)
             throws IOException, InterruptedException
     {
         String[] args = new String[composerArgs.length + 1];
         args[0] = argument;
         System.arraycopy(composerArgs, 0, args, 1, composerArgs.length);
-        doExecute(args);
+        doExecute(args, monitor);
     }
     
-    private void doExecute(String[] arguments) throws IOException, InterruptedException 
+    private void doExecute(String[] arguments, IProgressMonitor monitor) throws IOException, InterruptedException 
     {
-        new DefaultExecutableLauncher().launch(composer, arguments, new ConsoleResponseHandler());
+        new DefaultExecutableLauncher().launch(composer, arguments, new ConsoleResponseHandler(monitor));
     }
 }

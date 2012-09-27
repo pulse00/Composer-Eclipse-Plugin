@@ -21,7 +21,7 @@ public class UpdateJob extends ComposerJob
         try {
             monitor.beginTask("Running composer.phar update", 2);
             monitor.worked(1);
-            execute("update");
+            execute("update", monitor);
             monitor.worked(1);
         } catch (Exception e) {
             Logger.logException(e);

@@ -162,7 +162,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                             
                             DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                             String[] arg = new String[]{"require", dependency};
-                            launcher.launch(composer.getLocation().toOSString(), arg, new ConsoleResponseHandler());
+                            launcher.launch(composer.getLocation().toOSString(), arg, new ConsoleResponseHandler(monitor));
 
                             monitor.worked(++current);
                         } catch (Exception e) {
