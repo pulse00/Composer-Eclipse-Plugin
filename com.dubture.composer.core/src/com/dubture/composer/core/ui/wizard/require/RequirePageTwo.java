@@ -45,6 +45,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
         setDescription("Choose the versions to install for the selected packages");
         this.firstPage = pageOne;
         setPackages(new HashMap<EclipsePHPPackage, String>());
+        setPageComplete(false);
     }
 
     @Override
@@ -121,6 +122,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     {
         if (event.getSelectedPage() == this) {
             loadPackages();
+            setPageComplete(items.size() > 0);
         }
     }
 

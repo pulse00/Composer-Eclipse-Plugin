@@ -11,14 +11,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.ui.ExecutableNotFoundException;
 import com.dubture.composer.core.ui.LaunchUtil;
@@ -27,7 +32,7 @@ import com.dubture.composer.core.ui.LaunchUtil;
 public class DefaultExecutableLauncher implements IPHPLauncher {
 
 	@Override
-	public void launch(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException {
+	public void launch(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException, CoreException {
 
 		doLaunch(scriptPath, arguments, handler, false);
 		
@@ -35,13 +40,13 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 
 	@Override
 	public void launchAsync(String scriptPath, String[] arguments, ILaunchResponseHandler handler)
-			throws IOException, InterruptedException {
+			throws IOException, InterruptedException, CoreException {
 
 		doLaunch(scriptPath, arguments, handler, true);
 		
 	}
 	
-	protected void doLaunch(String scriptPath, String[] arguments, ILaunchResponseHandler handler, boolean async) throws IOException, InterruptedException {
+	protected void doLaunch(String scriptPath, String[] arguments, ILaunchResponseHandler handler, boolean async) throws IOException, InterruptedException, CoreException {
 		
 		String phpExe = null;
 		
@@ -108,7 +113,7 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
         BufferedReader errOutput=new BufferedReader(new InputStreamReader(p
                 .getErrorStream()));
         String errResult="";
-        String errTemp=output.readLine();
+        String errTemp=errOutput.readLine();
         while (errTemp != null) {
             if (errTemp.trim().length() > 0) {
                 errResult=errResult + "\n" + errTemp;
@@ -116,8 +121,12 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
             errTemp=errOutput.readLine();
         }
         
-		if (handler != null) {
+        if (handler != null) {
 			handler.handle(result.trim());
+		}
+		
+		if (p.exitValue() != 0) {
+		    throw new CoreException(new Status(IStatus.ERROR, ComposerPlugin.ID, result+errResult));
 		}
 	}
 }
