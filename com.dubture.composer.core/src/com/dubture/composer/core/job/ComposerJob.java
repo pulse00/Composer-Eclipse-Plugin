@@ -2,6 +2,7 @@ package com.dubture.composer.core.job;
 
 import java.io.IOException;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,13 +26,13 @@ abstract public class ComposerJob extends Job
     }
 
     protected void execute(String argument, IProgressMonitor monitor) throws IOException,
-            InterruptedException
+            InterruptedException, CoreException
     {
         doExecute(new String[]{argument}, monitor);
     }
 
     protected void execute(String argument, String[] composerArgs, IProgressMonitor monitor)
-            throws IOException, InterruptedException
+            throws IOException, InterruptedException, CoreException
     {
         String[] args = new String[composerArgs.length + 1];
         args[0] = argument;
@@ -39,7 +40,7 @@ abstract public class ComposerJob extends Job
         doExecute(args, monitor);
     }
     
-    private void doExecute(String[] arguments, IProgressMonitor monitor) throws IOException, InterruptedException 
+    private void doExecute(String[] arguments, IProgressMonitor monitor) throws IOException, InterruptedException, CoreException 
     {
         new DefaultExecutableLauncher().launch(composer, arguments, new ConsoleResponseHandler(monitor));
     }

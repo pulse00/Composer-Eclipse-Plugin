@@ -1,5 +1,6 @@
 package com.dubture.composer.core.ui.wizard.require;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
@@ -11,6 +12,7 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.statushandlers.StatusManager;
 
 import com.dubture.composer.core.ComposerPluginImages;
 import com.dubture.composer.core.launch.ConsoleResponseHandler;
@@ -74,7 +76,13 @@ public class RequireWizard extends Wizard
 
                     try {
                         
-                        String dependency = composerPackage.getPhpPackage().getPackageName(version);
+                        String dependency;
+                        try {
+                            dependency = composerPackage.getPhpPackage().getPackageName(version);
+                        } catch (Exception e) { // TODO getPackageName could throw IllegalArgumentException ?
+                            Logger.logException(e);
+                            return;
+                        }
                         monitor.subTask("(require " + dependency + ")");
                         DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                         String[] arg = new String[]{"require", dependency};
@@ -83,8 +91,12 @@ public class RequireWizard extends Wizard
 
                         monitor.worked(1);
                         
-                    } catch (Exception e) {
+                    } catch (IOException e) {
                         Logger.logException(e);
+                    } catch (InterruptedException e) {
+                        Logger.logException(e);
+                    } catch (CoreException e) {
+                        StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
                     }
                 }
                 
@@ -94,9 +106,9 @@ public class RequireWizard extends Wizard
                 try {
                     if (vendor != null) {
                         vendor.refreshLocal(IResource.DEPTH_ONE, monitor);
-                    } else {
-                        project.refreshLocal(IResource.DEPTH_ONE, monitor);
                     }
+                    // make sure that composer.json gets a refresh as well
+                    project.refreshLocal(IResource.DEPTH_ONE, monitor);
                 } catch (CoreException e) {
                     Logger.logException(e);
                 } finally {
