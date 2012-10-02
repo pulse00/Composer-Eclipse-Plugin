@@ -1,17 +1,28 @@
 package com.dubture.composer.core.ui.wizard.require;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.dltk.core.BuildpathContainerInitializer;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IBuildpathContainer;
+import org.eclipse.dltk.core.IBuildpathEntry;
+import org.eclipse.dltk.core.IDLTKLanguageToolkit;
+import org.eclipse.dltk.core.environment.EnvironmentManager;
+import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
+import org.eclipse.dltk.internal.core.ModelManager;
+import org.eclipse.dltk.internal.core.UserLibraryBuildpathContainerInitializer;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.php.internal.core.PHPLanguageToolkit;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import com.dubture.composer.core.ComposerPluginImages;
@@ -20,6 +31,7 @@ import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
 
+@SuppressWarnings("restriction")
 public class RequireWizard extends Wizard
 {
     private RequirePageOne firstPage;
@@ -75,28 +87,20 @@ public class RequireWizard extends Wizard
                     String version = secondPage.getPackages().get(composerPackage);
 
                     try {
-                        
-                        String dependency;
-                        try {
-                            dependency = composerPackage.getPhpPackage().getPackageName(version);
-                        } catch (Exception e) { // TODO getPackageName could throw IllegalArgumentException ?
-                            Logger.logException(e);
-                            return;
-                        }
+                        String dependency = composerPackage.getPhpPackage().getPackageName(version);
                         monitor.subTask("(require " + dependency + ")");
                         DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                         String[] arg = new String[]{"require", dependency};
                         launcher.launch(composer.getLocation().toOSString(),
                                 arg, new ConsoleResponseHandler(monitor));
 
+                        composerPackage.createUserLibraryFromPackage(composer, monitor);
                         monitor.worked(1);
                         
-                    } catch (IOException e) {
-                        Logger.logException(e);
-                    } catch (InterruptedException e) {
-                        Logger.logException(e);
                     } catch (CoreException e) {
                         StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
+                    } catch (Exception e) {
+                        Logger.logException(e);
                     }
                 }
                 
@@ -146,4 +150,6 @@ public class RequireWizard extends Wizard
     {
         this.composer = composer;
     }
+    
+    
 }

@@ -17,6 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.dltk.ui,
  org.getcomposer.core,
  org.eclipse.php.debug.core,
+ org.eclipse.php.core,
  com.google.gson
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
