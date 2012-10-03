@@ -6,6 +6,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.ui.PharNotFoundException;
 import com.dubture.composer.core.ui.wizard.require.RequireWizard;
 
@@ -20,6 +21,11 @@ public class RequireHandler extends ComposerHandler
             init(event);
         } catch (PharNotFoundException e) {
             installPharDialog(event);
+            return null;
+        }
+        
+        if (composer == null) {
+            Logger.log(Logger.ERROR, "Error finding composer.json");
             return null;
         }
         

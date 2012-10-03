@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -31,7 +30,9 @@ import com.dubture.composer.core.ui.LaunchUtil;
 
 public class DefaultExecutableLauncher implements IPHPLauncher {
 
-	@Override
+	private Process process;
+
+    @Override
 	public void launch(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException, CoreException {
 
 		doLaunch(scriptPath, arguments, handler, false);
@@ -93,13 +94,13 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 		//TODO: validate script exists
 		Path path = new Path(scriptPath);
 		
-		Process p = runtime.exec(args, new String[]{}, new File(path.removeLastSegments(1).toOSString()));
+		process = runtime.exec(args, new String[]{}, new File(path.removeLastSegments(1).toOSString()));
 		
 		if (async == false) {
-			p.waitFor();
+			process.waitFor();
 		}
 
-		BufferedReader output=new BufferedReader(new InputStreamReader(p
+		BufferedReader output=new BufferedReader(new InputStreamReader(process
 				.getInputStream()));
 		String result="";
 		String temp=output.readLine();
@@ -110,7 +111,7 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			temp=output.readLine();
 		}
 
-        BufferedReader errOutput=new BufferedReader(new InputStreamReader(p
+        BufferedReader errOutput=new BufferedReader(new InputStreamReader(process
                 .getErrorStream()));
         String errResult="";
         String errTemp=errOutput.readLine();
@@ -125,8 +126,15 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			handler.handle(result.trim());
 		}
 		
-		if (p.exitValue() != 0) {
+		if (process.exitValue() != 0) {
 		    throw new CoreException(new Status(IStatus.ERROR, ComposerPlugin.ID, result+errResult));
 		}
 	}
+
+    public void abort()
+    {
+        if (process != null) {
+            process.destroy();
+        }
+    }
 }

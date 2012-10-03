@@ -1,28 +1,16 @@
 package com.dubture.composer.core.ui.wizard.require;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.BuildpathContainerInitializer;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathContainer;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
-import org.eclipse.dltk.core.environment.EnvironmentManager;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.eclipse.dltk.internal.core.ModelManager;
-import org.eclipse.dltk.internal.core.UserLibraryBuildpathContainerInitializer;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.php.internal.core.PHPLanguageToolkit;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import com.dubture.composer.core.ComposerPluginImages;
@@ -31,7 +19,6 @@ import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
 
-@SuppressWarnings("restriction")
 public class RequireWizard extends Wizard
 {
     private RequirePageOne firstPage;
@@ -68,69 +55,9 @@ public class RequireWizard extends Wizard
     {
         final IResource composer = getComposer();
 
-        IRunnableWithProgress op = new IRunnableWithProgress()
-        {
-            @SuppressWarnings("rawtypes")
-            @Override
-            public void run(IProgressMonitor monitor)
-                    throws InvocationTargetException, InterruptedException
-            {
-                int count = secondPage.getPackages().size();
-
-                Iterator it = secondPage.getPackages().keySet().iterator();
-                monitor.beginTask("Installing composer packages - ", count + 2 );
-
-                monitor.worked(1);
-                while (it.hasNext()) {
-                    
-                    EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
-                    String version = secondPage.getPackages().get(composerPackage);
-
-                    try {
-                        String dependency = composerPackage.getPhpPackage().getPackageName(version);
-                        monitor.subTask("(require " + dependency + ")");
-                        DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
-                        String[] arg = new String[]{"require", dependency};
-                        launcher.launch(composer.getLocation().toOSString(),
-                                arg, new ConsoleResponseHandler(monitor));
-
-                        composerPackage.createUserLibraryFromPackage(composer, monitor);
-                        monitor.worked(1);
-                        
-                    } catch (CoreException e) {
-                        StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
-                    } catch (Exception e) {
-                        Logger.logException(e);
-                    }
-                }
-                
-                IProject project = composer.getProject();
-                IResource vendor = project.findMember("vendor");
-
-                try {
-                    if (vendor != null) {
-                        vendor.refreshLocal(IResource.DEPTH_ONE, monitor);
-                    }
-                    // make sure that composer.json gets a refresh as well
-                    project.refreshLocal(IResource.DEPTH_ONE, monitor);
-                } catch (CoreException e) {
-                    Logger.logException(e);
-                } finally {
-                    monitor.worked(1);
-                    monitor.done();
-                }
-            }
-        };
-
-        try {
-            getContainer().run(true, false, op);
-        } catch (InvocationTargetException e) {
-            Throwable realException = e.getTargetException();
-            MessageDialog.openError(getShell(), "Error", realException.getMessage());            
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        }
+        FinishJob job = new FinishJob("Adding composer dependencies...", composer);
+        job.setUser(true);
+        job.schedule();
 
         return true;
     }
@@ -151,5 +78,81 @@ public class RequireWizard extends Wizard
         this.composer = composer;
     }
     
-    
+    private class FinishJob extends Job {
+        
+        private IResource composer;
+        private DefaultExecutableLauncher launcher;
+
+        public FinishJob(String name, IResource composer)
+        {
+            super(name);
+            this.composer = composer;
+        }
+        
+        @Override
+        protected void canceling()
+        {
+            super.canceling();
+            
+            if (launcher != null) {
+                launcher.abort();
+            }
+        }
+
+        @Override
+        @SuppressWarnings("rawtypes")
+        protected IStatus run(IProgressMonitor monitor)
+        {
+            if (composer == null) {
+                return Status.CANCEL_STATUS;
+            }
+            
+            int count = secondPage.getPackages().size();
+
+            Iterator it = secondPage.getPackages().keySet().iterator();
+            monitor.beginTask("Installing composer packages - ", count + 2 );
+
+            monitor.worked(1);
+            while (it.hasNext()) {
+                
+                EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
+                String version = secondPage.getPackages().get(composerPackage);
+
+                try {
+                    String dependency = composerPackage.getPhpPackage().getPackageName(version);
+                    monitor.subTask("(require " + dependency + ")");
+                    launcher = new DefaultExecutableLauncher();
+                    String[] arg = new String[]{"require", dependency};
+                    launcher.launch(composer.getLocation().toOSString(),
+                            arg, new ConsoleResponseHandler(monitor));
+
+                    composerPackage.createUserLibraryFromPackage(composer, monitor);
+                    monitor.worked(1);
+                    
+                } catch (CoreException e) {
+                    StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
+                } catch (Exception e) {
+                    Logger.logException(e);
+                }
+            }
+            
+            IProject project = composer.getProject();
+            IResource vendor = project.findMember("vendor");
+
+            try {
+                if (vendor != null) {
+                    vendor.refreshLocal(IResource.DEPTH_ONE, monitor);
+                }
+                // make sure that composer.json gets a refresh as well
+                project.refreshLocal(IResource.DEPTH_ONE, monitor);
+            } catch (CoreException e) {
+                Logger.logException(e);
+            } finally {
+                monitor.worked(1);
+                monitor.done();
+            }
+            
+            return Status.OK_STATUS;
+        }        
+    }
 }

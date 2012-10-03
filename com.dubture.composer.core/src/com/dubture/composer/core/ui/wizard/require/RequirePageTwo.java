@@ -144,15 +144,14 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
             
             getContainer().run(true, true, new IRunnableWithProgress()
             {
+                @SuppressWarnings("rawtypes")
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException,
                         InterruptedException
                 {
                     int count = getPackages().size();
                     int current = 0;
-                    
                     Iterator it = getPackages().keySet().iterator();
-                    
                     monitor.beginTask("Installing composer dependencies...", count);
                     
                     while(it.hasNext()) {
@@ -161,17 +160,14 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                         
                         try {
                             String dependency = composerPackage.getPackageName(version);
-                            
                             DefaultExecutableLauncher launcher = new DefaultExecutableLauncher();
                             String[] arg = new String[]{"require", dependency};
                             launcher.launch(composer.getLocation().toOSString(), arg, new ConsoleResponseHandler(monitor));
-
                             monitor.worked(++current);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    
                     monitor.done();
                 }
             });

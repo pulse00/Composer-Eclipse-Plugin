@@ -17,4 +17,6 @@ public interface IPHPLauncher {
 	void launch(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException, CoreException;
 	
 	void launchAsync(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException, CoreException;
+	
+	void abort();
 }
