@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.dltk.internal.core.UserLibraryManager;
 import org.getcomposer.core.PackageInterface;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -32,6 +33,8 @@ import com.google.gson.GsonBuilder;
  */
 public class ModelAccess implements NamespaceResolverInterface
 {
+    private PackageManager packageManager = null;
+
     private static ModelAccess instance = null;
     
     private SearchEngine search;
@@ -102,5 +105,23 @@ public class ModelAccess implements NamespaceResolverInterface
         }
         
         return packages;
+    }
+
+    public PackageManager getPackageManager()
+    {
+        if (getInstance().packageManager == null) {
+            PackageManager manager = new PackageManager();
+            synchronized (instance) {
+                if (instance.packageManager == null) { // ensure another
+                    // package manager
+                    // was not set while
+                    // creating the
+                    // instance above
+                    instance.packageManager = manager;
+                }
+            }
+        }
+
+        return instance.packageManager;
     }
 }

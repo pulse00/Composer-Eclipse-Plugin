@@ -136,5 +136,29 @@
             restorable="true">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.dltk.core.buildpathContainerInitializer">
+      <buildpathContainerInitializer
+            class="com.dubture.composer.core.ComposerBuildpathContainerInitializer"
+            id="com.dubture.composer.core.PACKAGE_PATH">
+      </buildpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.eclipse.php.ui.preferences.PHPBasePreferencePage"
+            class="com.dubture.composer.core.ui.preferences.ComposerPackagesPreferencePage"
+            id="com.dubture.composer.core.preferences.Packages"
+            name="Composer Packages">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.php.ui.phpTreeContentProviders">
+      <provider
+            class="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider">
+      </provider>
+   </extension>
+   
+   
 
 </plugin>

@@ -19,6 +19,7 @@ import com.dubture.composer.core.launch.ConsoleResponseHandler;
 import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
+import com.dubture.composer.core.model.ModelAccess;
 
 public class RequireWizard extends Wizard
 {
@@ -124,7 +125,8 @@ public class RequireWizard extends Wizard
                     launcher.launch(composer.getLocation().toOSString(),
                             arg, new ConsoleResponseHandler(monitor));
 
-                    composerPackage.createUserLibraryFromPackage(project, composer, monitor);
+                    ModelAccess.getInstance().getPackageManager().createBuildpathEntry(project, composer, composerPackage, monitor);
+//                    composerPackage.createUserLibraryFromPackage(project, composer, monitor);
                     monitor.worked(1);
                     
                 } catch (CoreException e) {
