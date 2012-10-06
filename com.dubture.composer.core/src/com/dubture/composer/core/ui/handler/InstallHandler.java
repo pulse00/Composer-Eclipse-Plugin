@@ -31,7 +31,7 @@ public class InstallHandler extends ComposerHandler
         }
             
         if (ask(event, "No composer.phar found", "Do you want to install composer into this project?") == SWT.OK) {
-            Job job = new DownloadJob(project, "Downloading composer.phar...");
+            Job job = new DownloadJob(scriptProject.getProject(), "Downloading composer.phar...");
             job.setUser(true);
             job.schedule();
         }

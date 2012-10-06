@@ -29,7 +29,7 @@ public class RequireHandler extends ComposerHandler
             return null;
         }
         
-        new WizardDialog(shell, new RequireWizard(composer)).open();
+        new WizardDialog(shell, new RequireWizard(composer, scriptProject)).open();
         return null;
     }
 }

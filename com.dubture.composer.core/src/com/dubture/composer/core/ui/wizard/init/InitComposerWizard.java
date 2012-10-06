@@ -2,11 +2,11 @@ package com.dubture.composer.core.ui.wizard.init;
 
 import java.io.FileNotFoundException;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -20,11 +20,11 @@ import com.dubture.composer.core.log.Logger;
 public class InitComposerWizard extends Wizard implements INewWizard
 {
     private InitComposerPage page;
-    private final IProject project;
+    private final IScriptProject scriptProject;
 
-    public InitComposerWizard(IProject project)
+    public InitComposerWizard(IScriptProject project2)
     {
-        this.project = project;
+        this.scriptProject = project2;
     }
 
     @Override
@@ -43,7 +43,7 @@ public class InitComposerWizard extends Wizard implements INewWizard
     @Override
     public boolean performFinish()
     {
-        IResource phar = project.findMember("composer.phar");
+        IResource phar = scriptProject.getProject().findMember("composer.phar");
         
         if (page == null || !(page.getPhpPackage() instanceof PHPPackage)) {
             return false;
@@ -51,7 +51,7 @@ public class InitComposerWizard extends Wizard implements INewWizard
         
         if (phar == null) {
             
-            DownloadJob downloadJob = new DownloadJob(project, "Downloading composer.phar");
+            DownloadJob downloadJob = new DownloadJob(scriptProject.getProject(), "Downloading composer.phar");
             downloadJob.addJobChangeListener(new JobChangeAdapter() {
                
                 @Override
@@ -76,7 +76,7 @@ public class InitComposerWizard extends Wizard implements INewWizard
     protected void initJson() {
 
         try {
-            new InitializeJob(project, page.getPhpPackage()).schedule();
+            new InitializeJob(scriptProject.getProject(), page.getPhpPackage()).schedule();
         } catch (FileNotFoundException e) {
             Logger.logException(e);
         }

@@ -7,6 +7,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.dltk.core.IModelElement;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -21,7 +22,7 @@ abstract public class ComposerHandler extends AbstractHandler
 {
     protected IResource composer;
     protected IResource json;
-    protected IProject project;
+    protected IScriptProject scriptProject;
     
     protected int ask(ExecutionEvent event, String message, String question)
     {
@@ -48,15 +49,15 @@ abstract public class ComposerHandler extends AbstractHandler
                 
                 if (element instanceof IModelElement) {
                     IModelElement model = (IModelElement) element;
-                    project = model.getScriptProject().getProject();
-                    composer = project.findMember("composer.phar");
+                    scriptProject = model.getScriptProject();
+                    composer = scriptProject.getProject().findMember("composer.phar");
                     
                     if (composer == null) {
-                        Logger.log(Logger.WARNING_DEBUG, "Phar not found in project " + project.getName());
+                        Logger.log(Logger.WARNING_DEBUG, "Phar not found in project " + scriptProject.getProject().getName());
                         throw new PharNotFoundException();
                     }
                     
-                    json = project.findMember("composer.json");
+                    json = scriptProject.getProject().findMember("composer.json");
                     return;
                 }
             }
@@ -66,7 +67,7 @@ abstract public class ComposerHandler extends AbstractHandler
     protected void installPharDialog(ExecutionEvent event) {
         
         if (ask(event, "No composer.phar found", "Do you want to install composer into this project?") == SWT.OK) {
-            new DownloadJob(project, "Downloading composer.phar...").schedule();
+            new DownloadJob(scriptProject.getProject(), "Downloading composer.phar...").schedule();
         }
     }
 }

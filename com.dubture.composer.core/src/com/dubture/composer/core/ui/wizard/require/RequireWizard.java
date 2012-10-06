@@ -9,6 +9,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.statushandlers.StatusManager;
@@ -23,15 +24,17 @@ public class RequireWizard extends Wizard
 {
     private RequirePageOne firstPage;
     private RequirePageTwo secondPage;
-    private IResource composer;
+    private final IResource composer;
+    private final IScriptProject project;
 
-    public RequireWizard(IResource composer)
+    public RequireWizard(IResource composer, IScriptProject project)
     {
         setDefaultPageImageDescriptor(ComposerPluginImages.DESC_WIZBAN_ADD_DEPENDENCY);
         setDialogSettings(DLTKUIPlugin.getDefault().getDialogSettings());
         setWindowTitle("Search packagist.org");
 
-        this.setComposer(composer);
+        this.project = project;
+        this.composer = composer;
     }
 
     @Override
@@ -73,11 +76,6 @@ public class RequireWizard extends Wizard
         return composer;
     }
 
-    public void setComposer(IResource composer)
-    {
-        this.composer = composer;
-    }
-    
     private class FinishJob extends Job {
         
         private IResource composer;
@@ -126,7 +124,7 @@ public class RequireWizard extends Wizard
                     launcher.launch(composer.getLocation().toOSString(),
                             arg, new ConsoleResponseHandler(monitor));
 
-                    composerPackage.createUserLibraryFromPackage(composer, monitor);
+                    composerPackage.createUserLibraryFromPackage(project, composer, monitor);
                     monitor.worked(1);
                     
                 } catch (CoreException e) {

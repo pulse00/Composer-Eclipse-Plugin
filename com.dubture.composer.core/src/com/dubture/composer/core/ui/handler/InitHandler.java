@@ -34,7 +34,7 @@ public class InitHandler extends ComposerHandler
             return null;
         }
 
-        if (project == null) {
+        if (scriptProject == null) {
             MessageBox dialog = new MessageBox(
                     HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
                             | SWT.OK);
@@ -43,7 +43,7 @@ public class InitHandler extends ComposerHandler
             return null;
         }
 
-        new WizardDialog(shell, new InitComposerWizard(project)).open();
+        new WizardDialog(shell, new InitComposerWizard(scriptProject)).open();
         return null;
     }
 

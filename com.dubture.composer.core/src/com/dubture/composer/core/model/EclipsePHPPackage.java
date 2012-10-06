@@ -1,5 +1,9 @@
 package com.dubture.composer.core.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -19,6 +23,8 @@ import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.eclipse.dltk.internal.core.UserLibraryBuildpathContainerInitializer;
 import org.eclipse.php.internal.core.PHPLanguageToolkit;
+import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
+import org.eclipse.php.internal.core.includepath.IncludePathManager;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.getcomposer.core.Autoload;
 import org.getcomposer.core.PackageInterface;
@@ -104,7 +110,7 @@ public class EclipsePHPPackage implements
         return phpPackage;
     }
     
-    public void createUserLibraryFromPackage(IResource composer, IProgressMonitor monitor) {
+    public void createUserLibraryFromPackage(IScriptProject project, IResource composer, IProgressMonitor monitor) {
         
         IDLTKLanguageToolkit toolkit = PHPLanguageToolkit.getDefault();
         
@@ -124,9 +130,18 @@ public class EclipsePHPPackage implements
         IBuildpathContainer suggestedContainer = new ComposerBuildpathContainer(fullPath);
         
         try {
-            initializer.requestBuildpathContainerUpdate(suggestedContainer.getPath(), createPlaceholderProject(), suggestedContainer);
-        } catch (CoreException e) {
-            StatusManager.getManager().handle(e.getStatus());
+            
+            List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>(Arrays.asList(suggestedContainer.getBuildpathEntries()));
+            
+            for (IBuildpathEntry entry : entries) {
+                System.err.println(entry);
+            }
+            BuildPathUtils.addEntriesToBuildPath(project, entries);
+            IncludePathManager.getInstance().addEntriesToIncludePath(project.getProject(),entries);
+            System.err.println("done");
+//            initializer.requestBuildpathContainerUpdate(suggestedContainer.getPath(), createPlaceholderProject(), suggestedContainer);
+        } catch (Exception e) {
+//            StatusManager.getManager().handle(e.getStatus());
         }
     }
     
@@ -148,7 +163,7 @@ public class EclipsePHPPackage implements
         @Override
         public int getKind()
         {
-            return IBuildpathContainer.K_SYSTEM;
+            return IBuildpathContainer.K_APPLICATION;
         }
         
         @Override
@@ -160,7 +175,8 @@ public class EclipsePHPPackage implements
         @Override
         public IBuildpathEntry[] getBuildpathEntries()
         {
-            return new IBuildpathEntry[]{DLTKCore.newLibraryEntry(fullPath, false)};
+            IPath path = new Path(DLTKCore.USER_LIBRARY_CONTAINER_ID).append(EclipsePHPPackage.this.getName().replace("/", "_"));
+            return new IBuildpathEntry[]{DLTKCore.newContainerEntry(path,false)};
         }
     }
     

@@ -25,7 +25,7 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
             Logger.logException(e);
         } finally {
             try {
-                if (project != null && ! project.hasNature(ComposerNature.NATURE_ID)) {
+                if (scriptProject.getProject() != null && ! scriptProject.getProject().hasNature(ComposerNature.NATURE_ID)) {
                     toggleNature();
                 } else {
                     Logger.debug("No composer nature set");
@@ -42,7 +42,7 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
     {
         try {
 
-            IProjectDescription description = project.getDescription();
+            IProjectDescription description = scriptProject.getProject().getDescription();
             String[] natures = description.getNatureIds();
 
             for (int i = 0; i < natures.length; ++i) {
@@ -53,7 +53,7 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
                     System.arraycopy(natures, i + 1, newNatures, i,
                             natures.length - i - 1);
                     description.setNatureIds(newNatures);
-                    project.setDescription(description, null);
+                    scriptProject.getProject().setDescription(description, null);
                     return;
                 }
             }
@@ -63,7 +63,7 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
             System.arraycopy(natures, 0, newNatures, 0, natures.length);
             newNatures[natures.length] = ComposerNature.NATURE_ID;
             description.setNatureIds(newNatures);
-            project.setDescription(description, null);
+            scriptProject.getProject().setDescription(description, null);
             
             // add the lucene builder
             ExtensionManager manager = ExtensionManager.getInstance();
@@ -72,7 +72,7 @@ public class AddNatureHandler extends ComposerHandler implements IHandler
             for (BuildParticipant participant : participants) {
                 
                 if (ComposerNature.NATURE_ID.equals(participant.getNature())) {
-                    participant.addBuilder(project);
+                    participant.addBuilder(scriptProject.getProject());
                     break;
                 }
             }
