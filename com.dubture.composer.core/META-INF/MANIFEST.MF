@@ -19,16 +19,22 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.php.debug.core,
  org.eclipse.php.core,
  org.eclipse.php.ui,
- com.google.gson
+ com.google.gson,
+ org.eclipse.wst.common.project.facet.core,
+ org.eclipse.wst.common.project.facet.ui,
+ org.apache.commons.io
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core,
+ com.dubture.composer.core.build,
  com.dubture.composer.core.job,
  com.dubture.composer.core.launch,
  com.dubture.composer.core.log,
  com.dubture.composer.core.model,
  com.dubture.composer.core.ui,
+ com.dubture.composer.core.ui.explorer,
  com.dubture.composer.core.ui.handler,
+ com.dubture.composer.core.ui.preferences,
  com.dubture.composer.core.ui.view,
  com.dubture.composer.core.ui.wizard.init,
  com.dubture.composer.core.ui.wizard.iteminstaller,

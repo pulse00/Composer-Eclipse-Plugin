@@ -12,6 +12,20 @@
                class="com.dubture.composer.core.ComposerNature">
          </run>
       </runtime>
+      <builder
+            id="com.dubture.composer.core.composerBuilder">
+      </builder>
+   </extension>
+   <extension
+         id="composerBuilder"
+         name="Composer Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.dubture.composer.core.build.ComposerBuilder">
+         </run>
+      </builder>
    </extension>
 
    <extension point="com.dubture.indexing.core.buildParticipant">
@@ -140,7 +154,7 @@
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer
             class="com.dubture.composer.core.ComposerBuildpathContainerInitializer"
-            id="com.dubture.composer.core.PACKAGE_PATH">
+            id="com.dubture.composer.core.CONTAINER">
       </buildpathContainerInitializer>
    </extension>
    <extension
@@ -158,7 +172,47 @@
             class="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider">
       </provider>
    </extension>
-   
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.facets">
+      <project-facet
+            id="php.composer.component">
+         <label>
+            Composer PHP facet
+         </label>
+         <description>
+            Adds composer support to your PHP project.
+         </description>
+      </project-facet>
+      <project-facet-version
+            facet="php.composer.component"
+            version="1">
+         <constraint>
+            <and>
+               <requires
+                     facet="php.core.component">
+               </requires>
+            </and>
+         </constraint>
+      </project-facet-version>
+      <action
+            facet="php.composer.component"
+            id="php.composer.component.install"
+            type="install"
+            version="1">
+         <delegate
+               class="com.dubture.composer.core.facet.InstallActionDelegate">
+         </delegate>
+      </action>
+   </extension>
+   <extension
+         point="org.eclipse.wst.common.project.facet.ui.wizardPages">
+      <wizard-pages
+            action="php.composer.component.install">
+         <page
+               class="com.dubture.composer.core.facet.FacetInstallWizardPage">
+         </page>
+      </wizard-pages>
+   </extension>
    
 
 </plugin>
