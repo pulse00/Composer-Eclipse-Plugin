@@ -1,47 +1,51 @@
 package com.dubture.composer.core.model;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.BuildpathContainerInitializer;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
-import org.eclipse.dltk.core.environment.EnvironmentManager;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.eclipse.dltk.internal.core.UserLibraryBuildpathContainerInitializer;
 import org.eclipse.dltk.internal.core.util.Util;
-import org.eclipse.php.internal.core.PHPLanguageToolkit;
-import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 import org.eclipse.php.internal.core.includepath.IncludePath;
 import org.eclipse.php.internal.core.includepath.IncludePathManager;
-import org.eclipse.php.internal.core.preferences.CorePreferencesSupport;
 import org.eclipse.php.internal.core.project.PHPNature;
+import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
+import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.build.ComposerVisitor.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
@@ -49,15 +53,62 @@ public class PackageManager
 {
     private Map<String, BuildpathPackage> packages;
     
+    /**
+     * Maps project to installed local packages
+     */
+    private Map<String, List<InstalledPackage>> installedPackages;
+    
     public final static String BP_COMPOSERPACKAGE_PREFERENCES_PREFIX = ComposerPlugin.ID
             + ".composerPackage."; //$NON-NLS-1$
+    
+    public final static String BP_PROJECT_BUILDPATH_PREFIS = ComposerPlugin.ID + ".projectPackages#";
+    
+    private BuildpathJob buildpathJob;
     
     public PackageManager() {
         initialize();
     }
     
+    private void reloadPackages() {
+        
+        IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+        
+        String[] propertyNames;
+        try {
+            propertyNames = instancePreferences.keys();
+        } catch (BackingStoreException e) {
+            Util.log(e, "Exception while initializing user libraries"); //$NON-NLS-1$
+            return;
+        }
+        
+        for (int i = 0, length = propertyNames.length; i < length; i++) {
+            String propertyName = propertyNames[i];
+            if (propertyName.startsWith(BP_PROJECT_BUILDPATH_PREFIS)) {
+
+                String propertyValue = instancePreferences.get(propertyName,
+                        null);
+                if (propertyValue != null) {
+                    try {
+                        List<InstalledPackage> packages = InstalledPackage.deserialize(propertyValue);
+                        installedPackages.put(unpackProjectName(propertyName), packages);
+                    } catch (IOException e) {
+                        Logger.logException(e);
+                    }
+                }
+            }
+        }
+    }
+    
+    private String unpackProjectName(String propertyName) {
+        
+        String[] strings = propertyName.split("#");
+        return strings[1];
+    }
+    
     private void initialize() {
-        this.packages = new HashMap<String, BuildpathPackage>();
+        
+        packages = new HashMap<String, BuildpathPackage>();
+        installedPackages = new HashMap<String, List<InstalledPackage>>();
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         
         String[] propertyNames;
@@ -91,7 +142,7 @@ public class PackageManager
                         preferencesNeedFlush = true;
                         continue;
                     }
-                    this.packages.put(libName, library);
+                    packages.put(libName, library);
                 }
             }
         }
@@ -102,6 +153,10 @@ public class PackageManager
                 Util.log(e, "Exception while flusing instance preferences"); //$NON-NLS-1$
             }
         }
+        
+        buildpathJob = new BuildpathJob();
+        
+        reloadPackages();
     }    
     public synchronized void setPackage(String name, IBuildpathEntry[] buildpathEntries,
             boolean isSystemLibrary)
@@ -163,7 +218,7 @@ public class PackageManager
     
     public synchronized String[] getPackageNames() {
         
-        Set<String> set = this.packages.keySet();
+        Set<String> set = packages.keySet();
         Set<String> result = new HashSet<String>();
         for (Iterator<String> iterator = set.iterator(); iterator.hasNext();) {
             String key = (String) iterator.next();
@@ -185,22 +240,13 @@ public class PackageManager
         try {
             
             BuildpathContainerInitializer initializer = DLTKCore
-                    .getBuildpathContainerInitializer(ComposerBuildpathContainerInitializer.PACKAGE_PATH);
+                    .getBuildpathContainerInitializer(ComposerBuildpathContainerInitializer.CONTAINER);
             
-            IBuildpathContainer suggestedContainer = new ComposerBuildpathContainer(project);
+            IBuildpathContainer suggestedContainer = new ComposerBuildpathContainer(new Path(ComposerBuildpathContainerInitializer.CONTAINER), project);
             
             // creates a global composer package if the version doesn't exist yet
             initializer.requestBuildpathContainerUpdate(suggestedContainer.getPath(), createPlaceholderProject(), suggestedContainer);
             
-            // create the main composer buildpathentry
-            List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
-            entries.add(DLTKCore.newContainerEntry(suggestedContainer.getPath()));
-            
-            // add the buildpaths to the project
-            BuildPathUtils.addEntriesToBuildPath(project, entries);
-            
-//          save the ComposerBuildPathEntry in the include path of the project
-            IncludePathManager.getInstance().addEntriesToIncludePath(project.getProject(),entries);
         } catch (Exception e) {
             Logger.logException(e);
         }
@@ -218,11 +264,12 @@ public class PackageManager
         }
     }
 
-    public PackagePath[] getPackagePaths(IScriptProject project)
+    public IncludePath[] getPackagePaths(IScriptProject project)
     {
         List<PackagePath> packagePaths = new ArrayList<PackagePath>();
         IncludePath[] includePaths = IncludePathManager.getInstance().getIncludePaths(project.getProject());
-        IPath composerPath = new Path(ComposerBuildpathContainerInitializer.PACKAGE_PATH);
+        
+        IPath composerPath = new Path(ComposerBuildpathContainerInitializer.CONTAINER);
         
         for (IncludePath includePath : includePaths) {
             if (includePath.getEntry() instanceof IBuildpathEntry) {
@@ -232,8 +279,10 @@ public class PackageManager
                         IBuildpathContainer container = DLTKCore.getBuildpathContainer(entry.getPath(), project);
                         if (container != null) {
                             for (IBuildpathEntry bpEntry : container.getBuildpathEntries()) {
+
+                                IBuildpathEntry ctr = DLTKCore.newContainerEntry(new Path(ComposerBuildpathContainerInitializer.CONTAINER).append(bpEntry.getPath().lastSegment()));
                                 
-                                PackagePath ppath = new PackagePath(bpEntry, project);
+                                PackagePath ppath = new PackagePath(ctr, project);
                                 packagePaths.add(ppath);
                             }
                             break;
@@ -246,6 +295,135 @@ public class PackageManager
         }
         
         return packagePaths.toArray(new PackagePath[packagePaths
-                .size()]);        
+                .size()]);
+    }
+    
+    public void updateBuildpath() {
+
+        if (buildpathJob == null) {
+            return;
+        }
+        
+        synchronized (buildpathJob) {
+            buildpathJob.cancel();
+            buildpathJob.setPriority(Job.LONG);
+            buildpathJob.schedule(1000);
+        }
+    }
+    
+    private class BuildpathJob extends Job {
+
+        private IPath installedPath;
+        
+        private boolean running;
+        
+        public BuildpathJob()
+        {
+            super("Updating composer buildpath");
+            installedPath = new Path("vendor/composer/installed.json");
+        }
+        
+        private void installLocalPackage(InstalledPackage installedPackage,
+                IProject project)
+        {
+            IResource resource = project.findMember(new Path("vendor").append(installedPackage.name));
+            
+            if (resource instanceof IFolder) {
+                IFolder folder = (IFolder) resource;
+                File file = folder.getRawLocation().makeAbsolute().toFile();
+                
+                if (file != null && file.exists() && installedPackage.getLocalFile() != null) {
+                    try {
+                        Logger.debug("Installing local package " + installedPackage.name + " to " + installedPackage.getLocalFile().getAbsolutePath());
+                        installedPackage.getLocalFile().mkdirs();
+                        FileUtils.copyDirectory(file, installedPackage.getLocalFile());
+                    } catch (IOException e) {
+                        Logger.logException(e);
+                    }
+                }
+            }
+        }
+        
+        @Override
+        protected void canceling()
+        {
+            super.canceling();
+            running = false;
+        }
+        
+        
+        @Override
+        protected IStatus run(IProgressMonitor monitor)
+        {
+            running = true;
+            monitor.setTaskName("Updating composer buildpath...");
+            
+            for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+
+                try {
+                    if (!running) {
+                        return Status.CANCEL_STATUS;
+                    }
+                    
+                    if (!project.hasNature(ComposerNature.NATURE_ID)) {
+                        monitor.worked(1);
+                        continue;
+                    }
+
+                    IFile installed = (IFile) project.findMember(installedPath);
+                    
+                    if (installed == null) {
+                        Logger.debug("Unabled to find installed.json in project " + project.getName());
+                        continue;
+                    }
+                    
+                    List<InstalledPackage> json = InstalledPackage.deserialize(installed.getContents());
+                    
+                    for (InstalledPackage installedPackage : json) {
+                        
+                        if (!running) {
+                            return Status.CANCEL_STATUS;
+                        }
+                        
+                        if (!installedPackage.isLocalVersionAvailable()) {
+                            installLocalPackage(installedPackage, project);
+                        }
+                    }
+                    
+                    
+                    IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+                    String propertyName = BP_PROJECT_BUILDPATH_PREFIS + project.getName();
+                        
+                    StringWriter writer = new StringWriter();
+                    IOUtils.copy(installed.getContents(), writer);
+                    String propertyValue = writer.toString();
+                    prefs.put(propertyName, propertyValue);
+                    prefs.flush();
+                    writer.close();
+                    
+                } catch (CoreException e) {
+                    StatusManager.getManager().handle(e.getStatus());
+                    return Status.CANCEL_STATUS;
+                } catch (IOException e) {
+                    Logger.logException(e);
+                } catch (BackingStoreException e) {
+                    Logger.logException(e);
+                }
+                
+                monitor.worked(1);
+            }
+            
+            reloadPackages();
+            return Status.OK_STATUS;
+        }
+    }
+
+    public List<InstalledPackage> getInstalledPackages(IScriptProject project)
+    {
+        if (installedPackages.containsKey(project.getProject().getName())) {
+            return installedPackages.get(project.getProject().getName());
+        }
+        
+        return null;
     }
 }

@@ -35,7 +35,7 @@ public class ComposerBuildpathContainerInitializer extends
         BuildpathContainerInitializer
 {
     
-    public static final String PACKAGE_PATH = ComposerPlugin.ID + ".PACKAGE_PATH"; //$NON-NLS-1$
+    public static final String CONTAINER = ComposerPlugin.ID + ".CONTAINER"; //$NON-NLS-1$
     
     private Map<IProject, IPreferencesPropagatorListener> project2PhpVerListener = new HashMap<IProject, IPreferencesPropagatorListener>();
 
@@ -44,14 +44,15 @@ public class ComposerBuildpathContainerInitializer extends
             throws CoreException
     {
         if (containerPath.segmentCount() > 0
-                && containerPath.segment(0).equals(PACKAGE_PATH)) {
+                && containerPath.segment(0).equals(CONTAINER)) {
             try {
+                System.err.println("is composer path " + containerPath.toString());
                 if (isPHPProject(scriptProject)) {
                     DLTKCore
                             .setBuildpathContainer(
                                     containerPath,
                                     new IScriptProject[] { scriptProject },
-                                    new IBuildpathContainer[] { new ComposerBuildpathContainer(scriptProject) },
+                                    new IBuildpathContainer[] { new ComposerBuildpathContainer(containerPath, scriptProject) },
                                     null);
                     initializeListener(containerPath, scriptProject);
                 }
@@ -139,8 +140,7 @@ public class ComposerBuildpathContainerInitializer extends
 
     private boolean isComposerContainer(IPath path)
     {
-        return path != null && path.segmentCount() == 1
-                && PACKAGE_PATH.equals(path.segment(0));        
+        return path != null && CONTAINER.equals(path.segment(0));        
     }
 
     @Override

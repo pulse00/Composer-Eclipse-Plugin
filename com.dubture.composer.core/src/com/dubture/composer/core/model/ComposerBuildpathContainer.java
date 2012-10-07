@@ -1,56 +1,75 @@
 package com.dubture.composer.core.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IAccessRule;
-import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.environment.EnvironmentManager;
-import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 
-import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
+import com.dubture.composer.core.build.ComposerVisitor.InstalledPackage;
 
+/**
+ * 
+ * Composer buildpath container is responsible for resolving packages from a project in
+ * the local bundle storage.
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 public class ComposerBuildpathContainer implements IBuildpathContainer {
 
     private IScriptProject project;
+    private IPath path;
 
-    public ComposerBuildpathContainer(IScriptProject project)
+    public ComposerBuildpathContainer(IPath path, IScriptProject project)
     {
+        this.path = path;
         this.project = project;
     }
 
     @Override
     public IPath getPath()
     {
-        return new Path(ComposerBuildpathContainerInitializer.PACKAGE_PATH);
+        return path;
     }
     
     @Override
     public int getKind()
     {
-        return IBuildpathContainer.K_APPLICATION;
+        return IBuildpathContainer.K_SYSTEM;
     }
     
     @Override
     public String getDescription()
     {
-        return "Composer";
+        if (path.segmentCount() == 1) {
+            return "Composer";
+        }
+        return path.lastSegment();
     }
     
     @Override
     public IBuildpathEntry[] getBuildpathEntries()
     {
-        // this needs to be create from the indexed vendor/composer/installed.json
-        String pathString = "/Users/sobert/Desktop/php-ffmpeg";
+        PackageManager manager = ModelAccess.getInstance().getPackageManager();
         
-        IPath libPath =  Path.fromOSString(pathString).makeAbsolute();
+        if (project == null) {
+            return new IBuildpathEntry[0];    
+        }
+            
+        List<InstalledPackage> packages = manager.getInstalledPackages(project);
         
-        IPath fullPath = EnvironmentPathUtils.getFullPath(
-                EnvironmentManager.getLocalEnvironment(), libPath);
+        if (packages == null) {
+            return new IBuildpathEntry[0];
+        }
         
-        return new IBuildpathEntry[]{DLTKCore.newLibraryEntry(fullPath, new IAccessRule[0], new IBuildpathAttribute[0], false, true)};
+        List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
+        for (InstalledPackage pack : packages) {
+            entries.add(pack.getBuildpathEntry());
+        }
+        
+        return entries.toArray(new IBuildpathEntry[entries.size()]);
     }
 }
