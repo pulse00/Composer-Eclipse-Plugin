@@ -9,10 +9,13 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -84,16 +87,16 @@ public class InitComposerPage extends NewElementWizardPage
                 
             } else if ("page".equals(widget.getData())) {
                 getPhpPackage().homepage = widget.getText();
-            } else if ("stability".equals(widget.getData())) {
-                getPhpPackage().minimumStability = widget.getText();
             }
-
+            
             check();
         }
         
         @Override
         public void keyPressed(KeyEvent e) { }
     };
+
+    private Combo stabilityCombo;
     
     private void check()
     {
@@ -168,16 +171,45 @@ public class InitComposerPage extends NewElementWizardPage
         
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         container.setLayoutData(gd);
-        
+
         addInput(container, "Package name (<vendor>/<name>)", "name");
         addInput(container, "Description", "description");
         addInput(container, "Author", "author");
         addInput(container, "Email", "email");  
         addInput(container, "Homepage", "homepage");
-        addInput(container, "Minimum stability", "stability");
+        
+        addStability(container);
         
         setControl(container);
         setPageComplete(false);
+    }
+
+    private void addStability(Composite parent)
+    {
+        GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.widthHint = 200;
+        
+        GridData data = new GridData(GridData.FILL_HORIZONTAL);
+        
+        Label nameLabel = new Label(parent, SWT.NONE);
+        nameLabel.setText("Minimum stability");
+        nameLabel.setLayoutData(gd);
+        
+        stabilityCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        stabilityCombo.setLayoutData(data);
+        stabilityCombo.setItems(new String[]{"dev", "alpha", "beta", "RC", "stable"});
+        stabilityCombo.select(4);
+        stabilityCombo.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                phpPackage.minimumStability = stabilityCombo.getItem(stabilityCombo.getSelectionIndex());
+            }
+        });
+        
+        phpPackage.minimumStability = "stable";
+        
     }
 
     public PHPPackage getPhpPackage()

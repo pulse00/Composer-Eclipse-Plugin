@@ -8,7 +8,8 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
-import com.dubture.composer.core.build.ComposerVisitor.InstalledPackage;
+import com.dubture.composer.core.build.InstalledPackage;
+import com.dubture.composer.core.log.Logger;
 
 /**
  * 
@@ -67,6 +68,8 @@ public class ComposerBuildpathContainer implements IBuildpathContainer {
         
         List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
         for (InstalledPackage pack : packages) {
+            
+            Logger.debug("composer buildpathcontainer adding " + pack.getBuildpathEntry().getPath().toString() + " to buildpath entries");
             entries.add(pack.getBuildpathEntry());
         }
         

@@ -35,9 +35,9 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.internal.core.util.Util;
 import org.eclipse.php.internal.core.includepath.IncludePath;
-import org.eclipse.php.internal.core.includepath.IncludePathManager;
 import org.eclipse.php.internal.core.project.PHPNature;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.service.prefs.BackingStoreException;
@@ -45,7 +45,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.build.ComposerVisitor.InstalledPackage;
+import com.dubture.composer.core.build.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
@@ -90,6 +90,11 @@ public class PackageManager
                 if (propertyValue != null) {
                     try {
                         List<InstalledPackage> packages = InstalledPackage.deserialize(propertyValue);
+                        
+                        System.err.println("reloading packages for " + unpackProjectName(propertyName));
+                        for (InstalledPackage pack : packages) {
+                            System.err.println(pack.name);
+                        }
                         installedPackages.put(unpackProjectName(propertyName), packages);
                     } catch (IOException e) {
                         Logger.logException(e);
@@ -267,31 +272,15 @@ public class PackageManager
     public IncludePath[] getPackagePaths(IScriptProject project)
     {
         List<PackagePath> packagePaths = new ArrayList<PackagePath>();
-        IncludePath[] includePaths = IncludePathManager.getInstance().getIncludePaths(project.getProject());
         
-        IPath composerPath = new Path(ComposerBuildpathContainerInitializer.CONTAINER);
-        
-        for (IncludePath includePath : includePaths) {
-            if (includePath.getEntry() instanceof IBuildpathEntry) {
-                IBuildpathEntry entry = (IBuildpathEntry) includePath.getEntry();
-                if (composerPath.equals(entry.getPath())) {
-                    try {
-                        IBuildpathContainer container = DLTKCore.getBuildpathContainer(entry.getPath(), project);
-                        if (container != null) {
-                            for (IBuildpathEntry bpEntry : container.getBuildpathEntries()) {
-
-                                IBuildpathEntry ctr = DLTKCore.newContainerEntry(new Path(ComposerBuildpathContainerInitializer.CONTAINER).append(bpEntry.getPath().lastSegment()));
-                                
-                                PackagePath ppath = new PackagePath(ctr, project);
-                                packagePaths.add(ppath);
-                            }
-                            break;
-                        }
-                    } catch (ModelException e) {
-                        Logger.logException(e);
-                    }
-                }
+        try {
+            IBuildpathContainer container = ModelManager.getModelManager().getBuildpathContainer(new Path(ComposerBuildpathContainerInitializer.CONTAINER), project);
+            
+            for (IBuildpathEntry entry : container.getBuildpathEntries()) {
+                packagePaths.add(new PackagePath(entry, project));
             }
+        } catch (ModelException e) {
+            StatusManager.getManager().handle(e.getStatus());
         }
         
         return packagePaths.toArray(new PackagePath[packagePaths
@@ -393,13 +382,15 @@ public class PackageManager
                     
                     IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
                     String propertyName = BP_PROJECT_BUILDPATH_PREFIS + project.getName();
-                        
+                    
                     StringWriter writer = new StringWriter();
                     IOUtils.copy(installed.getContents(), writer);
                     String propertyValue = writer.toString();
                     prefs.put(propertyName, propertyValue);
                     prefs.flush();
                     writer.close();
+                    
+                    DLTKCore.refreshBuildpathContainers(DLTKCore.create(project));
                     
                 } catch (CoreException e) {
                     StatusManager.getManager().handle(e.getStatus());
@@ -425,5 +416,24 @@ public class PackageManager
         }
         
         return null;
+    }
+
+    public void removeProject(IProject project)
+    {
+        try {
+            
+            String name = project.getName();
+            String propertyName = BP_PROJECT_BUILDPATH_PREFIS + name;
+            IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+            instancePreferences.remove(propertyName);
+            instancePreferences.flush();
+            
+            if (installedPackages.containsKey(name)) {
+                installedPackages.remove(name);
+            }
+            
+        } catch (BackingStoreException e) {
+            Logger.logException(e);
+        }
     }
 }

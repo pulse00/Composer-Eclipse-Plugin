@@ -37,6 +37,10 @@ abstract public class ComposerHandler extends AbstractHandler
     @SuppressWarnings("unchecked")
     protected void init(ExecutionEvent event) throws PharNotFoundException {
         
+        json = null;
+        composer = null;
+        scriptProject = null;
+        
         ISelection selection = HandlerUtil.getActiveWorkbenchWindow(event).getActivePage().getSelection();
         
         if (selection != null && selection instanceof IStructuredSelection) {

@@ -8,12 +8,19 @@
  ******************************************************************************/
 package com.dubture.composer.core;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.getcomposer.core.packagist.SearchResultDownloader;
 import org.osgi.framework.BundleContext;
+
+import com.dubture.composer.core.model.ModelAccess;
 
 public class ComposerPlugin extends AbstractUIPlugin {
 
@@ -33,6 +40,19 @@ public class ComposerPlugin extends AbstractUIPlugin {
 	    super.start(bundleContext);
 	    
 	    plugin = this;
+	    
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IResourceChangeListener listener = new IResourceChangeListener()
+        {
+            public void resourceChanged(IResourceChangeEvent event)
+            {
+                if (event.getType() == IResourceChangeEvent.PRE_DELETE && event.getResource() instanceof IProject) {
+                    ModelAccess.getInstance().getPackageManager().removeProject((IProject) event.getResource());
+                }
+            }
+        };
+        workspace.addResourceChangeListener(listener);
+	    
 	}
 
 	/*

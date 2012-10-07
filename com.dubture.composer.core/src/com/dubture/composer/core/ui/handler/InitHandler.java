@@ -30,7 +30,8 @@ public class InitHandler extends ComposerHandler
                     HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
                             | SWT.OK);
             dialog.setText("Composer already installed");
-            dialog.setMessage("It seems composer is already installed in this project (" + composer.getFullPath().toOSString() + ")");
+            dialog.setMessage("It seems composer is already installed in this project");
+            dialog.open();
             return null;
         }
 
