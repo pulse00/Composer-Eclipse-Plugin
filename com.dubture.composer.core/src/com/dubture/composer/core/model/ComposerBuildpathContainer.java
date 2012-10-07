@@ -69,7 +69,7 @@ public class ComposerBuildpathContainer implements IBuildpathContainer {
         List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
         for (InstalledPackage pack : packages) {
             
-            Logger.debug("composer buildpathcontainer adding " + pack.getBuildpathEntry().getPath().toString() + " to buildpath entries");
+//            Logger.debug("composer buildpathcontainer adding " + pack.getBuildpathEntry().getPath().toString() + " to buildpath entries");
             entries.add(pack.getBuildpathEntry());
         }
         

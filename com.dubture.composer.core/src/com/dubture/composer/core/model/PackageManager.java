@@ -269,7 +269,7 @@ public class PackageManager
         }
     }
 
-    public IncludePath[] getPackagePaths(IScriptProject project)
+    public PackagePath[] getPackagePaths(IScriptProject project)
     {
         List<PackagePath> packagePaths = new ArrayList<PackagePath>();
         
