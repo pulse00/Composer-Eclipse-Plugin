@@ -1,57 +1,29 @@
 package com.dubture.composer.core.ui.explorer;
 
-import java.util.ArrayList;
-
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IProjectFragment;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.core.ExternalProjectFragment;
 import org.eclipse.dltk.internal.ui.navigator.ScriptExplorerContentProvider;
-import org.eclipse.php.internal.ui.explorer.IPHPTreeContentProvider;
-import org.eclipse.php.internal.ui.util.PHPPluginImages;
-import org.eclipse.swt.graphics.Image;
 
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.PackagePath;
 
 @SuppressWarnings("restriction")
-public class PackageTreeContentProvider extends ScriptExplorerContentProvider implements IPHPTreeContentProvider
+public class PackageTreeContentProvider extends ScriptExplorerContentProvider
 {
     public PackageTreeContentProvider()
     {
         super(true);
     }
 
-    @Override
-    public void handleProjectChildren(ArrayList<Object> children, IScriptProject project)
-    {
-        try {
-            if (!project.getProject().hasNature(ComposerNature.NATURE_ID)) {
-                return;
-            }
-            ComposerBuildpathContainer container = new ComposerBuildpathContainer(project);
-            children.add(container);
-            
-        } catch (CoreException e) {
-            Logger.logException(e);
-        }
-    }
-
-    @Override   
-    public boolean canHandle(Object parentElement)
-    {
-        if (parentElement instanceof PackagePath) {
-            return true;
-        }
-        
-        return parentElement instanceof ComposerBuildpathContainer;
-    }
 
     @Override
-    public Object[] handleChildren(Object parentElement)
+    public Object[] getChildren(Object parentElement)
     {
         if (parentElement instanceof PackagePath) {
             
@@ -67,41 +39,33 @@ public class PackageTreeContentProvider extends ScriptExplorerContentProvider im
                     if (fragment instanceof ExternalProjectFragment) {
                         ExternalProjectFragment external = (ExternalProjectFragment) fragment;
                         if (external.getBuildpathEntry().equals(entry)) {
-                            return getChildren(external);
+                            return super.getChildren(external);
                         }
                     }
                 }
             } catch (ModelException e) {
                 Logger.logException(e);
-                return NO_CHILDREN;
             }
         } else if (parentElement instanceof ComposerBuildpathContainer) {
             ComposerBuildpathContainer container = (ComposerBuildpathContainer) parentElement;
-            return container.getChildren();
-        }
             
-        return NO_CHILDREN;
-    }
-
-    @Override
-    public String getText(Object element)
-    {
-        if (element instanceof PackagePath) {
-            PackagePath path = (PackagePath) element;
-            return path.getPackageName();
+            IAdaptable[] children = container.getChildren();
+            
+            if (children == null || children.length == 0) {
+                return NO_CHILDREN;
+            }
+            
+            return children;
+        } else if (parentElement instanceof IScriptProject) {
+            try {
+                IProject project = ((IScriptProject)parentElement).getProject();
+                if (project.hasNature(ComposerNature.NATURE_ID)) {
+                    return new Object[]{new ComposerBuildpathContainer((IScriptProject) parentElement)};
+                }
+            } catch (Exception e) {
+                Logger.logException(e);
+            }
         }
-        
-        return null;
-    }
-
-    @Override
-    public Image getImage(Object element)
-    {
-        if (element instanceof PackagePath) {
-            return PHPPluginImages
-                    .get(PHPPluginImages.IMG_OBJS_LIBRARY);
-        }
-        
         return null;
     }
 }

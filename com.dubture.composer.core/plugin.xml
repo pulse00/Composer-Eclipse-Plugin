@@ -168,8 +168,8 @@
    </extension>
    <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
-      <provider
-            class="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider">
+      <provider labelProvider="com.dubture.composer.core.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider"
+            >
       </provider>
    </extension>
    <extension
