@@ -12,19 +12,33 @@ Current Features
 * Visualize your dependency graph
 * Run Install/Update commands from within eclipse
 
-
-Installation
+INSTALLATION
 ============
 
-Install via updatesite:
+#### Updatesite
+
+You can choose between the stable and the nightly build. Stable version is released in sync with [PDT](http://www.eclipse.org/projects/project.php?id=tools.pdt) (next scheduled release: 3.1.2 / 22 Feb 13).
+
+The nightly updatesite is build once a day automatically and published if all tests succeed. I'm using the nightly version myself for my production projects, so you can be quite
+certain that no major bugs make it into the nightly updatesite ;)
+
+If you want to use the nightly build, make sure to also add the __PDT nightly updatesite:__ [http://download.eclipse.org/tools/pdt/updates/nightly](http://download.eclipse.org/tools/pdt/updates/nightly)!
 
 
-# http://p2.dubture.com
+### Stable Updatesite
+
+[http://p2.dubture.com](http://p2.dubture.com)
+
+
+### Nightly build
+
+The nightly build is provided by the [PDT Extension group](https://github.com/pdt-eg) mirror:
+
+[http://p2-dev.pdt-extensions.org/](http://p2-dev.pdt-extensions.org/)
 
 
 Usage
 =====
-
 
 ### Prerequisites
 
@@ -37,3 +51,4 @@ This plugin is still beta.
 
 
 To see the plugin in action, checkout this [screencast](https://vimeo.com/49147387)
+
