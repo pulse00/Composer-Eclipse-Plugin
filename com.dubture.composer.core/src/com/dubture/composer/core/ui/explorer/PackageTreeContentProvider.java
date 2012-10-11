@@ -10,6 +10,7 @@ import org.eclipse.dltk.internal.core.ExternalProjectFragment;
 import org.eclipse.dltk.internal.ui.navigator.ScriptExplorerContentProvider;
 
 import com.dubture.composer.core.ComposerNature;
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.PackagePath;
 
@@ -25,6 +26,10 @@ public class PackageTreeContentProvider extends ScriptExplorerContentProvider
     @Override
     public Object[] getChildren(Object parentElement)
     {
+        if (ComposerPlugin.getDefault().isBuildpathContainerEnabled() == false) {
+            return null;
+        }
+        
         if (parentElement instanceof PackagePath) {
             
             PackagePath pPath = (PackagePath) parentElement;

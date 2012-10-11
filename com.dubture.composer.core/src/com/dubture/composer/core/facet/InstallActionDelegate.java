@@ -19,6 +19,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
 import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
 import com.dubture.composer.core.ComposerNature;
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.model.ComposerBuildpathContainer;
 
 /**
@@ -46,15 +47,17 @@ public class InstallActionDelegate implements IDelegate
         progress.subTask("Installing composer buildpath");
         
         // create composer buildpath entry
-        IBuildpathContainer composerContainer = new ComposerBuildpathContainer(new Path(ComposerBuildpathContainerInitializer.CONTAINER), scriptProject);
-        List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
-        entries.add(DLTKCore.newContainerEntry(composerContainer.getPath()));
         
-        // add the composer buildpathentry to the project
-        BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
-        
+        if (ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
+            IBuildpathContainer composerContainer = new ComposerBuildpathContainer(new Path(ComposerBuildpathContainerInitializer.CONTAINER), scriptProject);
+            List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
+            entries.add(DLTKCore.newContainerEntry(composerContainer.getPath()));
+            
+            // add the composer buildpathentry to the project
+            BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
+            
 //      not sure how to handle the PHP include path yet
-        //IncludePathManager.getInstance().addEntriesToIncludePath(project.getProject(),entries);
-        
+            //IncludePathManager.getInstance().addEntriesToIncludePath(project.getProject(),entries);
+        }
     }
 }

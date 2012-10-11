@@ -16,6 +16,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.getcomposer.core.packagist.SearchResultDownloader;
 import org.osgi.framework.BundleContext;
@@ -98,5 +101,10 @@ public class ComposerPlugin extends AbstractUIPlugin {
         }
         
         return packageDownloader = new SearchResultDownloader();
+    }
+    
+    public boolean isBuildpathContainerEnabled()
+    {
+        return getPreferenceStore().getBoolean(ComposerConstants.PREF_BUILDPATH_ENABLE);
     }
 }

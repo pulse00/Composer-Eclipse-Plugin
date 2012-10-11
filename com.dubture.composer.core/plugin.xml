@@ -161,9 +161,9 @@
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.php.ui.preferences.PHPBasePreferencePage"
-            class="com.dubture.composer.core.ui.preferences.ComposerPackagesPreferencePage"
+            class="com.dubture.composer.core.ui.preferences.ComposerPreferencePage"
             id="com.dubture.composer.core.preferences.Packages"
-            name="Composer Packages">
+            name="Composer">
       </page>
    </extension>
    <extension

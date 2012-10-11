@@ -43,10 +43,8 @@ public class ComposerBuildpathContainerInitializer extends
     public void initialize(IPath containerPath, IScriptProject scriptProject)
             throws CoreException
     {
-        if (containerPath.segmentCount() > 0
-                && containerPath.segment(0).equals(CONTAINER)) {
+        if (containerPath.segmentCount() > 0 && containerPath.segment(0).equals(CONTAINER) && ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
             try {
-                System.err.println("is composer path " + containerPath.toString());
                 if (isPHPProject(scriptProject)) {
                     DLTKCore
                             .setBuildpathContainer(
@@ -60,8 +58,6 @@ public class ComposerBuildpathContainerInitializer extends
                 Logger.logException(e);
             }
         }
-        
-        
     }
     
     private void initializeListener(final IPath containerPath,
