@@ -15,6 +15,7 @@ import org.getcomposer.core.PackageInterface;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
+import com.dubture.composer.core.model.ModelAccess;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.dubture.indexing.core.index.ReferenceInfo;
@@ -45,7 +46,16 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
     {
         IFile file = (IFile) getResource();
 
-        if (file == null || "composer.json".equals(file.getName()) == false
+        if (file == null) {
+            return;
+        }
+        
+        if ("installed.json".equals(file.getName())) {
+            ModelAccess.getInstance().getPackageManager().updateBuildpath();
+            return;
+        }
+        
+        if ("composer.json".equals(file.getName()) == false
                 || !(object instanceof PackageInterface)) {
             return;
         }

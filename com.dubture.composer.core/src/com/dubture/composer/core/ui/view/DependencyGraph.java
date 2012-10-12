@@ -71,6 +71,7 @@ public class DependencyGraph extends ViewPart
         IPath path = project.getProjectRelativePath();
         
         System.err.println(path);
+        /*
         List<EclipsePHPPackage> packages = ModelAccess.getInstance().getPackages(new Path("/" + project.getName()));
         nodes = new HashMap<String, GraphNode>();
         
@@ -113,7 +114,8 @@ public class DependencyGraph extends ViewPart
                 System.out.println(e);
             }
 
-        });        
+        });
+        */        
         
             
     }

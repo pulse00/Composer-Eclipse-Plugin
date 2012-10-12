@@ -8,21 +8,27 @@
  */
 package com.dubture.composer.core.model;
 
-import java.util.ArrayList;
+import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.dltk.internal.core.UserLibraryManager;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.dltk.core.IScriptProject;
 import org.getcomposer.core.PackageInterface;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.core.visitor.ComposerVisitor;
-import com.dubture.indexing.core.index.ReferenceInfo;
-import com.dubture.indexing.core.search.SearchEngine;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -37,22 +43,35 @@ public class ModelAccess implements NamespaceResolverInterface
 
     private static ModelAccess instance = null;
     
-    private SearchEngine search;
+    private Map<String, List<NamespaceMapping> > namespaceMap = new HashMap<String, List<NamespaceMapping> >();
     
     private Gson gson;
     
     private ModelAccess()
     {
         try {
-            
-            search = SearchEngine.getInstance();
             gson = new GsonBuilder()
                 .registerTypeAdapter(PackageInterface.class, new PackageDeserializer())
                 .registerTypeAdapter(IPath.class, new PathDeserializer())
                 .create();
             
+            initNamespaceMap();
         } catch (Exception e) {
             ComposerPlugin.logException(e);
+        }
+    }
+    
+    protected void initNamespaceMap() 
+    {
+        IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+        
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            String prefKey = "namespacemap#" + project.getName();
+            String json = instancePreferences.get(prefKey, "{}");
+            Type typeOfHashMap = new TypeToken<List<NamespaceMapping>>() { }.getType();
+            List<NamespaceMapping> newMap = gson.fromJson(json, typeOfHashMap);
+            namespaceMap.put(project.getName(), newMap);
+            Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
     }
 
@@ -68,43 +87,23 @@ public class ModelAccess implements NamespaceResolverInterface
     @Override
     public IPath resolve(IResource resource)
     {
-        if (search == null) {
+        
+        IPath root = resource.getFullPath().removeFirstSegments(1);
+        System.err.println("resolving resource " + root.toString());
+        
+        if (!namespaceMap.containsKey(resource.getProject().getName())) {
             return null;
         }
         
-        Logger.debug("Resolving namespace of resource " + resource.getFullPath());
-        for (EclipsePHPPackage pHPPackage : getPackages(resource.getProject().getFullPath())) {
-            
-            Logger.debug("Trying to resolve using " + pHPPackage.getName());
-            IPath ns = pHPPackage.resolve(resource);
-            if (ns != null) {
-                return ns;
+        List<NamespaceMapping> namespaces = namespaceMap.get(resource.getProject().getName());
+        
+        for(NamespaceMapping mapping : namespaces) {
+            if (root.toString().startsWith(mapping.getPath())) {
+                return new Path(mapping.getNamespace());
             }
         }
         
         return null;
-    }
-
-    public List<EclipsePHPPackage> getPackages(IPath path)
-    {
-        List<ReferenceInfo> references;
-        List<EclipsePHPPackage> packages = new ArrayList<EclipsePHPPackage>();
-
-        try {
-            references = search.findReferences(path, ComposerVisitor.REFERENCE_ID);
-        } catch (Exception e) {
-            ComposerPlugin.logException(e);
-            return null;
-        }
-        
-        for (ReferenceInfo info : references) {
-            String meta = info.getMetadata();
-            
-            EclipsePHPPackage pHPPackage = gson.fromJson(meta, EclipsePHPPackage.class);
-            packages.add(pHPPackage);
-        }
-        
-        return packages;
     }
 
     public PackageManager getPackageManager()
@@ -123,5 +122,30 @@ public class ModelAccess implements NamespaceResolverInterface
         }
 
         return instance.packageManager;
+    }
+
+    public void updateNamespaces(List<NamespaceMapping> namespaces,
+            IScriptProject scriptProject)
+    {
+        String json = gson.toJson(namespaces);
+        IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+        
+        namespaceMap.put(scriptProject.getProject().getName(), namespaces);
+        instancePreferences.put("namespacemap#"+scriptProject.getProject().getName(), json);
+        Logger.debug("updating namespacemap for project " + scriptProject.getProject().getName());
+        try {
+            instancePreferences.flush();
+        } catch (BackingStoreException e) {
+            Logger.logException(e);
+        }
+    }
+
+    public List<NamespaceMapping> getNamespaceMappings(IProject project)
+    {
+        if (namespaceMap.containsKey(project.getName())) {
+            return namespaceMap.get(project.getName());
+        }
+        
+        return null;
     }
 }

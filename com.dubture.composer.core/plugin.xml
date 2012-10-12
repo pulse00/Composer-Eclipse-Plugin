@@ -17,15 +17,13 @@
       </builder>
    </extension>
    <extension
-         id="composerBuilder"
-         name="Composer Builder"
-         point="org.eclipse.core.resources.builders">
-      <builder
-            hasNature="true">
-         <run
-               class="com.dubture.composer.core.build.ComposerBuilder">
-         </run>
-      </builder>
+         point="org.eclipse.dltk.core.buildParticipant">
+      <buildParticipant
+            class="com.dubture.composer.core.build.BuildParticipantFactory"
+            id="com.dubture.composer.core.buildParticipant"
+            name="Composer Builder"
+            nature="org.eclipse.php.core.PHPNature">
+      </buildParticipant>
    </extension>
 
    <extension point="com.dubture.indexing.core.buildParticipant">
