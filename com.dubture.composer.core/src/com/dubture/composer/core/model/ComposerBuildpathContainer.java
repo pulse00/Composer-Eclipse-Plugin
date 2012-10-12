@@ -9,7 +9,6 @@ import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
 import com.dubture.composer.core.build.InstalledPackage;
-import com.dubture.composer.core.log.Logger;
 
 /**
  * 

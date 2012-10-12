@@ -25,6 +25,7 @@ import org.getcomposer.core.PackageInterface;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.build.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -87,9 +88,7 @@ public class ModelAccess implements NamespaceResolverInterface
     @Override
     public IPath resolve(IResource resource)
     {
-        
         IPath root = resource.getFullPath().removeFirstSegments(1);
-        System.err.println("resolving resource " + root.toString());
         
         if (!namespaceMap.containsKey(resource.getProject().getName())) {
             return null;
@@ -146,6 +145,25 @@ public class ModelAccess implements NamespaceResolverInterface
             return namespaceMap.get(project.getName());
         }
         
+        return null;
+    }
+
+    public IResource getComposer(InstalledPackage installed, IScriptProject project)
+    {
+        if (!namespaceMap.containsKey(project.getProject().getName())) {
+            return null;
+        }
+        
+        for (NamespaceMapping mapping : namespaceMap.get(project.getProject().getName())) {
+            
+            if (mapping.getPath().contains(installed.name)) {
+                IPath path = new Path(mapping.getPath().substring(0, mapping.getPath().lastIndexOf(installed.name)+installed.name.length()));
+                if (installed.targetDir != null && installed.targetDir.length() > 0) {
+                    path = path.append(installed.targetDir);
+                }
+                return project.getProject().findMember(path.append("composer.json"));
+            }
+        }
         return null;
     }
 }

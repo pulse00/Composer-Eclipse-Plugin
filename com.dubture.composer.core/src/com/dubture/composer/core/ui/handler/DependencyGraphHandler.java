@@ -7,6 +7,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.ui.PharNotFoundException;
 import com.dubture.composer.core.ui.view.DependencyGraph;
 
@@ -27,12 +28,18 @@ public class DependencyGraphHandler extends ComposerHandler implements IHandler
             IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(DependencyGraph.VIEW_ID);
             
             if (view instanceof DependencyGraph) {
+                
+                if (composer == null) {
+                    Logger.debug("Unable to retrieve composer/project during dependency graph handling");
+                    return null;
+                }
+                
                 DependencyGraph graph = (DependencyGraph) view;
                 graph.setProject(composer.getProject());
             }
             
         } catch (PartInitException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
         return null;
     }

@@ -37,7 +37,6 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ModelException;
 import org.eclipse.dltk.internal.core.ModelManager;
 import org.eclipse.dltk.internal.core.util.Util;
-import org.eclipse.php.internal.core.includepath.IncludePath;
 import org.eclipse.php.internal.core.project.PHPNature;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.osgi.service.prefs.BackingStoreException;
@@ -58,10 +57,13 @@ public class PackageManager
      */
     private Map<String, List<InstalledPackage>> installedPackages;
     
+    private Map<String, List<InstalledPackage>> installedDevPackages;
+    
     public final static String BP_COMPOSERPACKAGE_PREFERENCES_PREFIX = ComposerPlugin.ID
             + ".composerPackage."; //$NON-NLS-1$
     
-    public final static String BP_PROJECT_BUILDPATH_PREFIS = ComposerPlugin.ID + ".projectPackages#";
+    public final static String BP_PROJECT_BUILDPATH_PREFIX = ComposerPlugin.ID + ".projectPackages#";
+    public final static String BP_PROJECT_BUILDPATH_DEV_PREFIX = ComposerPlugin.ID + ".projectDevPackages#";
     
     private BuildpathJob buildpathJob;
     
@@ -83,19 +85,22 @@ public class PackageManager
         
         for (int i = 0, length = propertyNames.length; i < length; i++) {
             String propertyName = propertyNames[i];
-            if (propertyName.startsWith(BP_PROJECT_BUILDPATH_PREFIS)) {
-
-                String propertyValue = instancePreferences.get(propertyName,
-                        null);
+            if (propertyName.startsWith(BP_PROJECT_BUILDPATH_PREFIX)) {
+                String propertyValue = instancePreferences.get(propertyName,null);
                 if (propertyValue != null) {
                     try {
                         List<InstalledPackage> packages = InstalledPackage.deserialize(propertyValue);
-                        
-                        System.err.println("reloading packages for " + unpackProjectName(propertyName));
-                        for (InstalledPackage pack : packages) {
-                            System.err.println(pack.name);
-                        }
                         installedPackages.put(unpackProjectName(propertyName), packages);
+                    } catch (IOException e) {
+                        Logger.logException(e);
+                    }
+                }
+            } else if (propertyName.startsWith(BP_PROJECT_BUILDPATH_DEV_PREFIX)) {
+                String propertyValue = instancePreferences.get(propertyName,null);
+                if (propertyValue != null) {
+                    try {
+                        List<InstalledPackage> packages = InstalledPackage.deserialize(propertyValue);
+                        installedDevPackages.put(unpackProjectName(propertyName), packages);
                     } catch (IOException e) {
                         Logger.logException(e);
                     }
@@ -114,6 +119,7 @@ public class PackageManager
         
         packages = new HashMap<String, BuildpathPackage>();
         installedPackages = new HashMap<String, List<InstalledPackage>>();
+        installedDevPackages = new HashMap<String, List<InstalledPackage>>();
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         
         String[] propertyNames;
@@ -303,6 +309,7 @@ public class PackageManager
     private class BuildpathJob extends Job {
 
         private IPath installedPath;
+        private IPath installedDevPath;
         
         private boolean running;
         
@@ -310,6 +317,7 @@ public class PackageManager
         {
             super("Updating composer buildpath");
             installedPath = new Path("vendor/composer/installed.json");
+            installedDevPath = new Path("vendor/composer/installed_dev.json");
         }
         
         private void installLocalPackage(InstalledPackage installedPackage,
@@ -340,6 +348,45 @@ public class PackageManager
             running = false;
         }
         
+        private void handleDevPackages(IProject project) throws Exception {
+            
+            handlePackages(project, BP_PROJECT_BUILDPATH_DEV_PREFIX+ project.getName(), installedDevPath);            
+        }
+        
+        private void handleProdPackages(IProject project) throws Exception {
+            
+            handlePackages(project, BP_PROJECT_BUILDPATH_PREFIX + project.getName(), installedPath);
+            
+        }
+        
+        private void handlePackages(IProject project, String propertyName, IPath path) throws Exception {
+
+            IFile installed = (IFile) project.findMember(path);
+            List<InstalledPackage> json = InstalledPackage.deserialize(installed.getContents());
+            installPackages(json, project);
+            persist(propertyName, installed);
+        }
+        
+        private void persist(String key, IFile file) throws IOException, CoreException, BackingStoreException {
+            
+            IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(file.getContents(), writer);
+            String propertyValue = writer.toString();
+            prefs.put(key, propertyValue);
+            prefs.flush();
+            writer.close();
+        }
+        
+        private void installPackages(List<InstalledPackage> packages, IProject project) {
+            for (InstalledPackage installedPackage : packages) {
+
+                if (!installedPackage.isLocalVersionAvailable()) {
+                    installLocalPackage(installedPackage, project);
+                }
+            }
+        }
+        
         
         @Override
         protected IStatus run(IProgressMonitor monitor)
@@ -366,38 +413,11 @@ public class PackageManager
                         continue;
                     }
                     
-                    List<InstalledPackage> json = InstalledPackage.deserialize(installed.getContents());
-                    
-                    for (InstalledPackage installedPackage : json) {
-                        
-                        if (!running) {
-                            return Status.CANCEL_STATUS;
-                        }
-                        
-                        if (!installedPackage.isLocalVersionAvailable()) {
-                            installLocalPackage(installedPackage, project);
-                        }
-                    }
-                    
-                    
-                    IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
-                    String propertyName = BP_PROJECT_BUILDPATH_PREFIS + project.getName();
-                    
-                    StringWriter writer = new StringWriter();
-                    IOUtils.copy(installed.getContents(), writer);
-                    String propertyValue = writer.toString();
-                    prefs.put(propertyName, propertyValue);
-                    prefs.flush();
-                    writer.close();
-                    
+                    handleProdPackages(project);
+                    handleDevPackages(project);
                     DLTKCore.refreshBuildpathContainers(DLTKCore.create(project));
                     
-                } catch (CoreException e) {
-                    StatusManager.getManager().handle(e.getStatus());
-                    return Status.CANCEL_STATUS;
-                } catch (IOException e) {
-                    Logger.logException(e);
-                } catch (BackingStoreException e) {
+                } catch (Exception e) {
                     Logger.logException(e);
                 }
                 
@@ -417,13 +437,45 @@ public class PackageManager
         
         return null;
     }
+    
+    public List<InstalledPackage> getInstalledDevPackages(IScriptProject project) {
+        
+        if (installedDevPackages.containsKey(project.getProject().getName())) {
+            return installedDevPackages.get(project.getProject().getName());
+        }
+        
+        return null;
+    }
+    
+    public List<InstalledPackage> getAllPackages(IScriptProject project) {
+        
+        List<InstalledPackage> allPackages = new ArrayList<InstalledPackage>();
+        
+        if (!installedPackages.containsKey(project.getProject().getName())) {
+            return allPackages;
+        }
+        
+        for (InstalledPackage pack : installedPackages.get(project.getProject().getName())) {
+            pack.isDev = false;
+            allPackages.add(pack);
+        }
+        
+        if (installedDevPackages.containsKey(project.getProject().getName())) {
+            for (InstalledPackage pack : installedDevPackages.get(project.getProject().getName())) {
+                pack.isDev = true;
+                allPackages.add(pack);
+            }
+        }
+        
+        return allPackages;
+    }
 
     public void removeProject(IProject project)
     {
         try {
             
             String name = project.getName();
-            String propertyName = BP_PROJECT_BUILDPATH_PREFIS + name;
+            String propertyName = BP_PROJECT_BUILDPATH_PREFIX + name;
             IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
             instancePreferences.remove(propertyName);
             instancePreferences.flush();
