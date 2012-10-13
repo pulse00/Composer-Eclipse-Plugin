@@ -9,7 +9,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.ui.PharNotFoundException;
-import com.dubture.composer.core.ui.view.DependencyGraph;
+import com.dubture.composer.core.ui.view.dependencies.DependencyGraph;
 
 public class DependencyGraphHandler extends ComposerHandler implements IHandler
 {

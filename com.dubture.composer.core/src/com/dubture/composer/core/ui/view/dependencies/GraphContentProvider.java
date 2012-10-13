@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.view;
+package com.dubture.composer.core.ui.view.dependencies;
 
 import java.util.ArrayList;
 import java.util.List;

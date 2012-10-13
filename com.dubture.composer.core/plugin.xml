@@ -141,7 +141,7 @@
       <view
             allowMultiple="false"
             category="org.eclipse.ui"
-            class="com.dubture.composer.core.ui.view.DependencyGraph"
+            class="com.dubture.composer.core.ui.view.dependencies.DependencyGraph"
             icon="ico/full/obj16/icon-logo-composer.png"
             id="com.dubture.composer.core.dependencyGraph"
             name="Dependency Graph"

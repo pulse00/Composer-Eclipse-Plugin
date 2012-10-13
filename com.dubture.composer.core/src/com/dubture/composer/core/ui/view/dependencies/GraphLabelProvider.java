@@ -1,4 +1,4 @@
-package com.dubture.composer.core.ui.view;
+package com.dubture.composer.core.ui.view.dependencies;
 
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.IFigure;
