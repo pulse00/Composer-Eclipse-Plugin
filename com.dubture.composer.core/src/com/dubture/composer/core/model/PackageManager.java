@@ -282,7 +282,10 @@ public class PackageManager
         private void installLocalPackage(InstalledPackage installedPackage,
                 IProject project)
         {
-            IResource resource = project.findMember(new Path("vendor").append(installedPackage.name));
+            IPath path = new Path("vendor").append(installedPackage.name);
+            
+            Logger.debug("Installing local version of " + installedPackage.getFullName());
+            IResource resource = project.findMember(path);
             
             if (resource instanceof IFolder) {
                 IFolder folder = (IFolder) resource;
@@ -297,6 +300,8 @@ public class PackageManager
                         Logger.logException(e);
                     }
                 }
+            } else {
+                Logger.debug("Unable to find folder in project for path " + path.toString());
             }
         }
         
@@ -323,9 +328,10 @@ public class PackageManager
             IFile installed = (IFile) project.findMember(path);
             
             if (installed == null) {
-                Logger.debug("Unable to find 'installed.json' in " + project.getName());
+                Logger.debug("Unable to find '" + path.lastSegment()  + "' in " + project.getName() + " using path " + path.toString());
                 return;
             }
+            
             List<InstalledPackage> json = InstalledPackage.deserialize(installed.getContents());
             installPackages(json, project);
             persist(propertyName, installed);
@@ -343,10 +349,14 @@ public class PackageManager
         }
         
         private void installPackages(List<InstalledPackage> packages, IProject project) {
+            
+            Logger.debug("Installing local packages for project " + project.getName());
+            
             for (InstalledPackage installedPackage : packages) {
-
                 if (!installedPackage.isLocalVersionAvailable()) {
                     installLocalPackage(installedPackage, project);
+                } else {
+                    Logger.debug(installedPackage.getFullName() + " is already installed locally");
                 }
             }
         }
@@ -355,6 +365,7 @@ public class PackageManager
         @Override
         protected IStatus run(IProgressMonitor monitor)
         {
+            Logger.debug("Running buildpath job");
             running = true;
             monitor.setTaskName("Updating composer buildpath...");
             
@@ -362,10 +373,12 @@ public class PackageManager
 
                 try {
                     if (!running) {
+                        Logger.debug("Job cancelled");
                         return Status.CANCEL_STATUS;
                     }
                     
                     if (!project.hasNature(ComposerNature.NATURE_ID)) {
+                        Logger.debug("Buildpath not running on project without composer nature " + project.getName());
                         monitor.worked(1);
                         continue;
                     }

@@ -20,6 +20,7 @@ import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
 import org.getcomposer.core.ComposerFieldNamingStrategy;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.log.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -64,13 +65,14 @@ public class InstalledPackage
 
     public File getLocalFile()
     {
-
         if (localFile == null) {
             IPath location = ComposerPlugin.getDefault().getStateLocation();
             IPath localPath = location.append("packages").append(getPath())
                     .append(version);
             localFile = localPath.toFile();
-
+            
+            Logger.debug("Retrieving local filepath for " + name + ":");
+            Logger.debug(localFile.getAbsolutePath());
         }
 
         return localFile;

@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IFile;
 import org.getcomposer.core.ComposerFieldNamingStrategy;
 import org.getcomposer.core.PHPPackage;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.ModelAccess;
 import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
@@ -36,10 +37,13 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
         IFile file = (IFile) getResource();
 
         if (file == null) {
+            Logger.debug("ComposerVisitor being called, but file was null");
             return;
         }
         
+        Logger.debug("ComposerVisitor being called on " + file.getName());
         if ("installed.json".equals(file.getName()) || "installed_dev.json".equals(file.getName())) {
+            Logger.debug("updating buildpath");
             ModelAccess.getInstance().getPackageManager().updateBuildpath();
             return;
         }
