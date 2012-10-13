@@ -33,6 +33,23 @@
 	<layout>p2</layout>
 	<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20120526062928/repository/</url>
   </repository>
+
+               <repository>
+                        <id>dltk-tests</id>
+                        <layout>p2</layout>
+                        <url>https://hudson.eclipse.org/hudson/job/dltk-nightly/lastSuccessfulBuild/artifact/org.eclipse.dltk.releng/build/update.site/target/site/</url>
+                </repository>
+                <repository>
+                        <id>juno</id>
+                        <layout>p2</layout>
+                        <url>http://download.eclipse.org/releases/juno</url>
+                </repository>
+                <repository>
+                        <id>eclipse-tests</id>
+                        <layout>p2</layout>
+                        <url>http://download.eclipse.org/eclipse/updates/4.2/R-4.2-201206081400</url>
+                </repository>
+
   </repositories>
 
   <build>

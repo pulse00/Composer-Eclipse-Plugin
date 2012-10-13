@@ -22,7 +22,7 @@ public class ComposerBuildParticipant implements IBuildParticipant
         try {
             ISourceModule sourceModule = context.getSourceModule();     
             ModuleDeclaration moduleDeclaration = SourceParserUtil.getModuleDeclaration(sourceModule);
-            moduleDeclaration.traverse(new AutoloadVisitor(context));
+            moduleDeclaration.traverse(new AutoloadVisitor(context.getSourceModule()));
         } catch (Exception e) {
             Logger.logException(e);
         }        

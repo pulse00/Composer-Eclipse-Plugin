@@ -28,6 +28,7 @@ import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -69,8 +70,13 @@ public class ModelAccess implements NamespaceResolverInterface
             String prefKey = "namespacemap#" + project.getName();
             String json = instancePreferences.get(prefKey, "{}");
             Type typeOfHashMap = new TypeToken<List<NamespaceMapping>>() { }.getType();
-            List<NamespaceMapping> newMap = gson.fromJson(json, typeOfHashMap);
-            namespaceMap.put(project.getName(), newMap);
+            try {
+                List<NamespaceMapping> newMap = gson.fromJson(json, typeOfHashMap);
+                namespaceMap.put(project.getName(), newMap);
+            } catch (JsonParseException e) {
+                Logger.logException(e);
+            }
+            
             Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
     }

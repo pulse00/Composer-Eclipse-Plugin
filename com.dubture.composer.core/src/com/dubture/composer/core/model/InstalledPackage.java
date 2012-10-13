@@ -42,7 +42,7 @@ public class InstalledPackage
     public boolean isDev;
     public Map<String, String> require;
     public Map<String, String> requireDev;
-    public Map<String, String> suggests;
+    public Map<String, String> suggest;
     public String targetDir;
     
     /**

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dltk.ast.references.VariableReference;
-import org.eclipse.dltk.core.builder.IBuildContext;
+import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.php.internal.core.compiler.ast.nodes.ArrayCreation;
 import org.eclipse.php.internal.core.compiler.ast.nodes.ArrayElement;
 import org.eclipse.php.internal.core.compiler.ast.nodes.InfixExpression;
@@ -17,23 +17,33 @@ import com.dubture.composer.core.model.NamespaceMapping;
 @SuppressWarnings("restriction")
 public class AutoloadVisitor extends PHPASTVisitor
 {
-    protected IBuildContext context;
+    protected ISourceModule source;
+    private NamespaceVisitor visitor;
     
-    public AutoloadVisitor(IBuildContext context)
+    public AutoloadVisitor(ISourceModule source)
     {
-        this.context = context;
+        this.source = source;
     }
 
 
     @Override
     public boolean visit(ArrayCreation s) throws Exception
     {
-        NamespaceVisitor visitor = new NamespaceVisitor();
+        visitor = new NamespaceVisitor();
         s.traverse(visitor);
         
-        ModelAccess.getInstance().updateNamespaces(visitor.getNamespaces(), context.getSourceModule().getScriptProject());
+        ModelAccess.getInstance().updateNamespaces(visitor.getNamespaces(), source.getScriptProject());
         
         return true;
+    }
+    
+    public List<NamespaceMapping> getMappings() {
+        
+        if (visitor != null) {
+            return visitor.namespaces;
+        }
+        
+        return null;
     }
 
     protected class NamespaceVisitor extends PHPASTVisitor {
