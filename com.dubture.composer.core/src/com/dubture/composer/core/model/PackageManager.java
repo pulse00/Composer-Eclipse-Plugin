@@ -362,6 +362,11 @@ public class PackageManager
         private void handlePackages(IProject project, String propertyName, IPath path) throws Exception {
 
             IFile installed = (IFile) project.findMember(path);
+            
+            if (installed == null) {
+                Logger.debug("Unable to find 'installed.json' in " + project.getName());
+                return;
+            }
             List<InstalledPackage> json = InstalledPackage.deserialize(installed.getContents());
             installPackages(json, project);
             persist(propertyName, installed);

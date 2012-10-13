@@ -46,7 +46,7 @@ public class ComposerPreferencePage extends PreferencePage implements
         Composite composite = new Composite(parent, SWT.NONE);
         composite.setFont(parent.getFont());
         
-        buildpathEnabled = new BooleanFieldEditor(ComposerConstants.PREF_BUILDPATH_ENABLE, "Enable composer buildpathcontainer (experimental)", composite);
+        buildpathEnabled = new BooleanFieldEditor(ComposerConstants.PREF_BUILDPATH_ENABLE, "Enable buildpath management for composer packages (experimental)", composite);
         buildpathEnabled.setPreferenceStore(getPreferenceStore());
         buildpathEnabled.load();
         
