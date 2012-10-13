@@ -8,7 +8,6 @@ import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 
-import com.dubture.composer.core.build.InstalledPackage;
 
 /**
  * 

@@ -125,8 +125,6 @@ public class RequireWizard extends Wizard
                     launcher.launch(composer.getLocation().toOSString(),
                             arg, new ConsoleResponseHandler(monitor));
 
-                    ModelAccess.getInstance().getPackageManager().createBuildpathEntry(project, composer, composerPackage, monitor);
-//                    composerPackage.createUserLibraryFromPackage(project, composer, monitor);
                     monitor.worked(1);
                     
                 } catch (CoreException e) {

@@ -33,8 +33,8 @@ import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
-import com.dubture.composer.core.build.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.model.InstalledPackage;
 import com.dubture.composer.core.model.ModelAccess;
 
 @SuppressWarnings("restriction")

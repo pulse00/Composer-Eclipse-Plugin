@@ -6,7 +6,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
-import com.dubture.composer.core.build.InstalledPackage;
+import com.dubture.composer.core.model.InstalledPackage;
 
 public class GraphContentProvider extends ArrayContentProvider implements
         IGraphEntityContentProvider

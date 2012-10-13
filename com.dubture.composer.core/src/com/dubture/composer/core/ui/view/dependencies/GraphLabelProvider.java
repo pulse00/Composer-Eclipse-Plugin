@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 
-import com.dubture.composer.core.build.InstalledPackage;
+import com.dubture.composer.core.model.InstalledPackage;
 
 public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider
 {

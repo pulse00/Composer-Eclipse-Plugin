@@ -25,7 +25,6 @@ import org.getcomposer.core.PackageInterface;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.build.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

@@ -1,4 +1,4 @@
-package com.dubture.composer.core.build;
+package com.dubture.composer.core.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

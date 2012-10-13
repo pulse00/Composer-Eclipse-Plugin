@@ -18,7 +18,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -29,7 +28,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.dltk.core.BuildpathContainerInitializer;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
@@ -44,7 +42,6 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.build.InstalledPackage;
 import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
@@ -172,7 +169,6 @@ public class PackageManager
     public synchronized void setPackage(String name, IBuildpathEntry[] buildpathEntries,
             boolean isSystemLibrary)
     {
-        
         IEclipsePreferences prefs = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         String propertyName = BP_COMPOSERPACKAGE_PREFERENCES_PREFIX
                 + makePackageName(name);
@@ -183,10 +179,9 @@ public class PackageManager
             prefs.put(propertyName, propertyValue);
             prefs.flush();
         } catch (BackingStoreException e) {
-            e.printStackTrace();
+            Logger.logException(e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Logger.logException(e);
         }
     }
 
@@ -237,42 +232,6 @@ public class PackageManager
         }
 
         return (String[]) result.toArray(new String[result.size()]);
-    }
-
-    /**
-     * @param project
-     * @param composer
-     * @param composerPackage
-     * @param monitor
-     */
-    public void createBuildpathEntry(IScriptProject project, IResource composer,
-            EclipsePHPPackage composerPackage, IProgressMonitor monitor)
-    {
-        try {
-            
-            BuildpathContainerInitializer initializer = DLTKCore
-                    .getBuildpathContainerInitializer(ComposerBuildpathContainerInitializer.CONTAINER);
-            
-            IBuildpathContainer suggestedContainer = new ComposerBuildpathContainer(new Path(ComposerBuildpathContainerInitializer.CONTAINER), project);
-            
-            // creates a global composer package if the version doesn't exist yet
-            initializer.requestBuildpathContainerUpdate(suggestedContainer.getPath(), createPlaceholderProject(), suggestedContainer);
-            
-        } catch (Exception e) {
-            Logger.logException(e);
-        }
-    }
-    
-    private static IScriptProject createPlaceholderProject() {
-        String name = "####internal"; //$NON-NLS-1$
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        while (true) {
-            IProject project = root.getProject(name);
-            if (!project.exists()) {
-                return DLTKCore.create(project);
-            }
-            name += '1';
-        }
     }
 
     public PackagePath[] getPackagePaths(IScriptProject project)
