@@ -14,7 +14,7 @@ change, it will do the following:
 * The `vendor` folder is removed from your projects buildpath
 * Instead of parsing and indexing your dependencies for each project separately, PDT will be able to index common dependencies across projects using the local cache.
 
-This can increase the indexing process dramatically, as your buildpath only contains your projects sources, meaning for each project indexing and validation will only happen
+This can increase the speed of the indexing process significantly, as your buildpath only contains your project's sources, meaning for each project indexing and validation will only happen
 on the sources of your project, not on your dependencies.
 
 Please not that this feature will not modify the way composer works in any way, your vendor directory still contains all the latest references from `composer.lock` and any 
