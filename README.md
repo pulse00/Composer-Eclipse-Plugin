@@ -40,11 +40,14 @@ The nightly build is provided by the [PDT Extension group](https://github.com/pd
 Usage
 =====
 
+The documentation is describing the plugins latest features, only available in the nightly-build repository. To read the documentation for the 
+stable release, see https://github.com/pulse00/Composer-Eclipse-Plugin/tree/stable.
+
 ### Prerequisites
 
 * You need to setup a working PHP executable in the PHP preference page "PHP executables" so `composer.phar` can be executed properly.
-* To make the dependency graph work, you need to add the Composer nature to your project via `Right-Click on project -> Configure -> Add Composer nature` and rebuild
-your project.
+* If you want to use buildpath management (can increase PDT performance), enable it under eclipse preferences -> PHP -> Composer -> Enable buildpath management
+* To enable composer features on a project, right-click the project preferences and activate the `Composer Facet` under the `Project Facets` tab
 
 
 This plugin is still beta.
