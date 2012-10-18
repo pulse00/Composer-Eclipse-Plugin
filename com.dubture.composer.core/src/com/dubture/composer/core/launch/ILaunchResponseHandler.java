@@ -10,5 +10,6 @@ package com.dubture.composer.core.launch;
 public interface ILaunchResponseHandler {
 	
 	void handle(String response);
+	void handleError(String response);
 
 }

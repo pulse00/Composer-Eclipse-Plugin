@@ -2,6 +2,8 @@ package com.dubture.composer.core.launch;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
+import com.dubture.composer.core.log.Logger;
+
 
 public class ConsoleResponseHandler implements ILaunchResponseHandler {
 
@@ -16,4 +18,10 @@ public class ConsoleResponseHandler implements ILaunchResponseHandler {
 		//TODO: log to eclipse console
 		monitor.subTask(response);
 	}
+
+    @Override
+    public void handleError(String response)
+    {
+        Logger.log(Logger.ERROR, response);
+    }
 }

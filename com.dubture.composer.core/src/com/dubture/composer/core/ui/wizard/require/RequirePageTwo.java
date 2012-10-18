@@ -198,8 +198,16 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
     }
 
     @Override
-    public void versionChanged(PackageInterface packageName, String versionName)
+    synchronized public void versionChanged(PackageInterface packageName, String versionName)
     {
+        Iterator<EclipsePHPPackage> iterator = packages.keySet().iterator();
+
+        while(iterator.hasNext()) {
+            EclipsePHPPackage p = iterator.next();
+            if (p.getPhpPackage().getName().equals(packageName.getName())) {
+                iterator.remove();
+            }
+        }
         packages.put(new EclipsePHPPackage(packageName), versionName);
     }
 
