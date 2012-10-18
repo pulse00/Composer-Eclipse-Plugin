@@ -70,7 +70,6 @@ public class RequirePageOne extends MultiItemInstallerPage
                 return Status.OK_STATUS;
             }
         };
-        refreshJob.setSystem(true);
     }
 
     public List<InstallableItem> getSelectedItems()

@@ -1,6 +1,8 @@
 package com.dubture.composer.core.ui.wizard.require;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -107,31 +109,35 @@ public class RequireWizard extends Wizard
             }
             
             int count = secondPage.getPackages().size();
-
             Iterator it = secondPage.getPackages().keySet().iterator();
+            List<String> deps = new ArrayList<String>();
+            deps.add("require");
+            
             monitor.beginTask("Installing composer packages - ", count + 2 );
-
             monitor.worked(1);
+            
             while (it.hasNext()) {
-                
-                EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
-                String version = secondPage.getPackages().get(composerPackage);
-
                 try {
+                    EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
+                    String version = secondPage.getPackages().get(composerPackage);
                     String dependency = composerPackage.getPhpPackage().getPackageName(version);
-                    monitor.subTask("(require " + dependency + ")");
-                    launcher = new DefaultExecutableLauncher();
-                    String[] arg = new String[]{"require", dependency};
-                    launcher.launch(composer.getLocation().toOSString(),
-                            arg, new ConsoleResponseHandler(monitor));
-
-                    monitor.worked(1);
-                    
-                } catch (CoreException e) {
-                    StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
+                    System.err.println(dependency);
+                    deps.add(dependency);
                 } catch (Exception e) {
                     Logger.logException(e);
                 }
+            }
+            
+            try {
+                monitor.subTask("(require " + deps);
+                launcher = new DefaultExecutableLauncher();
+                launcher.launch(composer.getLocation().toOSString(),
+                        deps.toArray(new String[deps.size()]), new ConsoleResponseHandler(monitor));
+                monitor.worked(1);
+            } catch (CoreException e) {
+                StatusManager.getManager().handle(e.getStatus(), StatusManager.SHOW|StatusManager.BLOCK);
+            } catch (Exception e) {
+                Logger.logException(e);
             }
             
             IProject project = composer.getProject();

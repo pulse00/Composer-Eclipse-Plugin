@@ -14,8 +14,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -34,7 +32,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.progress.WorkbenchJob;
 
@@ -132,9 +129,18 @@ public abstract class AbstractItemInstallerPage extends WizardPage implements
 		int numColumns = 2; // 1 for label, 2 for text filter
 		GridLayoutFactory.fillDefaults().numColumns(numColumns)
 				.applyTo(filterContainer);
-		final Label label = new Label(filterContainer, SWT.NULL);
-		label.setText("Search");
-
+		
+        final Button button = new Button(filterContainer, SWT.PUSH);
+        button.setText("Search");
+        button.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                filterTextChanged();
+            }
+        });
+		
 		final Composite textFilterContainer = new Composite(
 				filterContainer, SWT.NULL);
 		GridDataFactory.fillDefaults().grab(true, false)
@@ -148,13 +154,6 @@ public abstract class AbstractItemInstallerPage extends WizardPage implements
 		GridDataFactory.fillDefaults().grab(true, false).span(2, 1)
 			.applyTo(this.filterText);
 		
-		this.filterText.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent e) {
-				filterTextChanged();
-			}
-		});
-
 		this.filterText.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -164,7 +163,6 @@ public abstract class AbstractItemInstallerPage extends WizardPage implements
 			}
 
 			protected void clearFilterText() {
-				// TODO Auto-generated method stub
 
 			}
 		});
