@@ -11,6 +11,7 @@ Current Features
 * Search and install packages on packagist.org
 * Visualize your dependency graph
 * Run Install/Update commands from within eclipse
+* Handle composer packages as custom composer buildpath entries (see the [docs](https://github.com/pulse00/Composer-Eclipse-Plugin/blob/master/docs/buildpathmanagement.md) for more info)
 
 INSTALLATION
 ============
