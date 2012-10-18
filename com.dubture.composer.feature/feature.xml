@@ -2,7 +2,7 @@
 <feature
       id="com.dubture.composer.feature"
       label="Composer Feature"
-      version="0.0.6.qualifier"
+      version="0.0.7.qualifier"
       provider-name="https://github.com/pulse00">
 
    <description url="https://github.com/pulse00/Composer-Eclipse-Plugin">
