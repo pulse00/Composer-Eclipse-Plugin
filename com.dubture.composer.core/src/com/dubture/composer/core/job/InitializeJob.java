@@ -60,11 +60,16 @@ public class InitializeJob extends ComposerJob
             List<String> args = new ArrayList<String>();
             
             args.add("--name=" + phpPackage.name);
-            args.add(String.format("--description=%s", phpPackage.description));
+            
+            if (phpPackage.description != null && phpPackage.description.length() > 0) {
+                args.add(String.format("--description=%s", phpPackage.description));
+            }
             
             if (phpPackage.authors != null && phpPackage.authors.length > 0) {
                 Author author = phpPackage.authors[0];
-                args.add(String.format("--author=%s", author.getInitString()));
+                if (author.name != null && author.email != null) {
+                    args.add(String.format("--author=%s", author.getInitString()));
+                }
             }
             
             args.add("--minimum-stability=" + phpPackage.minimumStability);

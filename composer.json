@@ -1,0 +1,14 @@
+{
+    "name": "sobert/asafsadf",
+    "description": "asdf",
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "asdf",
+            "email": "asdf@adsf.com"
+        }
+    ],
+    "require": {
+
+    }
+}

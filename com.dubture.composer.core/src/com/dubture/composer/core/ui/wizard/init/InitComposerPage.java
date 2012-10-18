@@ -1,10 +1,14 @@
 package com.dubture.composer.core.ui.wizard.init;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.internal.preferences.InstancePreferences;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ui.wizards.NewElementWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -21,23 +25,39 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import org.getcomposer.core.Author;
 import org.getcomposer.core.PHPPackage;
 
+/**
+ * 
+ * @author "Robert Gruendler <r.gruendler@gmail.com>"
+ *
+ */
 public class InitComposerPage extends NewElementWizardPage
 {
     
     private PHPPackage phpPackage;
     
     private List<Text> inputfields = new ArrayList<Text>();
+    
+    private String EMAIL_PATTERN = 
+            "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
-    public InitComposerPage()
+    private Pattern pattern = Pattern.compile(EMAIL_PATTERN);
+    private Matcher matcher;
+    
+    private IScriptProject project;
+
+    public InitComposerPage(IScriptProject project)
     {
         super("Initialize composer for this project");
         setPhpPackage(new PHPPackage());
         setTitle("Initialize this project");
         setDescription("Runs composer.phar init on this project to create an initial composer.json file");
         setPageComplete(false);
+        this.project = project;
     }
     
     protected VerifyListener verifyListener = new VerifyListener()
@@ -102,6 +122,7 @@ public class InitComposerPage extends NewElementWizardPage
     
     private void validate()
     {
+        System.err.println("validate");
         if (phpPackage.getName() == null || phpPackage.getName().length() == 0) {
             setErrorMessage("Vendor name missing");
             setPageComplete(false);
@@ -130,13 +151,7 @@ public class InitComposerPage extends NewElementWizardPage
             return;
         }
         
-        String EMAIL_PATTERN = 
-                "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-                + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(author.email);
-        
+        matcher = pattern.matcher(author.email);
         if (matcher.matches() == false) {
             setErrorMessage("Not a valid email adress");
             setPageComplete(false);
@@ -148,7 +163,7 @@ public class InitComposerPage extends NewElementWizardPage
 
     }
     
-    private void addInput(Composite parent, String label, String key) 
+    private void addInput(Composite parent, String label, String key, String defaultInput) 
     {
         GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
         gd.widthHint = 200;
@@ -173,15 +188,23 @@ public class InitComposerPage extends NewElementWizardPage
             @Override
             public void focusGained(FocusEvent e)
             {
-                
             }
         });
         
         input.setLayoutData(data);
         input.setData(key);
         
+        if (defaultInput != null) {
+            input.setText(defaultInput);
+        }
+        
         inputfields.add(input);
     }
+    
+    private void addInput(Composite parent, String label, String key) {
+        addInput(parent, label, key, null);
+    }
+    
     
 
     @Override
@@ -193,9 +216,13 @@ public class InitComposerPage extends NewElementWizardPage
         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         container.setLayoutData(gd);
 
-        addInput(container, "Package name (<vendor>/<name>)", "name");
+        String defaultAuthor = System.getProperty("user.name");
+        String defaultPackageName =  defaultAuthor + "/" + project.getProject().getName();
+        phpPackage.name = defaultPackageName;
+        phpPackage.authors = new Author[]{new Author(defaultAuthor)};
+        addInput(container, "Package name (<vendor>/<name>)", "name", defaultPackageName);
         addInput(container, "Description", "description");
-        addInput(container, "Author", "author");
+        addInput(container, "Author", "author", defaultAuthor);
         addInput(container, "Email", "email");  
         addInput(container, "Homepage", "homepage");
         

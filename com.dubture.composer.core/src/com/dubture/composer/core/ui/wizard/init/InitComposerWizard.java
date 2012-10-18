@@ -30,14 +30,13 @@ public class InitComposerWizard extends Wizard implements INewWizard
     @Override
     public void addPages()
     {
-        page = new InitComposerPage();
+        page = new InitComposerPage(scriptProject);
         addPage(page);
     }
 
-    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection)
     {
-        
+
     }
 
     @Override
