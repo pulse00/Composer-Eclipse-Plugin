@@ -8,13 +8,10 @@ Bundle-Vendor: https://github.com/pulse00
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,
- org.eclipse.ui.ide,
  com.dubture.indexing.core,
  org.eclipse.dltk.core,
  org.eclipse.dltk.ui,
  org.apache.commons.httpclient,
- org.eclipse.zest.core,
- org.eclipse.zest.layouts,
  org.getcomposer.core,
  org.eclipse.php.debug.core,
  org.eclipse.php.core,
@@ -24,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.common.project.facet.ui,
  org.apache.commons.io,
  org.apache.commons.exec,
- org.eclipse.ui.forms
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core;
@@ -55,52 +52,6 @@ Export-Package: com.dubture.composer.core;
    org.eclipse.core.resources,
    org.eclipse.dltk.core,
    com.google.gson",
- com.dubture.composer.core.ui,
- com.dubture.composer.core.ui.explorer;
-  uses:="org.eclipse.dltk.internal.ui.scriptview,
-   org.eclipse.dltk.internal.ui.navigator,
-   org.eclipse.jface.viewers,
-   org.eclipse.swt.graphics,
-   org.eclipse.dltk.core",
- com.dubture.composer.core.ui.handler;uses:="org.eclipse.core.resources,org.eclipse.core.commands,org.eclipse.dltk.core",
- com.dubture.composer.core.ui.preferences;uses:="org.eclipse.jface.preference,org.eclipse.ui,org.eclipse.swt.widgets",
- com.dubture.composer.core.ui.view.dependencies;
-  uses:="org.eclipse.jface.action,
-   com.dubture.composer.core.model,
-   org.eclipse.core.resources,
-   org.eclipse.swt.graphics,
-   org.eclipse.jface.viewers,
-   org.eclipse.ui.part,
-   org.eclipse.draw2d,
-   org.eclipse.swt.widgets,
-   org.eclipse.zest.core.viewers",
- com.dubture.composer.core.ui.wizard.init;
-  uses:="org.eclipse.jface.wizard,
-   org.eclipse.dltk.ui.wizards,
-   org.getcomposer.core,
-   org.eclipse.ui,
-   org.eclipse.swt.events,
-   org.eclipse.jface.viewers,
-   org.eclipse.swt.widgets,
-   org.eclipse.dltk.core",
- com.dubture.composer.core.ui.wizard.iteminstaller;
-  uses:="org.eclipse.jface.wizard,
-   com.dubture.composer.core.model,
-   org.eclipse.swt.events,
-   org.eclipse.swt.custom,
-   org.eclipse.swt.graphics,
-   org.eclipse.swt.widgets,
-   org.eclipse.ui.progress",
- com.dubture.composer.core.ui.wizard.require;
-  uses:="org.eclipse.jface.wizard,
-   com.dubture.composer.core.model,
-   com.dubture.composer.core.ui.wizard.iteminstaller,
-   org.getcomposer.core,
-   org.eclipse.core.resources,
-   org.eclipse.swt.graphics,
-   org.eclipse.swt.widgets,
-   org.eclipse.dltk.core,
-   org.eclipse.jface.dialogs",
  com.dubture.composer.core.visitor;
   uses:="org.eclipse.php.internal.core.compiler.ast.visitor,
    org.eclipse.php.internal.core.compiler.ast.nodes,
@@ -108,4 +59,5 @@ Export-Package: com.dubture.composer.core;
    org.eclipse.core.resources,
    org.eclipse.dltk.core,
    com.google.gson"
+
 

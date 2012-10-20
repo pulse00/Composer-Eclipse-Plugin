@@ -26,8 +26,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.core.ui.ExecutableNotFoundException;
-import com.dubture.composer.core.ui.LaunchUtil;
 
 /**
  * 
