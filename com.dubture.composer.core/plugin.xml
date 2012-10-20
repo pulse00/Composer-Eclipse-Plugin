@@ -211,6 +211,17 @@
          </page>
       </wizard-pages>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.dubture.composer.core.ui.editor.composer.ComposerEditor"
+            default="true"
+            filenames="composer.json"
+            icon="ico/full/obj16/icon-logo-composer.png"
+            id="com.dubture.composer.core.editor.composer.ComposerEditor"
+            name="Composer">
+      </editor>
+   </extension>
    
 
 </plugin>
