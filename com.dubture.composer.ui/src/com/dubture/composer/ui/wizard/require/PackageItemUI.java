@@ -71,7 +71,7 @@ public class PackageItemUI extends AbstractDescriptorItemUi
         nameLabel.setFont(installer.getH1Font());
         nameLabel.setText(composerPackage.getName());
         
-        Map<String, PHPPackage> versions = composerPackage.getVersions();
+        Map<String, PackageInterface> versions = composerPackage.getVersions();
         
         Iterator it = versions.keySet().iterator();
         

@@ -10,7 +10,7 @@
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
-               icon="ico/full/obj16/icon-logo-composer.png"
+               icon="icons/full/obj16/composer.png"
                id="com.dubture.composer.ui.menu"
                label="Composer">
             <command
@@ -103,7 +103,7 @@
             allowMultiple="false"
             category="org.eclipse.ui"
             class="com.dubture.composer.ui.view.dependencies.DependencyGraph"
-            icon="ico/full/obj16/icon-logo-composer.png"
+            icon="icons/full/obj16/composer.png"
             id="com.dubture.composer.ui.dependencyGraph"
             name="Dependency Graph"
             restorable="true">
@@ -130,7 +130,7 @@
             class="com.dubture.composer.ui.editor.composer.ComposerEditor"
             default="true"
             filenames="composer.json"
-            icon="ico/full/obj16/icon-logo-composer.png"
+            icon="icons/full/obj16/composer.png"
             id="com.dubture.composer.ui.editor.composer.ComposerEditor"
             name="Composer">
       </editor>

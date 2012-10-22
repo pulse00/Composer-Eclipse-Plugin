@@ -65,8 +65,8 @@ public class InitializeJob extends ComposerJob
                 args.add(String.format("--description=%s", phpPackage.description));
             }
             
-            if (phpPackage.authors != null && phpPackage.authors.length > 0) {
-                Author author = phpPackage.authors[0];
+            if (phpPackage.authors != null && phpPackage.authors.size() > 0) {
+                Author author = phpPackage.authors.get(0);
                 if (author.name != null && author.email != null) {
                     args.add(String.format("--author=%s", author.getInitString()));
                 }

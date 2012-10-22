@@ -88,24 +88,24 @@ public class InitComposerPage extends NewElementWizardPage
                 getPhpPackage().description = widget.getText();
             } else if ("author".equals(widget.getData())) {
                 
-                Author[] authors = getPhpPackage().getAuthors();
-                if (authors == null || authors.length == 0) {
-                    authors = new Author[]{new Author("")};
+                List<Author> authors = getPhpPackage().getAuthors();
+                if (authors == null || authors.size() == 0) {
+                    authors.add(new Author(""));
                 }
                 
-                Author author = authors[0];
-                author.name= widget.getText();
-                getPhpPackage().authors = new Author[]{author};
+                Author author = authors.get(0);
+                author.setName(widget.getText());
+                getPhpPackage().setAuthors(authors);
             } else if ("email".equals(widget.getData())) {
                 
-                Author[] authors = getPhpPackage().getAuthors();
-                if (authors == null || authors.length == 0) {
-                    authors = new Author[]{new Author("")};
+            	List<Author> authors = getPhpPackage().getAuthors();
+                if (authors == null || authors.size() == 0) {
+                    authors.add(new Author(""));
                 }
                 
-                Author author = authors[0];
-                author.email= widget.getText();
-                getPhpPackage().authors = new Author[]{author};
+                Author author = authors.get(0);
+                author.setEmail(widget.getText());
+                getPhpPackage().setAuthors(authors);
                 
             } else if ("page".equals(widget.getData())) {
                 getPhpPackage().homepage = widget.getText();
@@ -129,15 +129,15 @@ public class InitComposerPage extends NewElementWizardPage
             return;
         }
         
-        Author[] authors = phpPackage.getAuthors();
+        List<Author> authors = phpPackage.getAuthors();
         
-        if (authors == null || authors.length == 0) {
+        if (authors == null || authors.size() == 0) {
             setErrorMessage("Author information missing");
             setPageComplete(false);
             return;
         }
         
-        Author author = authors[0];
+        Author author = authors.get(0);
         
         if (author.name == null || author.name.length() == 0) {
             setErrorMessage("Author name missing");
@@ -219,7 +219,7 @@ public class InitComposerPage extends NewElementWizardPage
         String defaultAuthor = System.getProperty("user.name");
         String defaultPackageName =  defaultAuthor + "/" + project.getProject().getName();
         phpPackage.name = defaultPackageName;
-        phpPackage.authors = new Author[]{new Author(defaultAuthor)};
+        phpPackage.authors.add(new Author(defaultAuthor));
         addInput(container, "Package name (<vendor>/<name>)", "name", defaultPackageName);
         addInput(container, "Description", "description");
         addInput(container, "Author", "author", defaultAuthor);
