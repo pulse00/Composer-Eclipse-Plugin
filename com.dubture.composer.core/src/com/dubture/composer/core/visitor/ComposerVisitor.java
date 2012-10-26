@@ -44,7 +44,7 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
         Logger.debug("ComposerVisitor being called on " + file.getName());
         if ("installed.json".equals(file.getName()) || "installed_dev.json".equals(file.getName())) {
             Logger.debug("updating buildpath");
-            ModelAccess.getInstance().getPackageManager().updateBuildpath();
+            ModelAccess.getInstance().getPackageManager().updateBuildpath(file.getProject());
             return;
         }
     }

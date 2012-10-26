@@ -63,8 +63,8 @@
             allPopups="false"
             locationURI="popup:com.dubture.composer.lib.ui.menu">
          <command
-               commandId="com.dubture.composer.core.command.graph"
-               label="Dependency Graph"
+               commandId="com.dubture.composer.core.command.init"
+               label="Initialize composer"
                style="push">
          </command>
          <command
@@ -83,8 +83,13 @@
                style="push">
          </command>
          <command
-               commandId="com.dubture.composer.core.command.init"
-               label="Initialize composer"
+               commandId="com.dubture.composer.core.command.graph"
+               label="Dependency Graph"
+               style="push">
+         </command>
+         <command
+               commandId="com.dubture.composer.core.command.updateProject"
+               label="Update project configuration"
                style="push">
          </command>
       </menuContribution>
@@ -117,6 +122,11 @@
             id="com.dubture.composer.core.command.init"
             name="Initialize composer">
       </command>
+      <command
+            description="Update project configuration"
+            id="com.dubture.composer.core.command.updateProject"
+            name="Update project configuration">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -143,6 +153,10 @@
       <handler
             class="com.dubture.composer.core.ui.handler.InitHandler"
             commandId="com.dubture.composer.core.command.init">
+      </handler>
+      <handler
+            class="com.dubture.composer.core.ui.handler.UpdateProjectHandler"
+            commandId="com.dubture.composer.core.command.updateProject">
       </handler>
    </extension>
    <extension

@@ -19,8 +19,8 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -129,26 +129,27 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
     
     private void showWarning() 
     {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        
-        if (workbench == null) {
-            Logger.debug("Error retrieving executable");
-            return;
-        }
-        
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        
-        if (window == null) {
-            Logger.debug("Error retrieving executable");
-            return;
-        }
-        
-        
-        MessageBox dialog = new MessageBox(
-                window.getShell(), SWT.ICON_QUESTION
-                        | SWT.OK);
-        dialog.setText("PHP executable not found");
-        dialog.setMessage("Your PHP executable has not been configured properly.");
-        dialog.open();
+        Display.getDefault().asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                IWorkbench workbench = PlatformUI.getWorkbench();
+                
+                if (workbench == null) {
+                    Logger.debug("Error retrieving workbench");
+                    return;
+                }
+                
+                IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+                
+                if (window == null) {
+                    Logger.debug("Error retrieving active workbench window");
+                    return;
+                }
+                
+                MessageDialog.openWarning(window.getShell(), "PHP executable not found", "Your PHP executable has not been configured properly. To run composer commands, you need to define a PHP executable in the PHP preferences.");
+            }
+        });
     }
 }

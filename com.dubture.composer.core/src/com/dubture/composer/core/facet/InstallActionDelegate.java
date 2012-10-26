@@ -5,12 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IAccessRule;
-import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathContainer;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
@@ -24,6 +21,7 @@ import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.model.ComposerBuildpathContainer;
+import com.dubture.composer.core.util.BuildpathUtil;
 import com.dubture.indexing.core.IndexingCorePlugin;
 
 /**
@@ -54,8 +52,6 @@ public class InstallActionDelegate implements IDelegate
 
         // create composer buildpath entry
 
-        IPath composerPath = project.getFullPath().append("vendor");
-
         if (ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
             IBuildpathContainer composerContainer = new ComposerBuildpathContainer(
                     new Path(ComposerBuildpathContainerInitializer.CONTAINER),
@@ -67,29 +63,8 @@ public class InstallActionDelegate implements IDelegate
             BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
 
             IndexingCorePlugin.getDefault().setupBuilder(project);
-
-            IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
-
-            for (IBuildpathEntry entry : rawBuildpath) {
-
-                if (entry.getPath().equals(composerPath)) {
-
-                    // include only the composer directory, we need to parse the
-                    // file in there
-                    BuildPathUtils.removeEntryFromBuildPath(scriptProject,
-                            entry);
-                    IPath[] include = new IPath[]{new Path("composer/*")};
-                    IBuildpathAttribute[] attributes = new IBuildpathAttribute[0];
-                    IPath[] exclude = new IPath[0];
-                    IBuildpathEntry vendorEntry = DLTKCore.newBuiltinEntry(
-                            entry.getPath(), new IAccessRule[0], attributes,
-                            include, exclude, false, false);
-                    List<IBuildpathEntry> vendorEntries = new ArrayList<IBuildpathEntry>();
-                    vendorEntries.add(vendorEntry);
-                    BuildPathUtils.addEntriesToBuildPath(scriptProject,
-                            vendorEntries);
-                }
-            }
+            BuildpathUtil.setupVendorBuildpath(scriptProject, progress);
+            
         }
     }
 }

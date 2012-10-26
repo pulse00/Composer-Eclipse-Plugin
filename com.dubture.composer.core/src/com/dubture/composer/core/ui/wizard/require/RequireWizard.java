@@ -149,7 +149,7 @@ public class RequireWizard extends Wizard
                 }
                 // make sure that composer.json gets a refresh as well
                 project.refreshLocal(IResource.DEPTH_ONE, monitor);
-                ModelAccess.getInstance().getPackageManager().updateBuildpath();
+                ModelAccess.getInstance().getPackageManager().updateBuildpath(project);
             } catch (CoreException e) {
                 Logger.logException(e);
             } finally {

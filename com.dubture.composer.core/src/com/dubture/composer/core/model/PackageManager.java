@@ -265,10 +265,26 @@ public class PackageManager
         }
     }
     
+    public void updateBuildpath(IProject project)
+    {
+        if (buildpathJob == null) {
+            return;
+        }
+        
+        synchronized (buildpathJob) {
+            buildpathJob.cancel();
+            buildpathJob.setPriority(Job.LONG);
+            buildpathJob.setProject(project);
+            buildpathJob.schedule(1000);
+        }
+    }
+    
+    
     private class BuildpathJob extends Job {
 
         private IPath installedPath;
         private IPath installedDevPath;
+        private IProject project;
         
         private boolean running;
         
@@ -279,6 +295,11 @@ public class PackageManager
             installedDevPath = new Path("vendor/composer/installed_dev.json");
         }
         
+        public void setProject(IProject project)
+        {
+            this.project = project;
+        }
+
         private void installLocalPackage(InstalledPackage installedPackage,
                 IProject project)
         {
@@ -369,42 +390,50 @@ public class PackageManager
             running = true;
             monitor.setTaskName("Updating composer buildpath...");
             
-            for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-
-                try {
-                    if (!running) {
-                        Logger.debug("Job cancelled");
-                        return Status.CANCEL_STATUS;
-                    }
-                    
-                    if (!project.hasNature(ComposerNature.NATURE_ID)) {
-                        Logger.debug("Buildpath not running on project without composer nature " + project.getName());
-                        monitor.worked(1);
-                        continue;
-                    }
-
-                    IFile installed = (IFile) project.findMember(installedPath);
-                    
-                    if (installed == null) {
-                        Logger.debug("Unabled to find installed.json in project " + project.getName());
-                        continue;
-                    }
-                    
-                    handleProdPackages(project);
-                    handleDevPackages(project);
-                    DLTKCore.refreshBuildpathContainers(DLTKCore.create(project));
-                    
-                } catch (Exception e) {
-                    Logger.logException(e);
-                }
-                
+            if (project != null) {
+                updateProject(project);
                 monitor.worked(1);
+            } else {
+                for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+                    updateProject(project);
+                    monitor.worked(1);
+                }
             }
             
             reloadPackages();
             return Status.OK_STATUS;
         }
+        
+        protected void updateProject(IProject project)
+        {
+            try {
+                if (!running) {
+                    Logger.debug("Job cancelled");
+                    throw new InterruptedException();
+                }
+                
+                if (!project.hasNature(ComposerNature.NATURE_ID)) {
+                    Logger.debug("Buildpath not running on project without composer nature " + project.getName());
+                    return;
+                }
+
+                IFile installed = (IFile) project.findMember(installedPath);
+                
+                if (installed == null) {
+                    Logger.debug("Unabled to find installed.json in project " + project.getName());
+                    return;
+                }
+                
+                handleProdPackages(project);
+                handleDevPackages(project);
+                DLTKCore.refreshBuildpathContainers(DLTKCore.create(project));
+                
+            } catch (Exception e) {
+                Logger.logException(e);
+            }
+        }
     }
+    
 
     public List<InstalledPackage> getInstalledPackages(IScriptProject project)
     {

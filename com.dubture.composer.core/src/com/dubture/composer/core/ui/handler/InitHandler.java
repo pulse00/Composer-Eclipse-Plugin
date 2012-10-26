@@ -3,12 +3,11 @@ package com.dubture.composer.core.ui.handler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.dubture.composer.core.ui.PharNotFoundException;
 import com.dubture.composer.core.ui.wizard.init.InitComposerWizard;
@@ -23,24 +22,18 @@ public class InitHandler extends ComposerHandler
 
         try {
             init(event);
-        } catch (PharNotFoundException e) { }
-        
+        } catch (PharNotFoundException e) {
+        }
+
         if (json instanceof IResource) {
-            MessageBox dialog = new MessageBox(
-                    HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
-                            | SWT.OK);
-            dialog.setText("Composer already installed");
-            dialog.setMessage("It seems composer is already installed in this project");
-            dialog.open();
+            showWarning("Composer already installed",
+                    "It seems composer is already installed in this project");
             return null;
         }
 
         if (scriptProject == null) {
-            MessageBox dialog = new MessageBox(
-                    HandlerUtil.getActiveShell(event), SWT.ICON_QUESTION
-                            | SWT.OK);
-            dialog.setText("Composer error");
-            dialog.setMessage("Error initializing composer for this project");
+            showWarning("Composer error",
+                    "Error initializing composer for this project");
             return null;
         }
 
@@ -48,4 +41,17 @@ public class InitHandler extends ComposerHandler
         return null;
     }
 
+    protected void showWarning(final String title, final String content)
+    {
+        Display.getDefault().asyncExec(new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                MessageDialog.openWarning(
+                        Display.getDefault().getActiveShell(), title, content);
+            }
+        });
+    }
 }
