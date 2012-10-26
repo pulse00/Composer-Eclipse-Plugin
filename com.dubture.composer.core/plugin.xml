@@ -43,39 +43,48 @@
                icon="ico/full/obj16/icon-logo-composer.png"
                id="com.dubture.composer.lib.ui.menu"
                label="Composer">
-            <command
-                  commandId="com.dubture.composer.core.command.install"
-                  label="Install dependencies"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.core.command.update"
-                  label="Update dependencies"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.core.command.adddependency"
-                  label="Add dependency"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.core.command.graph"
-                  label="Dependency Graph"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.core.command.init"
-                  label="Initialize composer"
-                  style="push">
-            </command>
+            <visibleWhen
+                  checkEnabled="false">
+               <iterate>
+                  <adapt
+                        type="org.eclipse.core.resources.IProject">
+                     <and>
+                        <test
+                              property="org.eclipse.core.resources.projectNature"
+                              value="com.dubture.composer.core.composerNature">
+                        </test>
+                     </and>
+                  </adapt>
+               </iterate>
+            </visibleWhen>
          </menu>
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+            locationURI="popup:com.dubture.composer.lib.ui.menu">
          <command
-               commandId="com.dubture.composer.core.command.projectnature"
-               label="Convert to Composer project"
+               commandId="com.dubture.composer.core.command.graph"
+               label="Dependency Graph"
+               style="push">
+         </command>
+         <command
+               commandId="com.dubture.composer.core.command.adddependency"
+               label="Add dependency"
+               style="push">
+         </command>
+         <command
+               commandId="com.dubture.composer.core.command.update"
+               label="Update dependencies"
+               style="push">
+         </command>
+         <command
+               commandId="com.dubture.composer.core.command.install"
+               label="Install dependencies"
+               style="push">
+         </command>
+         <command
+               commandId="com.dubture.composer.core.command.init"
+               label="Initialize composer"
                style="push">
          </command>
       </menuContribution>
