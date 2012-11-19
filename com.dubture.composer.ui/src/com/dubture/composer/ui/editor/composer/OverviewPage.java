@@ -25,48 +25,46 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.getcomposer.core.Author;
-import org.getcomposer.core.ComposerConstants;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.ComposerConstants;
+import org.getcomposer.ComposerPackage;
+import org.getcomposer.entities.Person;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.converter.Keywords2StringConverter;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
 import com.dubture.composer.ui.dialogs.AuthorDialog;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.ui.forms.widgets.FormText;
+import com.dubture.composer.ui.editor.ComposerFormPage;
 
 /**
  * @author Thomas Gossmann
  * 
  */
-public class OverviewPage extends FormPage {
+public class OverviewPage extends ComposerFormPage {
 	private DataBindingContext m_bindingContext;
+	private DataBindingContext bindingContext;
 
 	public final static String ID = "com.dubture.composer.ui.editor.composer.OverviewPage";
 
-	private PackageInterface phpPackage;
-	protected ComposerEditor editor;
+	private ComposerPackage composerPackage;
+	protected ComposerFormEditor editor;
 	
 	private Composite left;
 	private Composite right;
@@ -96,10 +94,11 @@ public class OverviewPage extends FormPage {
 	 * @param id
 	 * @param title
 	 */
-	public OverviewPage(ComposerEditor editor, String id, String title) {
+	public OverviewPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
 		this.editor = editor;
-		phpPackage = editor.getPHPPackge();
+		composerPackage = editor.getComposerPackge();
+		
 	}
 	
 	@Override
@@ -125,9 +124,11 @@ public class OverviewPage extends FormPage {
 		left.setLayout(new TableWrapLayout());
 		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
-		createGeneralSection(left, toolkit);
-		createAuthorsSection(left, toolkit);
-		createSupportSection(left, toolkit);
+		GeneralSection generalSection = new GeneralSection(this, left);
+		
+//		createGeneralSection(left, toolkit);
+//		createAuthorsSection(left, toolkit);
+//		createSupportSection(left, toolkit);
 		
 		right = toolkit.createComposite(form.getBody());
 		right.setLayout(new TableWrapLayout());
@@ -137,7 +138,12 @@ public class OverviewPage extends FormPage {
 		createComposerSection(right, toolkit);
 		
 		
-		m_bindingContext = initDataBindings();
+//		m_bindingContext = initDataBindings();
+		
+	}
+	
+	DataBindingContext getBindingContext() {
+		return bindingContext;
 	}
 
 	private void createGeneralSection(Composite parent, FormToolkit toolkit) {
@@ -154,27 +160,27 @@ public class OverviewPage extends FormPage {
 
 		Label lblName = toolkit.createLabel(client, "Name (vendor/project):");
 		lblName.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		name = toolkit.createText(client, phpPackage.getName());
+		name = toolkit.createText(client, composerPackage.getName());
 		name.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblDescription = toolkit.createLabel(client, "Description:");
 		lblDescription.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		description = toolkit.createText(client, phpPackage.getDescription());
+		description = toolkit.createText(client, composerPackage.getDescription());
 		description.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label label = toolkit.createLabel(client, "Type:");
 		label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		type = toolkit.createText(client, phpPackage.getType());
+		type = toolkit.createText(client, composerPackage.getType());
 		type.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblKeywords = toolkit.createLabel(client, "Keywords:");
 		lblKeywords.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		keywords = toolkit.createText(client, StringUtils.join(phpPackage.getKeywords(), ","));
+		keywords = toolkit.createText(client, StringUtils.join(composerPackage.getKeywords().toStringArray(), ","));
 		keywords.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblHomepage = toolkit.createLabel(client, "Homepage:");
 		lblHomepage.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		homepage = toolkit.createText(client, phpPackage.getHomepage());
+		homepage = toolkit.createText(client, composerPackage.getHomepage());
 		homepage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblLicense = toolkit.createLabel(client, "License:");
@@ -188,8 +194,8 @@ public class OverviewPage extends FormPage {
 		minimumStability.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		minimumStability.setItems(ComposerConstants.STABILITIES);
 		
-		if (phpPackage.getMinimumStability() != null) {
-			minimumStability.select(minimumStability.indexOf(phpPackage.getMinimumStability()));
+		if (composerPackage.getMinimumStability() != null) {
+			minimumStability.select(minimumStability.indexOf(composerPackage.getMinimumStability()));
 		}
 	}
 	
@@ -208,7 +214,7 @@ public class OverviewPage extends FormPage {
 		authorView.setContentProvider(authorController);
 		authorView.setLabelProvider(authorController);
 		authorView.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		authorView.setInput(phpPackage.getAuthors());
+		authorView.setInput(composerPackage.getAuthors());
 		
 		Composite buttons = toolkit.createComposite(client);
 		buttons.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
@@ -219,9 +225,9 @@ public class OverviewPage extends FormPage {
 		add.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				AuthorDialog diag = new AuthorDialog(add.getShell(), new Author());
+				AuthorDialog diag = new AuthorDialog(add.getShell(), new Person());
 				if (diag.open() == Dialog.OK) {
-					phpPackage.getAuthors().add(diag.getAuthor());
+					composerPackage.getAuthors().add(diag.getAuthor());
 					authorView.refresh();
 				}
 			}
@@ -233,7 +239,7 @@ public class OverviewPage extends FormPage {
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				Author author = (Author)((StructuredSelection)authorView.getSelection()).getFirstElement();
+				Person author = (Person)((StructuredSelection)authorView.getSelection()).getFirstElement();
 				AuthorDialog diag = new AuthorDialog(edit.getShell(), author.clone());
 				if (diag.open() == Dialog.OK) {
 					author = diag.getAuthor();
@@ -247,7 +253,7 @@ public class OverviewPage extends FormPage {
 		remove.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseUp(MouseEvent e) {
-				Author author = (Author)((StructuredSelection)authorView.getSelection()).getFirstElement();
+				Person author = (Person)((StructuredSelection)authorView.getSelection()).getFirstElement();
 				MessageDialog diag = new MessageDialog(
 						remove.getShell(), 
 						"Remove Author", 
@@ -258,7 +264,7 @@ public class OverviewPage extends FormPage {
 						0);
 				
 				if (diag.open() == Dialog.OK) {
-					phpPackage.getAuthors().remove(author);
+					composerPackage.getAuthors().remove(author);
 					authorView.refresh();
 				}
 			}
@@ -290,32 +296,32 @@ public class OverviewPage extends FormPage {
 
 		Label lblEmail = toolkit.createLabel(client, "Email:");
 		lblEmail.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		email = toolkit.createText(client, phpPackage.getSupport().getEmail());
+		email = toolkit.createText(client, composerPackage.getSupport().getEmail());
 		email.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		Label lblIssues = toolkit.createLabel(client, "Issues:");
 		lblIssues.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		issues = toolkit.createText(client, phpPackage.getSupport().getIssues());
+		issues = toolkit.createText(client, composerPackage.getSupport().getIssues());
 		issues.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblForum = toolkit.createLabel(client, "Forum:");
 		lblForum.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		forum = toolkit.createText(client, phpPackage.getSupport().getForum());
+		forum = toolkit.createText(client, composerPackage.getSupport().getForum());
 		forum.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblWiki = toolkit.createLabel(client, "Wiki:");
 		lblWiki.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		wiki = toolkit.createText(client, phpPackage.getSupport().getWiki());
+		wiki = toolkit.createText(client, composerPackage.getSupport().getWiki());
 		wiki.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblIrc = toolkit.createLabel(client, "Irc:");
 		lblIrc.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		irc = toolkit.createText(client, phpPackage.getSupport().getIrc());
+		irc = toolkit.createText(client, composerPackage.getSupport().getIrc());
 		irc.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblSource = toolkit.createLabel(client, "Source:");
 		lblSource.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
-		source = toolkit.createText(client, phpPackage.getSupport().getSource());
+		source = toolkit.createText(client, composerPackage.getSupport().getSource());
 		source.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 	}
 	
@@ -361,12 +367,12 @@ public class OverviewPage extends FormPage {
 
 	class AuthorController extends LabelProvider implements ITableLabelProvider, IStructuredContentProvider {
 
-		private List<Author> authors;
+		private List<Person> authors;
 		private Image authorImage = ComposerUIPluginImages.AUTHOR.createImage();
 
 		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			authors = (List<Author>)newInput;
+			authors = (List<Person>)newInput;
 		}
 
 		public Object[] getElements(Object inputElement) {
@@ -378,7 +384,7 @@ public class OverviewPage extends FormPage {
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
-			Author author = (Author)element;
+			Person author = (Person)element;
 			StringBuilder sb = new StringBuilder();
 			sb.append(author.getName());
 			
@@ -399,19 +405,19 @@ public class OverviewPage extends FormPage {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue observeTextNameObserveWidget = WidgetProperties.text(SWT.Modify).observe(name);
-		IObservableValue namePhpPackageObserveValue = PojoProperties.value("name").observe(phpPackage);
+		IObservableValue namePhpPackageObserveValue = PojoProperties.value("name").observe(composerPackage);
 		bindingContext.bindValue(observeTextNameObserveWidget, namePhpPackageObserveValue, null, null);
 		//
 		IObservableValue observeTextDescriptionObserveWidget = WidgetProperties.text(SWT.Modify).observe(description);
-		IObservableValue descriptionPhpPackageObserveValue = PojoProperties.value("description").observe(phpPackage);
+		IObservableValue descriptionPhpPackageObserveValue = PojoProperties.value("description").observe(composerPackage);
 		bindingContext.bindValue(observeTextDescriptionObserveWidget, descriptionPhpPackageObserveValue, null, null);
 		//
 		IObservableValue observeTextTypeObserveWidget = WidgetProperties.text(SWT.Modify).observe(type);
-		IObservableValue typePhpPackageObserveValue = PojoProperties.value("type").observe(phpPackage);
+		IObservableValue typePhpPackageObserveValue = PojoProperties.value("type").observe(composerPackage);
 		bindingContext.bindValue(observeTextTypeObserveWidget, typePhpPackageObserveValue, null, null);
 		//
 		IObservableValue observeTextKeywordsObserveWidget = WidgetProperties.text(SWT.Modify).observe(keywords);
-		IObservableValue keywordsPhpPackageObserveValue = PojoProperties.value("keywords").observe(phpPackage);
+		IObservableValue keywordsPhpPackageObserveValue = PojoProperties.value("keywords").observe(composerPackage);
 		UpdateValueStrategy strategy = new UpdateValueStrategy();
 		strategy.setConverter(new String2KeywordsConverter());
 		UpdateValueStrategy strategy_1 = new UpdateValueStrategy();
@@ -419,35 +425,35 @@ public class OverviewPage extends FormPage {
 		bindingContext.bindValue(observeTextKeywordsObserveWidget, keywordsPhpPackageObserveValue, strategy, strategy_1);
 		//
 		IObservableValue observeTextHomepageObserveWidget = WidgetProperties.text(SWT.Modify).observe(homepage);
-		IObservableValue homepagePhpPackageObserveValue = PojoProperties.value("homepage").observe(phpPackage);
+		IObservableValue homepagePhpPackageObserveValue = PojoProperties.value("homepage").observe(composerPackage);
 		bindingContext.bindValue(observeTextHomepageObserveWidget, homepagePhpPackageObserveValue, null, null);
 		//
 		IObservableValue observeTextMinimumStabilityObserveWidget = WidgetProperties.text().observe(minimumStability);
-		IObservableValue minimumStabilityPhpPackageObserveValue = PojoProperties.value("minimumStability").observe(phpPackage);
+		IObservableValue minimumStabilityPhpPackageObserveValue = PojoProperties.value("minimumStability").observe(composerPackage);
 		bindingContext.bindValue(observeTextMinimumStabilityObserveWidget, minimumStabilityPhpPackageObserveValue, null, null);
 		//
 		IObservableValue observeTextEmailObserveWidget = WidgetProperties.text(SWT.Modify).observe(email);
-		IObservableValue emailPhpPackagegetSupportObserveValue = PojoProperties.value("email").observe(phpPackage.getSupport());
+		IObservableValue emailPhpPackagegetSupportObserveValue = PojoProperties.value("email").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextEmailObserveWidget, emailPhpPackagegetSupportObserveValue, null, null);
 		//
 		IObservableValue observeTextIssuesObserveWidget = WidgetProperties.text(SWT.Modify).observe(issues);
-		IObservableValue issuesPhpPackagegetSupportObserveValue = PojoProperties.value("issues").observe(phpPackage.getSupport());
+		IObservableValue issuesPhpPackagegetSupportObserveValue = PojoProperties.value("issues").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextIssuesObserveWidget, issuesPhpPackagegetSupportObserveValue, null, null);
 		//
 		IObservableValue observeTextForumObserveWidget = WidgetProperties.text(SWT.Modify).observe(forum);
-		IObservableValue forumPhpPackagegetSupportObserveValue = PojoProperties.value("forum").observe(phpPackage.getSupport());
+		IObservableValue forumPhpPackagegetSupportObserveValue = PojoProperties.value("forum").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextForumObserveWidget, forumPhpPackagegetSupportObserveValue, null, null);
 		//
 		IObservableValue observeTextWikiObserveWidget = WidgetProperties.text(SWT.Modify).observe(wiki);
-		IObservableValue wikiPhpPackagegetSupportObserveValue = PojoProperties.value("wiki").observe(phpPackage.getSupport());
+		IObservableValue wikiPhpPackagegetSupportObserveValue = PojoProperties.value("wiki").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextWikiObserveWidget, wikiPhpPackagegetSupportObserveValue, null, null);
 		//
 		IObservableValue observeTextIrcObserveWidget = WidgetProperties.text(SWT.Modify).observe(irc);
-		IObservableValue ircPhpPackagegetSupportObserveValue = PojoProperties.value("irc").observe(phpPackage.getSupport());
+		IObservableValue ircPhpPackagegetSupportObserveValue = PojoProperties.value("irc").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextIrcObserveWidget, ircPhpPackagegetSupportObserveValue, null, null);
 		//
 		IObservableValue observeTextSourceObserveWidget = WidgetProperties.text(SWT.Modify).observe(source);
-		IObservableValue sourcePhpPackagegetSupportObserveValue = PojoProperties.value("source").observe(phpPackage.getSupport());
+		IObservableValue sourcePhpPackagegetSupportObserveValue = PojoProperties.value("source").observe(composerPackage.getSupport());
 		bindingContext.bindValue(observeTextSourceObserveWidget, sourcePhpPackagegetSupportObserveValue, null, null);
 		//
 		return bindingContext;

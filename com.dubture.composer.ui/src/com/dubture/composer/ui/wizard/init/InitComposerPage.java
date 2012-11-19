@@ -1,13 +1,10 @@
 package com.dubture.composer.ui.wizard.init;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.internal.preferences.InstancePreferences;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.ui.wizards.NewElementWizardPage;
 import org.eclipse.swt.SWT;
@@ -25,9 +22,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
-import org.getcomposer.core.Author;
-import org.getcomposer.core.PHPPackage;
+import org.getcomposer.ComposerPackage;
+import org.getcomposer.collection.Persons;
+import org.getcomposer.entities.Person;
 
 /**
  * 
@@ -37,7 +34,7 @@ import org.getcomposer.core.PHPPackage;
 public class InitComposerPage extends NewElementWizardPage
 {
     
-    private PHPPackage phpPackage;
+    private ComposerPackage composerPackage;
     
     private List<Text> inputfields = new ArrayList<Text>();
     
@@ -53,7 +50,7 @@ public class InitComposerPage extends NewElementWizardPage
     public InitComposerPage(IScriptProject project)
     {
         super("Initialize composer for this project");
-        setPhpPackage(new PHPPackage());
+        setComposerPackage(new ComposerPackage());
         setTitle("Initialize this project");
         setDescription("Runs composer.phar init on this project to create an initial composer.json file");
         setPageComplete(false);
@@ -83,32 +80,32 @@ public class InitComposerPage extends NewElementWizardPage
             Text widget = (Text) e.widget;
             
             if ("name".equals(widget.getData())) {
-                getPhpPackage().name = widget.getText();
+                getComposerPackage().setName(widget.getText());
             } else if ("description".equals(widget.getData())) {
-                getPhpPackage().description = widget.getText();
+                getComposerPackage().setDescription(widget.getText());
             } else if ("author".equals(widget.getData())) {
                 
-                List<Author> authors = getPhpPackage().getAuthors();
+                Persons authors = getComposerPackage().getAuthors();
                 if (authors == null || authors.size() == 0) {
-                    authors.add(new Author(""));
+                    authors.add(new Person(""));
                 }
                 
-                Author author = authors.get(0);
+                Person author = authors.get(0);
                 author.setName(widget.getText());
-                getPhpPackage().setAuthors(authors);
+//                getComposerPackage().setPersons(authors);
             } else if ("email".equals(widget.getData())) {
                 
-            	List<Author> authors = getPhpPackage().getAuthors();
+            	Persons authors = getComposerPackage().getAuthors();
                 if (authors == null || authors.size() == 0) {
-                    authors.add(new Author(""));
+                    authors.add(new Person(""));
                 }
                 
-                Author author = authors.get(0);
+                Person author = authors.get(0);
                 author.setEmail(widget.getText());
-                getPhpPackage().setAuthors(authors);
+//                getComposerPackage().setPersons(authors);
                 
             } else if ("page".equals(widget.getData())) {
-                getPhpPackage().homepage = widget.getText();
+                getComposerPackage().setHomepage(widget.getText());
             }
             
             validate();
@@ -123,13 +120,13 @@ public class InitComposerPage extends NewElementWizardPage
     private void validate()
     {
         System.err.println("validate");
-        if (phpPackage.getName() == null || phpPackage.getName().length() == 0) {
+        if (composerPackage.getName() == null || composerPackage.getName().length() == 0) {
             setErrorMessage("Vendor name missing");
             setPageComplete(false);
             return;
         }
         
-        List<Author> authors = phpPackage.getAuthors();
+        Persons authors = composerPackage.getAuthors();
         
         if (authors == null || authors.size() == 0) {
             setErrorMessage("Author information missing");
@@ -137,21 +134,21 @@ public class InitComposerPage extends NewElementWizardPage
             return;
         }
         
-        Author author = authors.get(0);
+        Person author = authors.get(0);
         
-        if (author.name == null || author.name.length() == 0) {
+        if (author.getName() == null || author.getName().length() == 0) {
             setErrorMessage("Author name missing");
             setPageComplete(false);
             return;
         }
         
-        if (author.email == null || author.email.length() == 0) {
+        if (author.getEmail() == null || author.getEmail().length() == 0) {
             setErrorMessage("Author email missing");
             setPageComplete(false);
             return;
         }
         
-        matcher = pattern.matcher(author.email);
+        matcher = pattern.matcher(author.getEmail());
         if (matcher.matches() == false) {
             setErrorMessage("Not a valid email adress");
             setPageComplete(false);
@@ -218,8 +215,8 @@ public class InitComposerPage extends NewElementWizardPage
 
         String defaultAuthor = System.getProperty("user.name");
         String defaultPackageName =  defaultAuthor + "/" + project.getProject().getName();
-        phpPackage.name = defaultPackageName;
-        phpPackage.authors.add(new Author(defaultAuthor));
+        composerPackage.setName(defaultPackageName);
+        composerPackage.getAuthors().add(new Person(defaultAuthor));
         addInput(container, "Package name (<vendor>/<name>)", "name", defaultPackageName);
         addInput(container, "Description", "description");
         addInput(container, "Author", "author", defaultAuthor);
@@ -252,21 +249,21 @@ public class InitComposerPage extends NewElementWizardPage
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                phpPackage.minimumStability = stabilityCombo.getItem(stabilityCombo.getSelectionIndex());
+                composerPackage.setMinimumStability(stabilityCombo.getItem(stabilityCombo.getSelectionIndex()));
             }
         });
         
-        phpPackage.minimumStability = "stable";
+        composerPackage.setMinimumStability("stable");
         
     }
 
-    public PHPPackage getPhpPackage()
+    public ComposerPackage getComposerPackage()
     {
-        return phpPackage;
+        return composerPackage;
     }
 
-    public void setPhpPackage(PHPPackage phpPackage)
+    public void setComposerPackage(ComposerPackage phpPackage)
     {
-        this.phpPackage = phpPackage;
+        this.composerPackage = phpPackage;
     }
 }

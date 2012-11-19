@@ -3,11 +3,8 @@
  */
 package com.dubture.composer.ui.editor.composer;
 
-import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -18,38 +15,34 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.getcomposer.core.Author;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
-import com.dubture.composer.ui.dialogs.AuthorDialog;
-import org.eclipse.swt.layout.FillLayout;
+import com.dubture.composer.ui.editor.ComposerFormPage;
 
 /**
  * @author Thomas Gossmann
  * 
  */
-public class DependenciesPage extends FormPage {
+public class DependenciesPage extends ComposerFormPage {
 
 	public final static String ID = "com.dubture.composer.ui.editor.composer.DependencyPage";
 
-	private PackageInterface phpPackage;
-	protected ComposerEditor editor;
+	private ComposerPackage composerPackage;
+	protected ComposerFormEditor editor;
 
 	protected Composite left;
 	protected Composite right;
@@ -69,10 +62,10 @@ public class DependenciesPage extends FormPage {
 	 * @param id
 	 * @param title
 	 */
-	public DependenciesPage(ComposerEditor editor, String id, String title) {
+	public DependenciesPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
 		this.editor = editor;
-		phpPackage = editor.getPHPPackge();
+		composerPackage = editor.getComposerPackge();
 	}
 	
 	@Override
@@ -128,7 +121,7 @@ public class DependenciesPage extends FormPage {
 		requireView = new TableViewer(client, SWT.BORDER | SWT.V_SCROLL);
 		requireView.setContentProvider(controller);
 		requireView.setLabelProvider(controller);
-		requireView.setInput(phpPackage.getRequire());
+		requireView.setInput(composerPackage.getRequire());
 		requireView.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		
 		Composite buttons = toolkit.createComposite(client);
@@ -183,7 +176,7 @@ public class DependenciesPage extends FormPage {
 		requireDevView.setContentProvider(controller);
 		requireDevView.setLabelProvider(controller);
 		requireDevView.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		requireDevView.setInput(phpPackage.getRequireDev());
+		requireDevView.setInput(composerPackage.getRequireDev());
 		
 		Composite buttons = toolkit.createComposite(client);
 		buttons.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));

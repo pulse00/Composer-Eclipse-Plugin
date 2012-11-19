@@ -19,9 +19,9 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.getcomposer.core.PHPPackage;
-import org.getcomposer.core.PackageInterface;
-import org.getcomposer.core.packagist.PackageDownloader;
+import org.getcomposer.ComposerPackage;
+import org.getcomposer.RepositoryPackage;
+import org.getcomposer.packagist.PackageDownloader;
 
 import com.dubture.composer.core.launch.ConsoleResponseHandler;
 import com.dubture.composer.core.launch.DefaultExecutableLauncher;
@@ -90,7 +90,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                     for (InstallableItem item : rawPackages) {
                         try {
                             PackageDownloader downloader = new PackageDownloader(item.getUrl());
-                            PackageInterface phpPackage = downloader.getPackage();
+                            RepositoryPackage phpPackage = downloader.getPackage(); 
                             packages.put(new EclipsePHPPackage(phpPackage), phpPackage.getDefaultVersion());
                         } catch (IOException e) {
                             Logger.logException(e);

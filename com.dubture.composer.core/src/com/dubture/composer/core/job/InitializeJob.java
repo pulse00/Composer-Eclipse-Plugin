@@ -18,18 +18,18 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.getcomposer.core.Author;
-import org.getcomposer.core.PHPPackage;
+import org.getcomposer.ComposerPackage;
+import org.getcomposer.entities.Person;
 
 import com.dubture.composer.core.log.Logger;
 
 public class InitializeJob extends ComposerJob
 {
-    private final PHPPackage phpPackage;
+    private final ComposerPackage phpPackage;
     private IProject project;
     private IResource json = null;
     
-    public InitializeJob(IProject project, PHPPackage phpPackage) throws FileNotFoundException
+    public InitializeJob(IProject project, ComposerPackage phpPackage) throws FileNotFoundException
     {
         super("Installing composer dependencies...");
         
@@ -59,20 +59,20 @@ public class InitializeJob extends ComposerJob
             
             List<String> args = new ArrayList<String>();
             
-            args.add("--name=" + phpPackage.name);
+            args.add("--name=" + phpPackage.getName());
             
-            if (phpPackage.description != null && phpPackage.description.length() > 0) {
-                args.add(String.format("--description=%s", phpPackage.description));
+            if (phpPackage.getDescription() != null && phpPackage.getDescription().length() > 0) {
+                args.add(String.format("--description=%s", phpPackage.getDescription()));
             }
             
-            if (phpPackage.authors != null && phpPackage.authors.size() > 0) {
-                Author author = phpPackage.authors.get(0);
-                if (author.name != null && author.email != null) {
+            if (phpPackage.getAuthors() != null && phpPackage.getAuthors().size() > 0) {
+                Person author = phpPackage.getAuthors().get(0);
+                if (author.getName() != null && author.getEmail() != null) {
                     args.add(String.format("--author=%s", author.getInitString()));
                 }
             }
             
-            args.add("--minimum-stability=" + phpPackage.minimumStability);
+            args.add("--minimum-stability=" + phpPackage.getMinimumStability());
             args.add("--no-interaction");
             
             

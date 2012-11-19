@@ -17,7 +17,6 @@ import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.getcomposer.core.ComposerFieldNamingStrategy;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
@@ -92,7 +91,8 @@ public class InstalledPackage
     public static List<InstalledPackage> deserialize(InputStream input)
             throws IOException
     {
-        Gson gson = new GsonBuilder().setFieldNamingStrategy(new ComposerFieldNamingStrategy()).create();
+//        Gson gson = new GsonBuilder().setFieldNamingStrategy(new ComposerFieldNamingStrategy()).create();
+        Gson gson = new GsonBuilder().create();
         InputStreamReader reader = new InputStreamReader(input);
         Type listOfObjects = new TypeToken<List<InstalledPackage>>()
         {

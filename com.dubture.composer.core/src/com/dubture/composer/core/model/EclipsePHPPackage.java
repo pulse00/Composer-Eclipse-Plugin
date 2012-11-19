@@ -4,19 +4,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.getcomposer.core.Autoload;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.entities.Autoload;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.core.log.Logger;
 
 public class EclipsePHPPackage implements
         NamespaceResolverInterface, InstallableItem
 {
-    private final PackageInterface phpPackage;
+    private final ComposerPackage phpPackage;
 
     private IPath path;
     
-    public EclipsePHPPackage(PackageInterface phpPackage) {
+    public EclipsePHPPackage(ComposerPackage phpPackage) {
         
         Assert.isNotNull(phpPackage);
         this.phpPackage = phpPackage;
@@ -27,7 +27,7 @@ public class EclipsePHPPackage implements
     {
         Autoload autoload = phpPackage.getAutoload();
         
-        if (autoload == null || autoload.getPSR0Path() == null) {
+        if (autoload == null || autoload.getPsr0Path() == null) {
             Logger.debug("Unable to resolve namespace without autoload information " + phpPackage.getName());
             return null;
         }
@@ -37,7 +37,7 @@ public class EclipsePHPPackage implements
         IPath path = resource.getFullPath();
         IPath composerPath = getPath();
         
-        IPath psr0Path = composerPath.append(autoload.getPSR0Path());
+        IPath psr0Path = composerPath.append(autoload.getPsr0Path());
         int segments = psr0Path.segmentCount();
          
         if (path.matchingFirstSegments(psr0Path) == segments) {
@@ -50,7 +50,7 @@ public class EclipsePHPPackage implements
             }
              
         }
-         
+
         return ns;        
     }
 
@@ -69,7 +69,7 @@ public class EclipsePHPPackage implements
     @Override
     public String getUrl()
     {
-        return phpPackage.getUrl();
+        return phpPackage.getHomepage();
     }
 
     public void setFullPath(String fullPath)
@@ -82,7 +82,7 @@ public class EclipsePHPPackage implements
         return path;
     }
 
-    public PackageInterface getPhpPackage()
+    public ComposerPackage getPhpPackage()
     {
         return phpPackage;
     }

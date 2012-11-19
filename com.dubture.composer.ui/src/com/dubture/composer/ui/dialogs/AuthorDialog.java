@@ -6,7 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.getcomposer.core.Author;
+import org.getcomposer.entities.Person;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
@@ -19,7 +19,7 @@ import org.eclipse.core.databinding.beans.BeanProperties;
 public class AuthorDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
 
-	private Author author;
+	private Person author;
 	private Text name;
 	private Text email;
 	private Text homepage;
@@ -27,17 +27,17 @@ public class AuthorDialog extends Dialog {
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public AuthorDialog(Shell parentShell, Author author) {
+	public AuthorDialog(Shell parentShell, Person author) {
 		super(parentShell);
 		this.author = author;
 	}
 
-	public AuthorDialog(IShellProvider parentShell, Author author) {
+	public AuthorDialog(IShellProvider parentShell, Person author) {
 		super(parentShell);
 		this.author = author;
 	}
 	
-	public Author getAuthor() {
+	public Person getAuthor() {
 		return author;
 	}
 

@@ -1,3 +1,3 @@
-[submodule "org.getcomposer.core"]
-	path = org.getcomposer.core
+[submodule "org.getcomposer"]
+	path = org.getcomposer
 	url = git://github.com/gossi/Composer-Java-Bindings.git

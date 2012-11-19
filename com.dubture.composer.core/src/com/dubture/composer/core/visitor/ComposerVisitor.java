@@ -9,8 +9,7 @@
 package com.dubture.composer.core.visitor;
 
 import org.eclipse.core.resources.IFile;
-import org.getcomposer.core.ComposerFieldNamingStrategy;
-import org.getcomposer.core.PHPPackage;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.ModelAccess;
@@ -52,19 +51,20 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
     @Override
     public FieldNamingStrategy getFieldNamingStrategy()
     {
-        return new ComposerFieldNamingStrategy();
+//        return new ComposerFieldNamingStrategy();
+    	return null;
     }
 
     @Override
     public Class<?> getTransformerClass()
     {
-        return PHPPackage.class;
+        return ComposerPackage.class;
     }
 
     @Override
     public Gson getBuilder()
     {
-        return PHPPackage.getBuilder();
+        return ComposerPackage.getBuilder();
     }
 
     @Override

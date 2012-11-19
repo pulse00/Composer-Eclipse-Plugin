@@ -120,7 +120,8 @@ public class RequireWizard extends Wizard
                 try {
                     EclipsePHPPackage composerPackage = (EclipsePHPPackage) it.next();
                     String version = secondPage.getPackages().get(composerPackage);
-                    String dependency = composerPackage.getPhpPackage().getPackageName(version);
+//                    String dependency = composerPackage.getPhpPackage().getPackageName(version);
+                    String dependency = "";
                     System.err.println(dependency);
                     deps.add(dependency);
                 } catch (Exception e) {

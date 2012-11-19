@@ -15,14 +15,13 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.getcomposer.core.PHPPackage;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.ComposerPackage;
 
-public class ComposerEditor extends SharedHeaderFormEditor {
+public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;
-	protected PHPPackage phpPackage;
+	protected ComposerPackage composerPackage;
 
-	public ComposerEditor() {
+	public ComposerFormEditor() {
 		super();
 	}
 
@@ -44,8 +43,8 @@ public class ComposerEditor extends SharedHeaderFormEditor {
 			
 			File json = new File(composerJsonFilePath);
 			
-			phpPackage = PHPPackage.fromJson(json);
-			phpPackage.addPropertyChangeListener(new PropertyChangeListener() {
+			composerPackage = ComposerPackage.fromFile(json);
+			composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent arg0) {
 					setDirty(true);
 				}
@@ -91,7 +90,7 @@ public class ComposerEditor extends SharedHeaderFormEditor {
 	}
 
 	public void doSave(IProgressMonitor arg0) {
-		System.out.println(phpPackage.toJson());
+		System.out.println(composerPackage.toJson());
 		setDirty(false);
 	}
 
@@ -111,7 +110,7 @@ public class ComposerEditor extends SharedHeaderFormEditor {
 		firePropertyChange(PROP_DIRTY);
 	}
 
-	public PackageInterface getPHPPackge() {
-		return phpPackage;
+	public ComposerPackage getComposerPackge() {
+		return composerPackage;
 	}
 }

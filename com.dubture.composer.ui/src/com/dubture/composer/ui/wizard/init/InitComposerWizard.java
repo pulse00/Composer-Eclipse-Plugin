@@ -11,7 +11,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.getcomposer.core.PHPPackage;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.core.job.DownloadJob;
 import com.dubture.composer.core.job.InitializeJob;
@@ -44,7 +44,7 @@ public class InitComposerWizard extends Wizard implements INewWizard
     {
         IResource phar = scriptProject.getProject().findMember("composer.phar");
         
-        if (page == null || !(page.getPhpPackage() instanceof PHPPackage)) {
+        if (page == null || !(page.getComposerPackage() instanceof ComposerPackage)) {
             return false;
         }
         
@@ -75,7 +75,7 @@ public class InitComposerWizard extends Wizard implements INewWizard
     protected void initJson() {
 
         try {
-            new InitializeJob(scriptProject.getProject(), page.getPhpPackage()).schedule();
+            new InitializeJob(scriptProject.getProject(), page.getComposerPackage()).schedule();
         } catch (FileNotFoundException e) {
             Logger.logException(e);
         }

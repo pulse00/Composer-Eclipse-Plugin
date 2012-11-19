@@ -12,8 +12,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.getcomposer.core.PHPPackage;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.ComposerPackage;
+import org.getcomposer.collection.Versions;
 
 import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.ui.wizard.iteminstaller.AbstractDescriptorItemUi;
@@ -33,7 +33,7 @@ public class PackageItemUI extends AbstractDescriptorItemUi
     
     private EclipsePHPPackage phpPackage;
     
-    private PackageInterface composerPackage;
+    private ComposerPackage composerPackage;
     
     private Combo versionDropdown;
     
@@ -71,7 +71,7 @@ public class PackageItemUI extends AbstractDescriptorItemUi
         nameLabel.setFont(installer.getH1Font());
         nameLabel.setText(composerPackage.getName());
         
-        Map<String, PackageInterface> versions = composerPackage.getVersions();
+        Versions versions = composerPackage.getVersions();
         
         Iterator it = versions.keySet().iterator();
         

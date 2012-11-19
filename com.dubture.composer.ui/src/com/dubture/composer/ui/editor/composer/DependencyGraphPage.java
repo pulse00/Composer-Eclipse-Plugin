@@ -6,32 +6,33 @@ package com.dubture.composer.ui.editor.composer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.getcomposer.core.PackageInterface;
+import org.getcomposer.ComposerPackage;
+
+import com.dubture.composer.ui.editor.ComposerFormPage;
 
 /**
  * @author Thomas Gossmann
  * 
  */
-public class DependencyGraphPage extends FormPage {
+public class DependencyGraphPage extends ComposerFormPage {
 
 	public final static String ID = "com.dubture.composer.ui.editor.composer.DependencyGraphPage";
 
-	private PackageInterface phpPackage;
-	protected ComposerEditor editor;
+	private ComposerPackage composerPackage;
+	protected ComposerFormEditor editor;
 
 	/**
 	 * @param editor
 	 * @param id
 	 * @param title
 	 */
-	public DependencyGraphPage(ComposerEditor editor, String id, String title) {
+	public DependencyGraphPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
 		this.editor = editor;
-		phpPackage = editor.getPHPPackge();
+		composerPackage = editor.getComposerPackge();
 	}
 	
 	@Override
