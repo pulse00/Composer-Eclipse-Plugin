@@ -2,57 +2,74 @@ package com.dubture.composer.ui.editor.composer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.FileNotFoundException;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.getcomposer.ComposerPackage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;
 	protected ComposerPackage composerPackage;
+	protected IDocumentProvider documentProvider;
 
 	public ComposerFormEditor() {
 		super();
 	}
 
 	@Override
+	protected void setInput(IEditorInput input) {
+		super.setInput(input);
+		documentProvider = new TextFileDocumentProvider();
+		try {
+			documentProvider.connect(input);
+//			p.getDocument(input);
+//			documentProvider.
+			
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-
-		try {
+		
+		// eclipse way to get input, unfortunately does not exist for some
+		// reasons?
+//		File json = ((IFileEditorInput) input).getFile().getFullPath().toFile();
 			
-			// eclipse way to get input, unfortunately does not exist for some
-			// reasons?
-//			File json = ((IFileEditorInput) input).getFile().getFullPath().toFile();
+		// workaround
+//		String composerJsonFilePath =
+//				ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() +
+//				((IFileEditorInput) input).getFile().getFullPath().toString();
+//		
+//		composerFile = new File(composerJsonFilePath);
 			
-			// workaround
-			String composerJsonFilePath =
-					ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() +
-					((IFileEditorInput) input).getFile().getFullPath().toString();
-			
-			File json = new File(composerJsonFilePath);
-			
-			composerPackage = ComposerPackage.fromFile(json);
-			composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
-				public void propertyChange(PropertyChangeEvent arg0) {
-					setDirty(true);
-				}
-			});
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		// ok, cool way here we go
+		String json = documentProvider.getDocument(input).get();
+		
+		composerPackage = ComposerPackage.fromJson(json);
+		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent arg0) {
+				setDirty(true);
+			}
+		});
 	}
+	
+	
 
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
@@ -89,9 +106,24 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
 	}
 
-	public void doSave(IProgressMonitor arg0) {
-		System.out.println(composerPackage.toJson());
-		setDirty(false);
+	public void doSave(IProgressMonitor monitor) {
+		try {
+//			if (documentProvider.canSaveDocument(getEditorInput())) {
+//				FileWriter fstream = new FileWriter(composerFile);
+//				BufferedWriter out = new BufferedWriter(fstream);
+//				out.write(composerPackage.toJson());
+//				out.close();
+				IDocument document = documentProvider.getDocument(getEditorInput());
+				documentProvider.aboutToChange(getEditorInput());
+				document.set(composerPackage.toJson());
+				documentProvider.saveDocument(monitor, getEditorInput(), document, true);
+				documentProvider.changed(getEditorInput());
+
+				setDirty(false);
+//			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void doSaveAs() {
@@ -107,7 +139,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 
 	public void setDirty(boolean value) {
 		this.dirty = value;
-		firePropertyChange(PROP_DIRTY);
+		editorDirtyStateChanged();
 	}
 
 	public ComposerPackage getComposerPackge() {

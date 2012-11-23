@@ -11,9 +11,9 @@ public class Keywords2StringConverter extends Converter {
 	}
 
 	@Override
-	public Object convert(Object fromObject) {
+	public String convert(Object fromObject) {
 		GenericArray keywords = (GenericArray)fromObject;
-		return StringUtils.join((String[])keywords.toArray(), ", ");
+		return StringUtils.join((String[])keywords.toStringArray(), ", ");
 	}
 
 }

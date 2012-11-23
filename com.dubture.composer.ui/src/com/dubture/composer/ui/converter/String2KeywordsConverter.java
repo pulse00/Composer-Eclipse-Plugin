@@ -10,7 +10,7 @@ public class String2KeywordsConverter extends Converter {
 	}
 
 	@Override
-	public Object convert(Object fromObject) {
+	public GenericArray convert(Object fromObject) {
 		String[] chunks = ((String)fromObject).split(",");
 		GenericArray keywords = new GenericArray();
 		for (String chunk : chunks) {

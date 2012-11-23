@@ -13,7 +13,7 @@ public class License2StringConverter extends Converter {
 	}
 
 	@Override
-	public Object convert(Object fromObject) {
+	public String convert(Object fromObject) {
 		ArrayList<String> list = new ArrayList<String>();
 		License licenses = (License)fromObject;
 		for (String license : licenses) {
