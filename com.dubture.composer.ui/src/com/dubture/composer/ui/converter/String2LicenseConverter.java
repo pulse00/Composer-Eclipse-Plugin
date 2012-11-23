@@ -17,7 +17,10 @@ public class String2LicenseConverter extends Converter {
 		License license = composerPackage.getLicense();
 		String[] chunks = ((String)fromObject).split(",");
 		for (String chunk : chunks) {
-			license.add(chunk.trim());
+			chunk = chunk.trim();
+			if (!license.has(chunk)) {
+				license.add(chunk);
+			}
 		}
 		return license;
 	}

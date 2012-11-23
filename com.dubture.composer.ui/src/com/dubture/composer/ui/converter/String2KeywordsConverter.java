@@ -14,7 +14,10 @@ public class String2KeywordsConverter extends Converter {
 		String[] chunks = ((String)fromObject).split(",");
 		GenericArray keywords = new GenericArray();
 		for (String chunk : chunks) {
-			keywords.add(chunk.trim());
+			chunk = chunk.trim();
+			if (!keywords.has(chunk)) {
+				keywords.add(chunk);
+			}
 		}
 		return keywords;
 	}

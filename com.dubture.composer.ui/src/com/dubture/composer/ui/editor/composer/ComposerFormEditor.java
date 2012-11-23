@@ -63,8 +63,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		
 		composerPackage = ComposerPackage.fromJson(json);
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent arg0) {
-				setDirty(true);
+			public void propertyChange(PropertyChangeEvent e) {
+				if (e.getOldValue() != e.getNewValue()) {
+					setDirty(true);
+				}
 			}
 		});
 	}

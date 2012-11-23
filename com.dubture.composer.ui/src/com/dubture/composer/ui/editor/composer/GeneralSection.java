@@ -129,7 +129,9 @@ public class GeneralSection extends ComposerSection {
 		
 		homepageEntry.addFormEntryListener(new FormEntryAdapter() {
 			public void textValueChanged(FormEntry entry) {
-				composerPackage.set("homepage", entry.getValue());
+				if (entry.getValue() != "") {
+					composerPackage.set("homepage", entry.getValue());
+				}
 			}
 		});
 		composerPackage.addPropertyChangeListener("homepage", new PropertyChangeListener() {
@@ -151,6 +153,7 @@ public class GeneralSection extends ComposerSection {
 			public void textValueChanged(FormEntry entry) {
 				String2LicenseConverter converter = new String2LicenseConverter();
 				converter.setComposerPackage(composerPackage);
+				converter.convert(entry.getValue());
 //				composerPackage.set("license", converter.convert(entry.getValue()));
 			}
 		});
