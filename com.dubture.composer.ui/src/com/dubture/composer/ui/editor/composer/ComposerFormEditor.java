@@ -61,7 +61,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		// ok, cool way here we go
 		String json = documentProvider.getDocument(input).get();
 		
-		composerPackage = ComposerPackage.fromJson(json);
+		composerPackage = new ComposerPackage(json);
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getOldValue() != e.getNewValue()) {

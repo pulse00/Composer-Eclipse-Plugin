@@ -54,15 +54,6 @@
       </buildpathContainerInitializer>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.eclipse.php.ui.preferences.PHPBasePreferencePage"
-            class="com.dubture.composer.core.ui.preferences.ComposerPreferencePage"
-            id="com.dubture.composer.core.preferences.Packages"
-            name="Composer">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
       <provider labelProvider="com.dubture.composer.core.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider"
             >
