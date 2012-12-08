@@ -3,13 +3,11 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.getcomposer.ComposerConstants;
-import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.ui.converter.Keywords2StringConverter;
 import com.dubture.composer.ui.converter.License2StringConverter;
@@ -26,13 +24,8 @@ import com.dubture.composer.ui.parts.WeblinkFormEntry;
 
 public class GeneralSection extends ComposerSection {
 
-	ComposerPackage composerPackage;
-	DataBindingContext bindingContext;
-
 	public GeneralSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
-		composerPackage = page.getComposerEditor().getComposerPackge();
-		bindingContext = new DataBindingContext();
 		createClient(getSection(), page.getManagedForm().getToolkit());
 	}
 
@@ -111,9 +104,11 @@ public class GeneralSection extends ComposerSection {
 		keywordsEntry.setValue(converter.convert(composerPackage.getKeywords()), true);
 		
 		keywordsEntry.addFormEntryListener(new FormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
+			public void focusLost(FormEntry entry) {
 				String2KeywordsConverter converter = new String2KeywordsConverter();
-				composerPackage.set("keywords", converter.convert(entry.getValue()));
+				converter.setComposerPackage(composerPackage);
+				converter.convert(entry.getValue());
+//				composerPackage.set("keywords", converter.convert(entry.getValue()));
 			}
 		});
 		composerPackage.addPropertyChangeListener("keywords", new PropertyChangeListener() {
@@ -129,9 +124,7 @@ public class GeneralSection extends ComposerSection {
 		
 		homepageEntry.addFormEntryListener(new FormEntryAdapter() {
 			public void textValueChanged(FormEntry entry) {
-				if (entry.getValue() != "") {
-					composerPackage.set("homepage", entry.getValue());
-				}
+				composerPackage.set("homepage", entry.getValue());
 			}
 		});
 		composerPackage.addPropertyChangeListener("homepage", new PropertyChangeListener() {
@@ -150,7 +143,7 @@ public class GeneralSection extends ComposerSection {
 		
 		
 		licenseEntry.addFormEntryListener(new FormEntryAdapter() {
-			public void textValueChanged(FormEntry entry) {
+			public void focusLost(FormEntry entry) {
 				String2LicenseConverter converter = new String2LicenseConverter();
 				converter.setComposerPackage(composerPackage);
 				converter.convert(entry.getValue());

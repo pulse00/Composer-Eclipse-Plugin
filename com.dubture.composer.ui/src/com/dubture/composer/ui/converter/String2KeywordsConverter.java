@@ -1,9 +1,8 @@
 package com.dubture.composer.ui.converter;
 
-import org.eclipse.core.databinding.conversion.Converter;
 import org.getcomposer.collection.GenericArray;
 
-public class String2KeywordsConverter extends Converter {
+public class String2KeywordsConverter extends ComposerConverter {
 
 	public String2KeywordsConverter() {
 		super(String.class, String[].class);
@@ -11,8 +10,9 @@ public class String2KeywordsConverter extends Converter {
 
 	@Override
 	public GenericArray convert(Object fromObject) {
+		GenericArray keywords = composerPackage.getKeywords();
 		String[] chunks = ((String)fromObject).split(",");
-		GenericArray keywords = new GenericArray();
+
 		for (String chunk : chunks) {
 			chunk = chunk.trim();
 			if (!keywords.has(chunk)) {

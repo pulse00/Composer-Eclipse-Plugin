@@ -9,7 +9,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -21,20 +20,28 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;
 	protected ComposerPackage composerPackage;
 	protected IDocumentProvider documentProvider;
+	
+	// TODO JsonTextEditor some day...
+	protected ComposerTextEditor textEditor = new ComposerTextEditor(); 
 
 	public ComposerFormEditor() {
 		super();
+		documentProvider = textEditor.getDocumentProvider();
 	}
 
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
-		documentProvider = new TextFileDocumentProvider();
 		try {
 			documentProvider.connect(input);
-//			p.getDocument(input);
-//			documentProvider.
 			
+			// TODO some sort of listener to get notified when the file changes
+			//
+			// 1) document listener: documentProvider.getDocument(input).addDocumentListener
+			// 2) documentProvider.addElementStateListener()
+			// 3) Resource Listener
+			//
+			// see: https://github.com/pulse00/Composer-Eclipse-Plugin/issues/23
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
@@ -65,6 +72,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				if (e.getOldValue() != e.getNewValue()) {
+//					System.out.println("Composer Property Changed: " + e.getPropertyName() + ", old: " + e.getOldValue() + ", new: " + e.getNewValue());
 					setDirty(true);
 				}
 			}
@@ -110,19 +118,13 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 
 	public void doSave(IProgressMonitor monitor) {
 		try {
-//			if (documentProvider.canSaveDocument(getEditorInput())) {
-//				FileWriter fstream = new FileWriter(composerFile);
-//				BufferedWriter out = new BufferedWriter(fstream);
-//				out.write(composerPackage.toJson());
-//				out.close();
-				IDocument document = documentProvider.getDocument(getEditorInput());
-				documentProvider.aboutToChange(getEditorInput());
-				document.set(composerPackage.toJson());
-				documentProvider.saveDocument(monitor, getEditorInput(), document, true);
-				documentProvider.changed(getEditorInput());
+			IDocument document = documentProvider.getDocument(getEditorInput());
+			documentProvider.aboutToChange(getEditorInput());
+			document.set(composerPackage.toJson());
+			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
+			documentProvider.changed(getEditorInput());
 
-				setDirty(false);
-//			}
+			setDirty(false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -147,4 +149,5 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	public ComposerPackage getComposerPackge() {
 		return composerPackage;
 	}
+	
 }

@@ -1,12 +1,8 @@
 package com.dubture.composer.ui.converter;
 
-import org.eclipse.core.databinding.conversion.Converter;
-import org.getcomposer.ComposerPackage;
 import org.getcomposer.collection.License;
 
-public class String2LicenseConverter extends Converter {
-
-	private ComposerPackage composerPackage;
+public class String2LicenseConverter extends ComposerConverter {
 	
 	public String2LicenseConverter() {
 		super(String.class, License.class);
@@ -25,18 +21,5 @@ public class String2LicenseConverter extends Converter {
 		return license;
 	}
 
-	/**
-	 * @return the composerPackage
-	 */
-	public ComposerPackage getComposerPackage() {
-		return composerPackage;
-	}
-
-	/**
-	 * @param composerPackage the composerPackage to set
-	 */
-	public void setComposerPackage(ComposerPackage composerPackage) {
-		this.composerPackage = composerPackage;
-	}
 
 }

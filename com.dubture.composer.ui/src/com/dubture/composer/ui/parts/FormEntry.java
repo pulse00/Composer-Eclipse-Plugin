@@ -34,16 +34,14 @@ import com.dubture.composer.ui.editor.FormLayoutFactory;
  * This allows delayed commit.
  */
 public class FormEntry {
-	private Control fLabel;
-	private Text fText;
-	private Button fBrowse;
-	private String fValue = ""; //$NON-NLS-1$
-	private boolean fDirty;
-	boolean fIgnoreModify = false;
-	
+	private Control label;
+	private Text text;
+	private Button browse;
+	boolean ignoreModify = false;
+
 	private ArrayList<IFormEntryListener> listeners = new ArrayList<IFormEntryListener>();
 
-	public static final int F_DEFAULT_TEXT_WIDTH_HINT = 100;
+	public static final int DEFAULT_TEXT_WIDTH_HINT = 100;
 
 	/**
 	 * The default constructor. Call 'createControl' to make it.
@@ -95,18 +93,18 @@ public class FormEntry {
 	private void createControl(Composite parent, FormToolkit toolkit, String labelText, int style, String browseText, boolean linkLabel, int indent, int tcolspan) {
 		if (linkLabel) {
 			Hyperlink link = toolkit.createHyperlink(parent, labelText, SWT.NULL);
-			fLabel = link;
+			label = link;
 		} else {
 			if (labelText != null) {
-				fLabel = toolkit.createLabel(parent, labelText);
-				fLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+				label = toolkit.createLabel(parent, labelText);
+				label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 			}
 		}
-		fText = toolkit.createText(parent, "", style); //$NON-NLS-1$
+		text = toolkit.createText(parent, "", style); //$NON-NLS-1$
 		addListeners();
 		if (browseText != null) {
-			fBrowse = toolkit.createButton(parent, browseText, SWT.PUSH);
-			fBrowse.addSelectionListener(new SelectionAdapter() {
+			browse = toolkit.createButton(parent, browseText, SWT.PUSH);
+			browse.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					for (IFormEntryListener listener : listeners) {
 						listener.browseButtonSelected(FormEntry.this);
@@ -117,16 +115,16 @@ public class FormEntry {
 		fillIntoGrid(parent, indent, tcolspan);
 		// Set the default text width hint and let clients modify accordingly
 		// after the fact
-		setTextWidthHint(F_DEFAULT_TEXT_WIDTH_HINT);
+		setTextWidthHint(DEFAULT_TEXT_WIDTH_HINT);
 	}
 
 	public void setEditable(boolean editable) {
-		fText.setEditable(editable);
-		if (fLabel instanceof Hyperlink)
-			((Hyperlink) fLabel).setUnderlined(editable);
+		text.setEditable(editable);
+		if (label instanceof Hyperlink)
+			((Hyperlink) label).setUnderlined(editable);
 
-		if (fBrowse != null)
-			fBrowse.setEnabled(editable);
+		if (browse != null)
+			browse.setEnabled(editable);
 	}
 
 	private void fillIntoGrid(Composite parent, int indent, int tcolspan) {
@@ -137,50 +135,50 @@ public class FormEntry {
 			if (tcolspan > 0)
 				tspan = tcolspan;
 			else
-				tspan = fBrowse != null ? span - 2 : span - 1;
+				tspan = browse != null ? span - 2 : span - 1;
 			GridData gd;
-			if (fLabel != null) {
+			if (label != null) {
 				gd = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 				gd.horizontalIndent = indent;
-				fLabel.setLayoutData(gd);
+				label.setLayoutData(gd);
 			}
 			gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
 			gd.horizontalSpan = tspan;
-			if (fLabel != null) {
+			if (label != null) {
 				gd.horizontalIndent = FormLayoutFactory.CONTROL_HORIZONTAL_INDENT;
 			}
 			gd.grabExcessHorizontalSpace = (tspan == 1);
 			gd.widthHint = 10;
-			fText.setLayoutData(gd);
-			if (fBrowse != null) {
+			text.setLayoutData(gd);
+			if (browse != null) {
 				gd = new GridData(GridData.VERTICAL_ALIGN_CENTER);
-				fBrowse.setLayoutData(gd);
+				browse.setLayoutData(gd);
 			}
 		} else if (layout instanceof TableWrapLayout) {
 			int span = ((TableWrapLayout) layout).numColumns;
 			if (tcolspan > 0)
 				tspan = tcolspan;
 			else
-				tspan = fBrowse != null ? span - 2 : span - 1;
+				tspan = browse != null ? span - 2 : span - 1;
 			TableWrapData td;
-			if (fLabel != null) {
+			if (label != null) {
 				td = new TableWrapData();
 				td.valign = TableWrapData.MIDDLE;
 				td.indent = indent;
-				fLabel.setLayoutData(td);
+				label.setLayoutData(td);
 			}
 			td = new TableWrapData(TableWrapData.FILL);
 			td.colspan = tspan;
-			if (fLabel != null) {
+			if (label != null) {
 				td.indent = FormLayoutFactory.CONTROL_HORIZONTAL_INDENT;
 			}
 			td.grabHorizontal = (tspan == 1);
 			td.valign = TableWrapData.MIDDLE;
-			fText.setLayoutData(td);
-			if (fBrowse != null) {
+			text.setLayoutData(td);
+			if (browse != null) {
 				td = new TableWrapData(TableWrapData.FILL);
 				td.valign = TableWrapData.MIDDLE;
-				fBrowse.setLayoutData(td);
+				browse.setLayoutData(td);
 			}
 		}
 	}
@@ -191,8 +189,8 @@ public class FormEntry {
 	 * @param listener
 	 */
 	public void addFormEntryListener(IFormEntryListener listener) {
-		if (fLabel != null && fLabel instanceof Hyperlink) {
-			((Hyperlink) fLabel).addHyperlinkListener(listener);
+		if (label != null && label instanceof Hyperlink) {
+			((Hyperlink) label).addHyperlinkListener(listener);
 		}
 		listeners.add(listener);
 	}
@@ -204,26 +202,25 @@ public class FormEntry {
 	 * @param listener
 	 */
 	public void removeFormEntryListener(IFormEntryListener listener) {
-		if (fLabel != null && fLabel instanceof Hyperlink) {
-			((Hyperlink) fLabel).removeHyperlinkListener(listener);
+		if (label != null && label instanceof Hyperlink) {
+			((Hyperlink) label).removeHyperlinkListener(listener);
 		}
 		listeners.remove(listener);
 	}
 
 	private void addListeners() {
-		fText.addKeyListener(new KeyAdapter() {
-			public void keyReleased(KeyEvent e) {
-				keyReleaseOccured(e);
-			}
-		});
-		fText.addModifyListener(new ModifyListener() {
+		text.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				editOccured(e);
+				if (!ignoreModify) {
+					for (IFormEntryListener listener : listeners) {
+						listener.textValueChanged(FormEntry.this);
+					}
+				}
 			}
 		});
-		fText.addFocusListener(new FocusAdapter() {
+		text.addFocusListener(new FocusAdapter() {
 			public void focusGained(FocusEvent e) {
-				fText.selectAll();
+				text.selectAll();
 				
 				for (IFormEntryListener listener : listeners) {
 					listener.focusGained(FormEntry.this);
@@ -231,42 +228,11 @@ public class FormEntry {
 			}
 
 			public void focusLost(FocusEvent e) {
-				if (fDirty)
-					commit();
+				for (IFormEntryListener listener : listeners) {
+					listener.focusLost(FormEntry.this);
+				}
 			}
 		});
-	}
-
-	/**
-	 * If dirty, commits the text in the widget to the value and notifies the
-	 * listener. This call clears the 'dirty' flag.
-	 *  
-	 */
-	public void commit() {
-		if (fDirty) {
-			fValue = fText.getText();
-			//if (value.length()==0)
-			//value = null;
-			//notify
-			for (IFormEntryListener listener : listeners) {
-				listener.textValueChanged(this);
-			}
-		}
-		fDirty = false;
-	}
-
-	public void cancelEdit() {
-		fDirty = false;
-	}
-
-	private void editOccured(ModifyEvent e) {
-		if (fIgnoreModify)
-			return;
-		fDirty = true;
-		
-		for (IFormEntryListener listener : listeners) {
-			listener.textDirty(this);
-		}
 	}
 
 	/**
@@ -274,18 +240,18 @@ public class FormEntry {
 	 * 
 	 */
 	public Text getText() {
-		return fText;
+		return text;
 	}
 
 	public Control getLabel() {
-		return fLabel;
+		return label;
 	}
 
 	/**
 	 * Returns the browse button control.
 	 */
 	public Button getButton() {
-		return fBrowse;
+		return browse;
 	}
 
 	/**
@@ -294,31 +260,10 @@ public class FormEntry {
 	 * 
 	 */
 	public String getValue() {
-		return fValue.trim();
-	}
-
-	/**
-	 * Returns true if the text has been modified.
-	 * 
-	 */
-	public boolean isDirty() {
-		return fDirty;
-	}
-
-	private void keyReleaseOccured(KeyEvent e) {
-		if (e.character == '\r') {
-			// commit value
-			if (fDirty)
-				commit();
-		} else if (e.character == '\u001b') { // Escape character
-			if (!fValue.equals(fText.getText()))
-				fText.setText(fValue != null ? fValue : ""); // restore old //$NON-NLS-1$
-			fDirty = false;
-		}
+		if (text != null)
+			return text.getText().trim();
 		
-		for (IFormEntryListener listener : listeners) {
-			listener.selectionChanged(this);
-		}
+		return null;
 	}
 
 	/**
@@ -327,9 +272,8 @@ public class FormEntry {
 	 * @param value
 	 */
 	public void setValue(String value) {
-		if (fText != null)
-			fText.setText(value != null ? value : ""); //$NON-NLS-1$
-		this.fValue = (value != null) ? value : ""; //$NON-NLS-1$
+		if (text != null && value != null && !value.equalsIgnoreCase(getValue()))
+			text.setText(value);
 	}
 
 	/**
@@ -340,18 +284,18 @@ public class FormEntry {
 	 * @param blockNotification
 	 */
 	public void setValue(String value, boolean blockNotification) {
-		fIgnoreModify = blockNotification;
+		ignoreModify = blockNotification;
 		setValue(value);
-		fIgnoreModify = false;
+		ignoreModify = false;
 	}
 
 	public void setVisible(boolean visible) {
-		if (fLabel != null)
-			fLabel.setVisible(visible);
-		if (fText != null)
-			fText.setVisible(visible);
-		if (fBrowse != null)
-			fBrowse.setVisible(visible);
+		if (label != null)
+			label.setVisible(visible);
+		if (text != null)
+			text.setVisible(visible);
+		if (browse != null)
+			browse.setVisible(visible);
 	}
 
 	/**

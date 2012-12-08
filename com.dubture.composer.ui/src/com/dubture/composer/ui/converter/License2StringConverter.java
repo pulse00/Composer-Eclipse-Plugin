@@ -19,6 +19,11 @@ public class License2StringConverter extends Converter {
 		for (String license : licenses) {
 			list.add(license);
 		}
+		
+		if (list.size() == 0) {
+			return "";
+		}
+		
 		return StringUtils.join(list.toArray(), ", ");
 	}
 

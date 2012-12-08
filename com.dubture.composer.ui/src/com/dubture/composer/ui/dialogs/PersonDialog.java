@@ -16,29 +16,30 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 
-public class AuthorDialog extends Dialog {
+public class PersonDialog extends Dialog {
 	private DataBindingContext m_bindingContext;
 
-	private Person author;
+	private Person person;
 	private Text name;
 	private Text email;
 	private Text homepage;
+	private Text text;
 	
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public AuthorDialog(Shell parentShell, Person author) {
+	public PersonDialog(Shell parentShell, Person author) {
 		super(parentShell);
-		this.author = author;
+		this.person = author;
 	}
 
-	public AuthorDialog(IShellProvider parentShell, Person author) {
+	public PersonDialog(IShellProvider parentShell, Person author) {
 		super(parentShell);
-		this.author = author;
+		this.person = author;
 	}
 	
-	public Person getAuthor() {
-		return author;
+	public Person getPerson() {
+		return person;
 	}
 
 	@Override
@@ -71,6 +72,13 @@ public class AuthorDialog extends Dialog {
 		
 		homepage = new Text(contents, SWT.BORDER);
 		homepage.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Label lblRole = new Label(contents, SWT.NONE);
+		lblRole.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblRole.setText("Role");
+		
+		text = new Text(contents, SWT.BORDER);
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		m_bindingContext = initDataBindings();
 		
 		
@@ -80,16 +88,20 @@ public class AuthorDialog extends Dialog {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue observeTextNameObserveWidget = WidgetProperties.text(SWT.Modify).observe(name);
-		IObservableValue nameAuthorObserveValue = BeanProperties.value("name").observe(author);
+		IObservableValue nameAuthorObserveValue = BeanProperties.value("name").observe(person);
 		bindingContext.bindValue(observeTextNameObserveWidget, nameAuthorObserveValue, null, null);
 		//
 		IObservableValue observeTextEmailObserveWidget = WidgetProperties.text(SWT.Modify).observe(email);
-		IObservableValue emailAuthorObserveValue = BeanProperties.value("email").observe(author);
+		IObservableValue emailAuthorObserveValue = BeanProperties.value("email").observe(person);
 		bindingContext.bindValue(observeTextEmailObserveWidget, emailAuthorObserveValue, null, null);
 		//
 		IObservableValue observeTextHomepageObserveWidget = WidgetProperties.text(SWT.Modify).observe(homepage);
-		IObservableValue homepageAuthorObserveValue = BeanProperties.value("homepage").observe(author);
+		IObservableValue homepageAuthorObserveValue = BeanProperties.value("homepage").observe(person);
 		bindingContext.bindValue(observeTextHomepageObserveWidget, homepageAuthorObserveValue, null, null);
+		//
+		IObservableValue observeTextTextObserveWidget = WidgetProperties.text(SWT.Modify).observe(text);
+		IObservableValue rolePersonObserveValue = BeanProperties.value("role").observe(person);
+		bindingContext.bindValue(observeTextTextObserveWidget, rolePersonObserveValue, null, null);
 		//
 		return bindingContext;
 	}

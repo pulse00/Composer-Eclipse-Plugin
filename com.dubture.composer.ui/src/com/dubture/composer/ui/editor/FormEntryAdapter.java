@@ -30,7 +30,6 @@ public class FormEntryAdapter implements IFormEntryListener {
 	}
 
 	public FormEntryAdapter() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void focusGained(FormEntry entry) {
@@ -83,5 +82,8 @@ public class FormEntryAdapter implements IFormEntryListener {
 
 	public void selectionChanged(FormEntry entry) {
 		ITextSelection selection = new TextSelection(1, 1);
+	}
+
+	public void focusLost(FormEntry entry) {
 	}
 }
