@@ -17,7 +17,6 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.core.databinding.beans.BeanProperties;
 
 public class PersonDialog extends Dialog {
-	private DataBindingContext m_bindingContext;
 
 	private Person person;
 	private Text name;
@@ -79,7 +78,6 @@ public class PersonDialog extends Dialog {
 		
 		text = new Text(contents, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		m_bindingContext = initDataBindings();
 		
 		
 		return contents;

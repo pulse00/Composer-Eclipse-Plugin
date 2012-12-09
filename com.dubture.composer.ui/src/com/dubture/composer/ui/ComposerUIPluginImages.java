@@ -18,6 +18,8 @@ public class ComposerUIPluginImages {
 			T_WIZBAN, "packagist.png");
 	public static final ImageDescriptor AUTHOR = create(T_OBJ16, "author.png");
 	public static final ImageDescriptor PAGE = create(T_OBJ16, "page_obj.gif");
+	public static final ImageDescriptor PACKAGE = create(T_OBJ16, "package_obj.gif");
+	public static final ImageDescriptor PHP = create(T_OBJ16, "php-icon.png");
 	public static final ImageDescriptor BROWSER = create(T_OBJ16, "internal_browser.gif");
 
 	private static ImageDescriptor create(String prefix, String name) {
