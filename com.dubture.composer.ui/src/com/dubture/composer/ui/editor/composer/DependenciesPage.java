@@ -104,5 +104,9 @@ public class DependenciesPage extends ComposerFormPage {
 		right = toolkit.createComposite(form.getBody(), SWT.NONE);
 		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
 		right.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		DependencySearchSection searchSection = new DependencySearchSection(this, right);
+		
+		
 	}
 }

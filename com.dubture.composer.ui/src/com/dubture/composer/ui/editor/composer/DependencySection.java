@@ -9,15 +9,10 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -25,7 +20,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.getcomposer.collection.Dependencies;
 import org.getcomposer.entities.Dependency;
 
-import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.controller.DependencyController;
 import com.dubture.composer.ui.dialogs.DependencyDialog;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
@@ -42,41 +37,6 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	
 	private static final int EDIT_INDEX = 0;
 	private static final int REMOVE_INDEX = 1;
-
-	class DependencyController extends LabelProvider implements ITableLabelProvider, IStructuredContentProvider {
-
-		private Dependencies deps;
-		private Image depImage = ComposerUIPluginImages.PACKAGE.createImage();
-		private Image phpImage = ComposerUIPluginImages.PHP.createImage();
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			deps = (Dependencies)newInput;
-		}
-
-		public Object[] getElements(Object inputElement) {
-			return deps.toArray();
-		}
-
-		public Image getColumnImage(Object element, int columnIndex) {
-			Dependency dep = (Dependency)element;
-			if (dep.getName() == "php") {
-				return phpImage;
-			}
-			return depImage;
-		}
-
-		public String getColumnText(Object element, int columnIndex) {
-			Dependency dep = (Dependency)element;
-			StringBuilder sb = new StringBuilder();
-			sb.append(dep.getName());
-			sb.append(": ");
-			
-			// TODO: would be cool to have this in a decorator with hmm grey? text color
-			sb.append(dep.getVersion());
-			
-			return sb.toString();
-		}
-	}
 	
 	public DependencySection(ComposerFormPage page, Composite parent, Dependencies dependencies, String title, String description, boolean expanded) {
 		super(page, parent, Section.EXPANDED | Section.DESCRIPTION | Section.TWISTIE | Section.TITLE_BAR, new String[]{"Edit...", "Remove"});
