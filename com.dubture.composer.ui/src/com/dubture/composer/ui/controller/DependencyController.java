@@ -1,16 +1,12 @@
 package com.dubture.composer.ui.controller;
 
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.graphics.Image;
+import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Dependencies;
-import org.getcomposer.entities.Dependency;
-
-import com.dubture.composer.ui.ComposerUIPluginImages;
 
 public class DependencyController extends PackageController {
 
 	private Dependencies deps;
-	private Image phpImage = ComposerUIPluginImages.PHP.createImage();
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		deps = (Dependencies)newInput;
@@ -20,16 +16,8 @@ public class DependencyController extends PackageController {
 		return deps.toArray();
 	}
 
-	public Image getColumnImage(Object element, int columnIndex) {
-		Dependency dep = (Dependency)element;
-		if (dep.getName() == "php") {
-			return phpImage;
-		}
-		return pkgImage;
-	}
-
 	public String getColumnText(Object element, int columnIndex) {
-		Dependency dep = (Dependency)element;
+		VersionedPackage dep = (VersionedPackage)element;
 		StringBuilder sb = new StringBuilder();
 		sb.append(dep.getName());
 		sb.append(": ");

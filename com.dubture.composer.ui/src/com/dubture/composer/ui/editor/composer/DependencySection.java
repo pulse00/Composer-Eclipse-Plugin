@@ -17,8 +17,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Dependencies;
-import org.getcomposer.entities.Dependency;
 
 import com.dubture.composer.ui.controller.DependencyController;
 import com.dubture.composer.ui.dialogs.DependencyDialog;
@@ -140,7 +140,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	}
 	
 	private void handleEdit() {
-		Dependency dep = (Dependency)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
+		VersionedPackage dep = (VersionedPackage)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
 		DependencyDialog diag = new DependencyDialog(dependencyViewer.getTable().getShell(), dep.clone());
 		if (diag.open() == Dialog.OK) {
 			dep = diag.getDependency();
@@ -149,7 +149,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	}
 	
 	private void handleRemove() {
-		Dependency dep = (Dependency)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
+		VersionedPackage dep = (VersionedPackage)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
 		MessageDialog diag = new MessageDialog(
 				dependencyViewer.getTable().getShell(), 
 				"Remove Author", 

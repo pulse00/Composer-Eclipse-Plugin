@@ -41,7 +41,7 @@ public class RequirePageOne extends MultiItemInstallerPage
                 
                 if (!RequirePageOne.this.previousFilterText .equals(text)) {
                     
-                    SearchResultDownloader downloader = new SearchResultDownloader();
+                    PackagistSearch downloader = new PackagistSearch();
                     items = new ArrayList<InstallableItem>();
                     
                     try {

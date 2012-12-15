@@ -1,7 +1,5 @@
 package com.dubture.composer.ui.dialogs;
 
-import java.io.IOException;
-
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -19,13 +17,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Versions;
-import org.getcomposer.entities.Dependency;
 import org.getcomposer.packagist.PackagistDownloader;
 
 public class DependencyDialog extends Dialog {
 
-	private Dependency dependency;
+	private VersionedPackage dependency;
 	private Text name;
 	private Text version;
 	private List list;
@@ -36,13 +34,13 @@ public class DependencyDialog extends Dialog {
 	 * @param parentShell
 	 * @param dependency
 	 */
-	public DependencyDialog(Shell parentShell, Dependency dependency) {
+	public DependencyDialog(Shell parentShell, VersionedPackage dependency) {
 		super(parentShell);
 		this.dependency = dependency;
 		initialize();
 	}
 
-	public DependencyDialog(IShellProvider parentShell, Dependency dependency) {
+	public DependencyDialog(IShellProvider parentShell, VersionedPackage dependency) {
 		super(parentShell);
 		this.dependency = dependency;
 		initialize();
@@ -53,14 +51,14 @@ public class DependencyDialog extends Dialog {
 		if (name != null && name.trim() != "" && !name.trim().equals("") && !name.trim().equals("php")) {
 			PackagistDownloader downloader = new PackagistDownloader(name);
 			try {
-				versions = downloader.getPackage().getVersions();
-			} catch (IOException e) {
+				versions = downloader.loadPackage().getVersions();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 	}
-	
-	public Dependency getDependency() {
+
+	public VersionedPackage getDependency() {
 		return dependency;
 	}
 

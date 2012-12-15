@@ -90,7 +90,7 @@ public class RequirePageTwo extends AbstractItemInstallerPage implements IPageCh
                     for (InstallableItem item : rawPackages) {
                         try {
                             PackageDownloader downloader = new PackageDownloader(item.getUrl());
-                            RepositoryPackage phpPackage = downloader.getPackage(); 
+                            RepositoryPackage phpPackage = downloader.loadPackage(); 
                             packages.put(new EclipsePHPPackage(phpPackage), phpPackage.getDefaultVersion());
                         } catch (IOException e) {
                             Logger.logException(e);
