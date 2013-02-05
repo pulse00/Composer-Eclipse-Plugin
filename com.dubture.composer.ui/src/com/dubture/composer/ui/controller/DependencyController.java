@@ -17,7 +17,7 @@ public class DependencyController extends PackageController {
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
-		VersionedPackage dep = (VersionedPackage)element;
+	VersionedPackage dep = (VersionedPackage)element;
 		StringBuilder sb = new StringBuilder();
 		sb.append(dep.getName());
 		sb.append(": ");

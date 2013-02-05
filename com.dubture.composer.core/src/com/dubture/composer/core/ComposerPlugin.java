@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.getcomposer.packagist.SearchResultDownloader;
+import org.getcomposer.packagist.PackagistSearch;
 import org.osgi.framework.BundleContext;
 
 import com.dubture.composer.core.model.ModelAccess;
@@ -30,7 +30,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
 
     private static final String DEBUG = "com.dubture.composer.core/debug";
     
-    private SearchResultDownloader packageDownloader = null;
+    private PackagistSearch packageDownloader = null;
 
 	/*
 	 * (non-Javadoc)
@@ -91,13 +91,13 @@ public class ComposerPlugin extends AbstractUIPlugin {
         plugin.getLog().log(status);
     }
     
-    public SearchResultDownloader getPackageDownloader() {
+    public PackagistSearch getPackageDownloader() {
         
         if (packageDownloader != null) {
             return packageDownloader;
         }
         
-        return packageDownloader = new SearchResultDownloader();
+        return packageDownloader = new PackagistSearch();
     }
     
     public boolean isBuildpathContainerEnabled()
