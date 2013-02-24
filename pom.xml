@@ -44,9 +44,9 @@
                 </repository>
 
                 <repository>
-                        <id>kepler</id>
+                        <id>indigo</id>
                         <layout>p2</layout>
-                        <url>http://download.eclipse.org/releases/kepler</url>
+                        <url>http://download.eclipse.org/releases/indigo</url>
                 </repository>
                 <repository>
                         <id>eclipse-tests</id>
