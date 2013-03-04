@@ -10,6 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.ui.controller.PackageController;
 import com.dubture.composer.ui.utils.WidgetFactory;
@@ -23,9 +24,12 @@ public class PackageSearchPart {
 	protected Composite body;
 	protected Button checkbox;
 	
-	public PackageSearchPart (Composite parent, FormToolkit toolkit, String name) {
+	protected ComposerPackage composerPackage;
+	
+	public PackageSearchPart (Composite parent, ComposerPackage composerPackage, FormToolkit toolkit, String name) {
 		this.toolkit = toolkit;
 		this.name = name;
+		this.composerPackage = composerPackage;
 		create(parent, new WidgetFactory(toolkit));
 	}
 	

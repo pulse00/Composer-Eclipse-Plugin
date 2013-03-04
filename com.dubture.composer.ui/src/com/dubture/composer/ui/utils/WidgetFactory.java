@@ -2,6 +2,7 @@ package com.dubture.composer.ui.utils;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -145,5 +146,30 @@ public class WidgetFactory {
 	
 	public static Text createText(FormToolkit toolkit, Composite parent, int style) {
 		return WidgetFactory.builder(toolkit).createText(parent, style);
+	}
+	
+	
+	// ---- ComboBox
+	
+	public Combo createCombo(Composite parent) {
+		return createCombo(parent, SWT.BORDER);
+	}
+	
+	public static Combo createCombo(FormToolkit toolkit, Composite parent) {
+		return WidgetFactory.builder(toolkit).createCombo(parent);
+	}
+	
+	public Combo createCombo(Composite parent, int style) {
+		if (toolkit == null) {
+			return new Combo(parent, style);
+		} else {
+			Combo combo = new Combo(parent, style);
+			toolkit.adapt(combo, false, false);
+			return combo;
+		}
+	}
+	
+	public static Combo createCombo(FormToolkit toolkit, Composite parent, int style) {
+		return WidgetFactory.builder(toolkit).createCombo(parent, style);
 	}
 }

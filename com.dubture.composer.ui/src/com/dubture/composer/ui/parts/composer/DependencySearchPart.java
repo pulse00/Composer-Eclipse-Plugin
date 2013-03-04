@@ -10,6 +10,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
+import org.getcomposer.ComposerPackage;
 
 import com.dubture.composer.ui.utils.WidgetFactory;
 import com.dubture.composer.ui.utils.WidgetHelper;
@@ -17,10 +18,11 @@ import com.dubture.composer.ui.utils.WidgetHelper;
 public class DependencySearchPart extends PackageSearchPart {
 
 	protected Twistie toggle;
+	protected Text version;
 	protected VersionSuggestion suggestion;
 	
-	public DependencySearchPart(Composite parent, FormToolkit toolkit, String name) {
-		super(parent, toolkit, name);
+	public DependencySearchPart(Composite parent, ComposerPackage composerPackage, FormToolkit toolkit, String name) {
+		super(parent, composerPackage, toolkit, name);
 	}
 
 	protected void create(Composite parent, WidgetFactory factory) {
@@ -37,26 +39,22 @@ public class DependencySearchPart extends PackageSearchPart {
 		Composite toggleBox = factory.createComposite(title, SWT.NO_BACKGROUND);
 		toggleBox.setLayout(new GridLayout());
 		toggle = new Twistie(toggleBox, SWT.NO_BACKGROUND | SWT.NO_FOCUS);
-		toggle.setExpanded(true); //TODO: REMOVE!
-		toggle.addHyperlinkListener(new HyperlinkAdapter() {
-			public void linkActivated(HyperlinkEvent e) {
-				boolean expanded = toggle.isExpanded();
-				suggestion.getBody().setVisible(expanded);
-				((GridData)suggestion.getBody().getLayoutData()).exclude = !expanded; 
-				body.layout(true, true);
-			}
-		});
+		toggle.setData(this);
 		WidgetHelper.trimComposite(toggleBox, 3, -7, 0, 0, 0, 0);
 		
 		// package
 		createPackageCheckbox(title, factory, name);
 		
 		// version
-		Text version = factory.createText(title, SWT.SINGLE | SWT.BORDER);
-		version.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+		version = factory.createText(title, SWT.SINGLE | SWT.BORDER);
+		GridData gd = new GridData(SWT.RIGHT, SWT.CENTER, false, false);
+		gd.widthHint = 120;
+		version.setLayoutData(gd);
+		version.setData(this);
 		
 		// suggestion
-		suggestion = new VersionSuggestion(name, body, version, toolkit);
+		suggestion = new VersionSuggestion(name, body, version, composerPackage, toolkit);
+		setExpanded(false);
 		WidgetHelper.trimComposite(suggestion.getBody(), -5,-5,-5,-5, 0, 0);
 	}
 	
@@ -70,5 +68,15 @@ public class DependencySearchPart extends PackageSearchPart {
 	
 	public boolean isExpanded() {
 		return toggle.isExpanded();
+	}
+	
+	public Text getVersionControl() {
+		return version;
+	}
+	
+	public void setExpanded(boolean expanded) {
+		toggle.setExpanded(expanded);
+		suggestion.getBody().setVisible(expanded);
+		((GridData)suggestion.getBody().getLayoutData()).exclude = !expanded;
 	}
 }

@@ -24,7 +24,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.core.databinding.property,
- org.getcomposer
+ org.getcomposer,
+ org.eclipse.nebula.widgets.tablecombo,
+ org.apache.commons.lang3
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.ui.explorer;
@@ -71,3 +73,4 @@ Export-Package: com.dubture.composer.ui.explorer;
    org.eclipse.swt.widgets,
    org.eclipse.dltk.core,
    org.eclipse.jface.dialogs"
+Bundle-ClassPath: .

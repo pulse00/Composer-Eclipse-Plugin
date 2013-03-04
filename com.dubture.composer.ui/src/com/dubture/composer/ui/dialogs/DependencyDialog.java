@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Versions;
-import org.getcomposer.packagist.PackagistDownloader;
+import org.getcomposer.packages.PackagistDownloader;
 
 public class DependencyDialog extends Dialog {
 
@@ -49,9 +49,9 @@ public class DependencyDialog extends Dialog {
 	private void initialize() {
 		String name = dependency.getName();
 		if (name != null && name.trim() != "" && !name.trim().equals("") && !name.trim().equals("php")) {
-			PackagistDownloader downloader = new PackagistDownloader(name);
+			PackagistDownloader downloader = new PackagistDownloader();
 			try {
-				versions = downloader.loadPackage().getVersions();
+				versions = downloader.loadPackage(name).getVersions();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

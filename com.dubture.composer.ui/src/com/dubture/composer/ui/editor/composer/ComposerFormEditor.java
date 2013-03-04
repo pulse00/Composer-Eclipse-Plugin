@@ -18,7 +18,7 @@ import org.getcomposer.ComposerPackage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;
-	protected ComposerPackage composerPackage;
+	protected ComposerPackage composerPackage = null;
 	protected IDocumentProvider documentProvider;
 	
 	// TODO JsonTextEditor some day...

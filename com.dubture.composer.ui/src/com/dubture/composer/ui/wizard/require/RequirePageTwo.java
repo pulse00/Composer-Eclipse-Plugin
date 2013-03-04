@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.getcomposer.ComposerPackage;
 import org.getcomposer.RepositoryPackage;
-import org.getcomposer.packagist.PackageDownloader;
+import org.getcomposer.packages.PackageDownloader;
 
 import com.dubture.composer.core.launch.ConsoleResponseHandler;
 import com.dubture.composer.core.launch.DefaultExecutableLauncher;

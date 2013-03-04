@@ -11,11 +11,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -44,7 +45,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	private static final int EDIT_INDEX = 1;
 	private static final int REMOVE_INDEX = 2;
 
-	class AuthorController extends LabelProvider implements ITableLabelProvider, IStructuredContentProvider {
+	class AuthorController extends StyledCellLabelProvider implements IStructuredContentProvider {
 
 		private Persons authors;
 		private Image authorImage = ComposerUIPluginImages.AUTHOR.createImage();
@@ -57,25 +58,52 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 			return authors.toArray();
 		}
 
-		public Image getColumnImage(Object element, int columnIndex) {
-			return authorImage;
-		}
-
-		public String getColumnText(Object element, int columnIndex) {
-			Person author = (Person)element;
-			StringBuilder sb = new StringBuilder();
-			sb.append(author.getName());
+//		public Image getColumnImage(Object element, int columnIndex) {
+//			return authorImage;
+//		}
+//
+//		public String getColumnText(Object element, int columnIndex) {
+//			Person author = (Person)element;
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(author.getName());
+//			
+//			// TODO: would be cool to have this in a decorator with hmm grey? text color
+//			if (author.getEmail() != null && author.getEmail().trim() != "" && !author.getEmail().trim().equals("")) {
+//				sb.append(" <" + author.getEmail().trim() + ">");
+//			}
+//			
+//			if (author.getHomepage() != null && author.getHomepage().trim() != "" && !author.getHomepage().trim().equals("")) {
+//				sb.append(" - " + author.getHomepage().trim());
+//			}
+//			
+//			return sb.toString();
+//		}
+		
+		public void update(ViewerCell cell) {
+			Object obj = cell.getElement();
 			
-			// TODO: would be cool to have this in a decorator with hmm grey? text color
-			if (author.getEmail() != null && author.getEmail().trim() != "" && !author.getEmail().trim().equals("")) {
-				sb.append(" <" + author.getEmail().trim() + ">");
+			if (obj instanceof Person) {
+				Person author = (Person)obj;
+				
+				System.out.println("Auther name null? " + (author.getName() == null));
+				
+				StyledString styledString = new StyledString(author.getName());
+				
+				if (author.getEmail() != null && author.getEmail().trim() != "" && !author.getEmail().trim().equals("")) {
+					styledString.append(" <" + author.getEmail().trim() + ">", StyledString.COUNTER_STYLER);
+				}
+				
+				if (author.getHomepage() != null && author.getHomepage().trim() != "" && !author.getHomepage().trim().equals("")) {
+					styledString.append(" - " + author.getHomepage().trim(), StyledString.DECORATIONS_STYLER);
+				}
+				
+				cell.setText(styledString.toString());
+				cell.setStyleRanges(styledString.getStyleRanges());
+				
+				cell.setImage(authorImage);
+				
+				super.update(cell);
 			}
-			
-			if (author.getHomepage() != null && author.getHomepage().trim() != "" && !author.getHomepage().trim().equals("")) {
-				sb.append(" - " + author.getHomepage().trim());
-			}
-			
-			return sb.toString();
 		}
 	}
 	

@@ -2,11 +2,12 @@ package com.dubture.composer.ui.parts.composer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -18,16 +19,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.getcomposer.ComposerPackage;
 import org.getcomposer.MinimalPackage;
-import org.getcomposer.packagist.PackageSearchListenerInterface;
-import org.getcomposer.packagist.PackagistSearch;
-import org.getcomposer.packagist.SearchResult;
+import org.getcomposer.packages.AsyncPackageSearch;
+import org.getcomposer.packages.AsyncPackagistSearch;
+import org.getcomposer.packages.PackageSearchListenerInterface;
+import org.getcomposer.packages.SearchResult;
 
 import com.dubture.composer.ui.controller.IPackageCheckStateChangedListener;
 import com.dubture.composer.ui.controller.PackageController;
@@ -37,6 +36,7 @@ import com.dubture.composer.ui.utils.WidgetFactory;
 public class PackageSearch implements PackageSearchListenerInterface, IPackageCheckStateChangedListener {
 	
 	protected final static long QUERY_DELAY_MS = 300;
+	protected final static long RESET_QUERY_DELAY_MS = 1500;
 	
 	protected FormToolkit toolkit;
 	protected WidgetFactory factory;
@@ -49,7 +49,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	protected Map<String, PackageSearchPart> packageControls = new HashMap<String, PackageSearchPart>();
 	protected Button addButton;
 	
-	protected PackagistSearch downloader = new PackagistSearch();
+	protected AsyncPackageSearch downloader = new AsyncPackagistSearch();
 	protected String currentQuery;
 	protected String lastQuery;
 	protected String shownQuery;
@@ -58,22 +58,26 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	protected Thread resetThread;
 	protected Thread queryThread;
 	
-	protected List<PackageSelectionFinishedListener> packageListeners = new ArrayList<PackageSelectionFinishedListener>();
+	protected ComposerPackage composerPackage;
 	
-	public PackageSearch (Composite parent, FormToolkit toolkit, String buttonText) {
+	protected Set<PackageSelectionFinishedListener> packageListeners = new HashSet<PackageSelectionFinishedListener>();
+	
+	
+	public PackageSearch (Composite parent, ComposerPackage composerPackage, FormToolkit toolkit, String buttonText) {
+		this.composerPackage = composerPackage;
 		create(parent, toolkit, buttonText);
 	}
 	
-	public PackageSearch (Composite parent, FormToolkit toolkit) {
-		create(parent, toolkit, null);
+	public PackageSearch (Composite parent, ComposerPackage composerPackage, FormToolkit toolkit) {
+		this(parent, composerPackage, toolkit, null);
 	}
 	
-	public PackageSearch (Composite parent, String buttonText) {
-		create(parent, null, buttonText);
+	public PackageSearch (Composite parent, ComposerPackage composerPackage, String buttonText) {
+		this(parent, composerPackage, null, buttonText);
 	}
 	
-	public PackageSearch (Composite parent) {
-		create(parent, null, null);
+	public PackageSearch (Composite parent, ComposerPackage composerPackage) {
+		this(parent, composerPackage, null, null);
 	}
 	
 	public void addPackageCheckStateChangedListener(IPackageCheckStateChangedListener listener) {
@@ -89,9 +93,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	public void addPackageSelectionFinishedListener(PackageSelectionFinishedListener listener) {
-		if (!packageListeners.contains(listener)) {
-			packageListeners.add(listener);
-		}
+		packageListeners.add(listener);
 	}
 	
 	public void removePackageSelectionFinishedListener(PackageSelectionFinishedListener listener) {
@@ -112,13 +114,17 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 				searchTextChanged();
 			}
 		});
-		searchField.addSelectionListener(new SelectionAdapter() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				if (e.detail == SWT.ICON_CANCEL) {
-					clearSearchText();
-				}
-			}
-		});
+		
+//		clicking the cancel icon sets content to null and invokes modifyText()
+//		... no need to to it manually
+//		
+//		searchField.addSelectionListener(new SelectionAdapter() {
+//			public void widgetDefaultSelected(SelectionEvent e) {
+//				if (e.detail == SWT.ICON_CANCEL) {
+//					clearSearchText();
+//				}
+//			}
+//		});
 		
 		// create search results viewer
 		int style = SWT.H_SCROLL | SWT.V_SCROLL;
@@ -175,12 +181,14 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	protected void clearSearchText() {
+		System.out.println("Clear search text begin");
 		searchResults.setInput(null);
 		downloader.abort();
 
 		shownQuery = null;
 		queryThread.interrupt();
 		resetThread.interrupt();
+		System.out.println("Clear search text end");
 	}
 	
 //	protected void setPackages(String[] packages) {
@@ -188,15 +196,19 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 //		System.err.println("Packages: " + packages);
 //	}
 //	
+	
+	@Override
+	public void aborted(String url) {
+		System.out.println("Download aborted on: " + url);
+	}
 
 	@Override
 	public void packagesFound(final List<MinimalPackage> packages, String query, SearchResult result) {
-		// TODO: why this has to be done in a runnable, obviously yes, results are coming from another thread
 		foundQuery = query;
+		System.out.println("Found Packages for: " + query + " => " + packages.size());
+		
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
-				boolean change = false;
-				
 				if (currentQuery.isEmpty()) {
 					return;
 				}
@@ -204,26 +216,28 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 				if (shownQuery == null ||
 						(!shownQuery.equals(foundQuery) && currentQuery.equals(foundQuery))) {
 					searchResults.setInput(packages);
-					change = true;
+					shownQuery = foundQuery;
 				}
 				
 				else if (shownQuery.equals(foundQuery)) {
 					searchController.addPackages(packages);
 					searchResults.refresh();
-					change = true;
-				}
-				
-				if (change) {
-					shownQuery = foundQuery;
 				}
 			}
 		});
 	}
+
+	@Override
+	public void errorOccured(Exception e) {
+		// something happend during package search ...
+		e.printStackTrace();
+	}
 	
 	protected void searchTextChanged() {
+		System.out.println("Search Text changed");
 		currentQuery = searchField.getText();
 		
-		if (currentQuery.isEmpty()) {
+		if (currentQuery.trim().isEmpty()) {
 			clearSearchText();
 			return;
 		}
@@ -253,7 +267,8 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		if (lastQuery == currentQuery) {
 			return;
 		}
-		downloader.searchPackagesAsync(currentQuery);
+		System.out.println("Search Packages: " + currentQuery);
+		downloader.search(currentQuery);
 		
 		if (resetThread != null) {
 			resetThread.interrupt();
@@ -261,9 +276,9 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		resetThread = new Thread(new Runnable() {
 			public void run() {
 				try {
-					Thread.sleep(1500);
+					Thread.sleep(RESET_QUERY_DELAY_MS);
 
-					if (shownQuery.equals(currentQuery)) {
+					if (currentQuery.equals(shownQuery)) {
 						shownQuery = null;
 					}
 				} catch (InterruptedException e) {
@@ -306,7 +321,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	protected PackageSearchPart createPackagePart(Composite parent, final String name) {
-		return new PackageSearchPart(parent, toolkit, name);
+		return new PackageSearchPart(parent, composerPackage, toolkit, name);
 	}
 	
 	public List<String> getPackages() {

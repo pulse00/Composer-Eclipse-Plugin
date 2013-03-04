@@ -41,12 +41,12 @@ public class RequirePageOne extends MultiItemInstallerPage
                 
                 if (!RequirePageOne.this.previousFilterText .equals(text)) {
                     
-                    PackagistSearch downloader = new PackagistSearch();
+                    PackageSearch downloader = new PackageSearch();
                     items = new ArrayList<InstallableItem>();
                     
                     try {
                         if (text != null && text.length() > 0) {
-                            List<PackageInterface> searchPackages = downloader.searchPackages(text);
+                            List<PackageInterface> searchPackages = downloader.search(text);
                             
                             for (PackageInterface p : searchPackages) {
                                 EclipsePHPPackage eclipsePackage = new EclipsePHPPackage(p);

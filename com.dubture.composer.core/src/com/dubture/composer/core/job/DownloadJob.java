@@ -10,7 +10,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.getcomposer.packagist.PharDownloader;
+import org.getcomposer.packages.AsyncPharDownloader;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
@@ -18,7 +18,7 @@ import com.dubture.composer.core.log.Logger;
 public class DownloadJob extends Job
 {
     private IProject project;
-    private PharDownloader downloader;
+    private AsyncPharDownloader downloader;
 
     public DownloadJob(IProject project, String name)
     {
@@ -33,7 +33,7 @@ public class DownloadJob extends Job
             
             monitor.beginTask("Downloading composer.phar from getcomposer.org", 3);
             
-            downloader = new PharDownloader();
+            downloader = new AsyncPharDownloader();
             InputStream resource = downloader.downloadResource();
             
             monitor.worked(1);

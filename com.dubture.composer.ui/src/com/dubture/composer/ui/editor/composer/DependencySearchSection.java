@@ -8,7 +8,6 @@ import org.eclipse.ui.forms.widgets.Section;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.ComposerSection;
 import com.dubture.composer.ui.parts.composer.DependencySearch;
-import com.dubture.composer.ui.parts.composer.PackageSearch;
 
 public class DependencySearchSection extends ComposerSection {
 
@@ -23,7 +22,7 @@ public class DependencySearchSection extends ComposerSection {
 		section.setDescription("Search for packages and add the selected packages to the opened section on the left.");
 		section.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		DependencySearch dependencySearch = new DependencySearch(section, toolkit, "Add Dependencies");
+		DependencySearch dependencySearch = new DependencySearch(section, composerPackage, toolkit, "Add Dependencies");
 		
 		section.setClient(dependencySearch.getBody());
 	}

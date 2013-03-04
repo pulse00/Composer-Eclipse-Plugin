@@ -3,49 +3,38 @@ package com.dubture.composer.ui.parts.composer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
-import org.getcomposer.ComposerConstants;
+import org.getcomposer.ComposerPackage;
 import org.getcomposer.collection.Dependencies;
-
-import com.dubture.composer.ui.editor.FormLayoutFactory;
-import com.dubture.composer.ui.utils.WidgetHelper;
 
 public class DependencySearch extends PackageSearch {
 
 	protected List<DependencySelectionFinishedListener> dependencyListeners = new ArrayList<DependencySelectionFinishedListener>();
+	private boolean collapsing = false;
 	
-	public DependencySearch (Composite parent, FormToolkit toolkit, String buttonText) {
-		super(parent, toolkit, buttonText);
+	public DependencySearch (Composite parent, ComposerPackage composerPackage, FormToolkit toolkit, String buttonText) {
+		super(parent, composerPackage, toolkit, buttonText);
 	}
 	
-	public DependencySearch (Composite parent, FormToolkit toolkit) {
-		super(parent, toolkit);
+	public DependencySearch (Composite parent, ComposerPackage composerPackage, FormToolkit toolkit) {
+		super(parent, composerPackage, toolkit);
 	}
 	
-	public DependencySearch (Composite parent, String buttonText) {
-		super(parent, buttonText);
+	public DependencySearch (Composite parent, ComposerPackage composerPackage, String buttonText) {
+		super(parent, composerPackage, buttonText);
 	}
 	
-	public DependencySearch(Composite parent) {
-		super(parent);
+	public DependencySearch(Composite parent, ComposerPackage composerPackage) {
+		super(parent, composerPackage);
 	}
 	
 	public void addDependencySelectionFinishedListener(DependencySelectionFinishedListener listener) {
@@ -71,7 +60,7 @@ public class DependencySearch extends PackageSearch {
 		}
 		
 		// test package part
-		createPackagePart(pickedResults, "gossi/test");
+//		createPackagePart(pickedResults, "symfony/symfony");
 	}
 	
 	protected void notifyDependencySelectionFinishedListener() {
@@ -89,13 +78,41 @@ public class DependencySearch extends PackageSearch {
 	
 	@Override
 	protected DependencySearchPart createPackagePart(Composite parent, String name) {
-		DependencySearchPart dsp = new DependencySearchPart(parent, toolkit, name);
+		DependencySearchPart dsp = new DependencySearchPart(parent, composerPackage, toolkit, name);
 		dsp.addToggleListener(new HyperlinkAdapter() {
 			public void linkActivated(HyperlinkEvent e) {
-				getBody().layout(true, true);
+				if (!collapsing) {
+					Twistie toggle = (Twistie)e.getSource();
+					DependencySearchPart dsp = (DependencySearchPart)toggle.getData();
+					setExpanded(dsp, toggle.isExpanded());
+				}
+			}
+		});
+		dsp.getVersionControl().addFocusListener(new FocusAdapter() {
+			public void focusGained(FocusEvent e) {
+				Text version = (Text)e.getSource();
+				DependencySearchPart dsp = (DependencySearchPart)version.getData();
+				setExpanded(dsp, true);
 			}
 		});
 		return dsp;
 	}
 
+	private void setExpanded(DependencySearchPart dsp, boolean expanded) {
+		
+		// if it goes expanded
+		// collapse all dsp's first
+		if (expanded) {
+			collapsing = true;
+			for (PackageSearchPart psp : packageControls.values()) {
+				((DependencySearchPart)psp).setExpanded(false);
+			}
+			collapsing = false;
+		}
+		
+		dsp.setExpanded(expanded);
+		
+		// update layout
+		getBody().layout(true, true);
+	}
 }
