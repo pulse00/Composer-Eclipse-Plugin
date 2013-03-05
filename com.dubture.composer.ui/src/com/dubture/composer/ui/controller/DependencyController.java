@@ -1,6 +1,8 @@
 package com.dubture.composer.ui.controller;
 
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
+import org.getcomposer.MinimalPackage;
 import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Dependencies;
 
@@ -15,16 +17,16 @@ public class DependencyController extends PackageController {
 	public Object[] getElements(Object inputElement) {
 		return deps.toArray();
 	}
+	
+	public void updateText(MinimalPackage pkg, StyledString styledString) {
+		if (pkg instanceof VersionedPackage) {
+			VersionedPackage vpkg = (VersionedPackage)pkg;
 
-	public String getColumnText(Object element, int columnIndex) {
-	VersionedPackage dep = (VersionedPackage)element;
-		StringBuilder sb = new StringBuilder();
-		sb.append(dep.getName());
-		sb.append(": ");
-		
-		// TODO: would be cool to have this in a decorator with hmm grey? text color
-		sb.append(dep.getVersion());
-		
-		return sb.toString();
+			super.updateText(pkg, styledString);
+			
+			if (vpkg.getVersion() != null && vpkg.getVersion().trim() != "" && !vpkg.getVersion().trim().isEmpty()) {
+				styledString.append(" : " + vpkg.getVersion().trim(), StyledString.QUALIFIER_STYLER);
+			}
+		}
 	}
 }

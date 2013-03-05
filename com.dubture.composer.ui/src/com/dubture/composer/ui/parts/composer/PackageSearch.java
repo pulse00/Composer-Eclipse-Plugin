@@ -58,6 +58,13 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	protected Thread resetThread;
 	protected Thread queryThread;
 	
+	protected boolean clearing = false;
+	protected SelectionAdapter addButtonListener = new SelectionAdapter() {
+		public void widgetSelected(SelectionEvent e) {
+			notifyPackageSelectionFinishedListener();
+		}
+	};
+	
 	protected ComposerPackage composerPackage;
 	
 	protected Set<PackageSelectionFinishedListener> packageListeners = new HashSet<PackageSelectionFinishedListener>();
@@ -161,13 +168,9 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 			addButton.setText(buttonText);
 			addButton.setEnabled(false);
 			addButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
-			addButton.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-					notifyPackageSelectionFinishedListener();
-				}
-			});
+			addButton.addSelectionListener(addButtonListener);
 		}
-		
+
 		// create downloader
 		downloader.addPackageSearchListener(this);
 	}
@@ -181,14 +184,21 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	protected void clearSearchText() {
+		if (clearing) {
+			return;
+		}
+		
+		clearing = true;
 		System.out.println("Clear search text begin");
 		searchResults.setInput(null);
+		searchField.setText("");
 		downloader.abort();
 
 		shownQuery = null;
 		queryThread.interrupt();
 		resetThread.interrupt();
 		System.out.println("Clear search text end");
+		clearing = false;
 	}
 	
 //	protected void setPackages(String[] packages) {
@@ -207,7 +217,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		foundQuery = query;
 		System.out.println("Found Packages for: " + query + " => " + packages.size());
 		
-		Display.getDefault().syncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				if (currentQuery.isEmpty()) {
 					return;
@@ -253,8 +263,10 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 					try {
 						Thread.sleep(QUERY_DELAY_MS);
 						
-						startQuery();
-						queryThread.interrupt();
+						synchronized(PackageSearch.this) {
+							startQuery();
+							queryThread.interrupt();
+						}
 					} catch (InterruptedException e) {
 					}
 				}
@@ -263,7 +275,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		}
 	}
 	
-	protected void startQuery() {
+	protected synchronized void startQuery() {
 		if (lastQuery == currentQuery) {
 			return;
 		}
@@ -278,8 +290,10 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 				try {
 					Thread.sleep(RESET_QUERY_DELAY_MS);
 
-					if (currentQuery.equals(shownQuery)) {
-						shownQuery = null;
+					synchronized(PackageSearch.this) {
+						if (currentQuery.equals(shownQuery)) {
+							shownQuery = null;
+						}
 					}
 				} catch (InterruptedException e) {
 				}
@@ -329,6 +343,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	public void clear() {
+		clearSearchText();
 		searchController.clear();
 		packageControls.clear();
 		for (Control child : pickedResults.getChildren()) {

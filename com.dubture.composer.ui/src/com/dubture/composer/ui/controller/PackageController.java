@@ -6,14 +6,17 @@ import java.util.List;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
-import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StyledCellLabelProvider;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.getcomposer.MinimalPackage;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 
-public class PackageController extends LabelProvider implements ITableController, ICheckStateProvider, ICheckStateListener {
+public class PackageController extends StyledCellLabelProvider implements IStructuredContentProvider, ICheckStateProvider, ICheckStateListener {
 
 	private List<MinimalPackage> packages;
 	private List<String> checked = new ArrayList<String>();
@@ -64,17 +67,10 @@ public class PackageController extends LabelProvider implements ITableController
 		return pkgImage;
 	}
 
-	public Image getColumnImage(Object element, int columnIndex) {
-		return getImage(element);
-	}
-
 	public String getText(Object element) {
 		return getName(element);
 	}
-	
-	public String getColumnText(Object element, int columnIndex) {
-		return getText(element);
-	}
+
 
 	@Override
 	public void checkStateChanged(CheckStateChangedEvent event) {
@@ -123,7 +119,36 @@ public class PackageController extends LabelProvider implements ITableController
 		}
 		return name;
 	}
-
+	
+	public void update(ViewerCell cell) {
+		Object obj = cell.getElement();
+		
+		if (obj instanceof MinimalPackage) {
+			MinimalPackage pkg = (MinimalPackage)obj;
+			
+			StyledString styledString = new StyledString();
+			
+//			if (author.getEmail() != null && author.getEmail().trim() != "" && !author.getEmail().trim().equals("")) {
+//				styledString.append(" <" + author.getEmail().trim() + ">", StyledString.COUNTER_STYLER);
+//			}
+//			
+//			if (author.getHomepage() != null && author.getHomepage().trim() != "" && !author.getHomepage().trim().equals("")) {
+//				styledString.append(" - " + author.getHomepage().trim(), StyledString.DECORATIONS_STYLER);
+//			}
+			updateText(pkg, styledString);
+			
+			cell.setText(styledString.toString());
+			cell.setStyleRanges(styledString.getStyleRanges());
+			
+			cell.setImage(getImage(pkg));
+			
+			super.update(cell);
+		}
+	}
+	
+	protected void updateText(MinimalPackage pkg, StyledString styledString) {
+		styledString.append(getName(pkg));
+	}
 
 	@Override
 	public boolean isChecked(Object element) {

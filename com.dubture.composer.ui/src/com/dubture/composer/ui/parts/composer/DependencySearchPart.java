@@ -5,12 +5,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.HyperlinkAdapter;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
 import org.getcomposer.ComposerPackage;
+import org.getcomposer.VersionedPackage;
 
 import com.dubture.composer.ui.utils.WidgetFactory;
 import com.dubture.composer.ui.utils.WidgetHelper;
@@ -78,5 +77,13 @@ public class DependencySearchPart extends PackageSearchPart {
 		toggle.setExpanded(expanded);
 		suggestion.getBody().setVisible(expanded);
 		((GridData)suggestion.getBody().getLayoutData()).exclude = !expanded;
+	}
+	
+	public VersionedPackage getPackage() {
+		VersionedPackage pkg = new VersionedPackage();
+		pkg.setName(name);
+		pkg.setVersion(version.getText());
+		
+		return pkg;
 	}
 }

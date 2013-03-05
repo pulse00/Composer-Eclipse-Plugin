@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -14,6 +16,7 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
 import org.getcomposer.ComposerPackage;
+import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Dependencies;
 
 public class DependencySearch extends PackageSearch {
@@ -52,15 +55,13 @@ public class DependencySearch extends PackageSearch {
 		super.create(parent, toolkit, buttonText);
 		
 		if (addButton != null) {
+			addButton.removeSelectionListener(addButtonListener);
 			addButton.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					notifyDependencySelectionFinishedListener();
 				}
 			});
 		}
-		
-		// test package part
-//		createPackagePart(pickedResults, "symfony/symfony");
 	}
 	
 	protected void notifyDependencySelectionFinishedListener() {
@@ -72,7 +73,15 @@ public class DependencySearch extends PackageSearch {
 	}
 	
 	public Dependencies getDependencies() {
-		return null;
+		Dependencies deps = new Dependencies();
+		for (PackageSearchPart psp : packageControls.values()) {
+			VersionedPackage pkg = ((DependencySearchPart)psp).getPackage();
+			
+			if (!pkg.getVersion().isEmpty()) {
+				deps.add(pkg);
+			}
+		}
+		return deps;
 	}
 
 	
@@ -95,6 +104,19 @@ public class DependencySearch extends PackageSearch {
 				setExpanded(dsp, true);
 			}
 		});
+		
+		dsp.getVersionControl().addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				boolean canFinish = true;
+				for (PackageSearchPart psp : packageControls.values()) {
+					canFinish = canFinish 
+							&& !((DependencySearchPart)psp).getVersionControl().getText().isEmpty();
+				}
+
+				addButton.setEnabled(canFinish);
+			}
+		});
+		
 		return dsp;
 	}
 

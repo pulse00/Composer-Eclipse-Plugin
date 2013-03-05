@@ -9,14 +9,16 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.IExpansionListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.getcomposer.ComposerPackage;
+import org.getcomposer.collection.Dependencies;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
+import com.dubture.composer.ui.parts.composer.DependencySelectionFinishedListener;
 
 /**
  * @author Thomas Gossmann
@@ -31,6 +33,7 @@ public class DependenciesPage extends ComposerFormPage {
 
 	protected Composite left;
 	protected Composite right;
+	protected DependencySection activeSection;
 
 	protected DependencySection requireSection;
 	protected TableViewer requireView;
@@ -79,27 +82,24 @@ public class DependenciesPage extends ComposerFormPage {
 		requireSection = new DependencySection(this, left, composerPackage.getRequire(), "Require", "The dependencies for your package.", true);
 		requireDevSection = new DependencySection(this, left, composerPackage.getRequireDev(), "Require (Development)", "The development dependencies for your package.", false);
 		
-		requireSection.getSection().addExpansionListener(new IExpansionListener() {
+		requireSection.getSection().addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanging(ExpansionEvent e) {
+				activeSection = e.getState() ? requireSection : requireDevSection;
 				requireDevSection.getSection().setExpanded(!e.getState());
 				((GridData)requireSection.getSection().getLayoutData()).grabExcessVerticalSpace = e.getState();
 				((GridData)requireDevSection.getSection().getLayoutData()).grabExcessVerticalSpace = !e.getState();
 			}
-			
-			public void expansionStateChanged(ExpansionEvent e) {
-			}
 		});
 		
-		requireDevSection.getSection().addExpansionListener(new IExpansionListener() {
+		requireDevSection.getSection().addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanging(ExpansionEvent e) {
+				activeSection = e.getState() ? requireDevSection : requireSection;
 				requireSection.getSection().setExpanded(!e.getState());
 				((GridData)requireDevSection.getSection().getLayoutData()).grabExcessVerticalSpace = e.getState();
 				((GridData)requireSection.getSection().getLayoutData()).grabExcessVerticalSpace = !e.getState();
 			}
-			
-			public void expansionStateChanged(ExpansionEvent e) {
-			}
 		});
+		activeSection = requireSection;
 
 		right = toolkit.createComposite(form.getBody(), SWT.NONE);
 		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
@@ -107,7 +107,15 @@ public class DependenciesPage extends ComposerFormPage {
 		
 		
 		DependencySearchSection searchSection = new DependencySearchSection(this, right);
-		
+		searchSection.addDependencySelectionFinishedListener(new DependencySelectionFinishedListener() {
+			public void dependenciesSelected(Dependencies dependencies) {
+				Dependencies deps = activeSection == requireSection
+					? composerPackage.getRequire()
+					: composerPackage.getRequireDev();
+						
+				deps.addAll(dependencies);
+			}
+		});
 		
 	}
 }

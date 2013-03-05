@@ -152,7 +152,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		VersionedPackage dep = (VersionedPackage)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
 		MessageDialog diag = new MessageDialog(
 				dependencyViewer.getTable().getShell(), 
-				"Remove Author", 
+				"Remove Dependency", 
 				null, 
 				"Do you really wan't to remove " + dep.getName() + "?", 
 				MessageDialog.WARNING,
@@ -179,9 +179,6 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		}
 	}
 
-	@Override
 	protected void createClient(Section section, FormToolkit toolkit) {
-		// TODO Auto-generated method stub
-		
 	}
 }
