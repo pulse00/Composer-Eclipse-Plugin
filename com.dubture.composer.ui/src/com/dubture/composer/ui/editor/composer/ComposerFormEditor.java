@@ -164,7 +164,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			addOverview();
 			addDependencies();
 //			addDependencyGraph();
-			setActivePage(DependenciesPage.ID);
+//			setActivePage(DependenciesPage.ID);
 
 			// Aww, can't use jsonedit here :(
 			// addPage(new JsonTextEditor(), getEditorInput());
