@@ -57,35 +57,12 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		public Object[] getElements(Object inputElement) {
 			return authors.toArray();
 		}
-
-//		public Image getColumnImage(Object element, int columnIndex) {
-//			return authorImage;
-//		}
-//
-//		public String getColumnText(Object element, int columnIndex) {
-//			Person author = (Person)element;
-//			StringBuilder sb = new StringBuilder();
-//			sb.append(author.getName());
-//			
-//			// TODO: would be cool to have this in a decorator with hmm grey? text color
-//			if (author.getEmail() != null && author.getEmail().trim() != "" && !author.getEmail().trim().equals("")) {
-//				sb.append(" <" + author.getEmail().trim() + ">");
-//			}
-//			
-//			if (author.getHomepage() != null && author.getHomepage().trim() != "" && !author.getHomepage().trim().equals("")) {
-//				sb.append(" - " + author.getHomepage().trim());
-//			}
-//			
-//			return sb.toString();
-//		}
 		
 		public void update(ViewerCell cell) {
 			Object obj = cell.getElement();
 			
 			if (obj instanceof Person) {
 				Person author = (Person)obj;
-				
-				System.out.println("Auther name null? " + (author.getName() == null));
 				
 				StyledString styledString = new StyledString(author.getName());
 				

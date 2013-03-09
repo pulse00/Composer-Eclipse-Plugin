@@ -15,8 +15,7 @@ import com.dubture.indexing.core.build.BuildParticipant;
 
 public class AddNatureHandler extends ComposerHandler implements IHandler
 {
-
-    @Override
+	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         try {

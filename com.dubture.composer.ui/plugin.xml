@@ -8,6 +8,19 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
+            locationURI="toolbar:com.dubture.composer.ui.editor.toolbar">
+         <toolbar
+               id="com.dubture.composer.ui.editor.toolbar">
+         </toolbar>
+         <command
+               commandId="com.dubture.composer.core.command.install"
+               icon="icons/full/obj16/install_obj.gif"
+               label="Install"
+               style="push">
+         </command>
+      </menuContribution>
+      <!--<menuContribution
+            allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
          <menu
                icon="icons/full/obj16/composer.png"
@@ -39,17 +52,17 @@
                   style="push">
             </command>
          </menu>
-      </menuContribution>
+      </menuContribution>-->
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Run composer.phar with the install option"
+            description="Run `composer.phar install`"
             id="com.dubture.composer.ui.command.install"
             name="Install dependencies">
       </command>
       <command
-            description="Run composer.phar with the update option"
+            description="Run `composer.phar update`"
             id="com.dubture.composer.ui.command.update"
             name="Update dependencies">
       </command>
@@ -68,6 +81,11 @@
       <command
             id="com.dubture.composer.ui.command.init"
             name="Initialize composer">
+      </command>
+      <command
+            description="Run `composer.phar self-update`"
+            id="com.dubture.composer.ui.command.selfupdate"
+            name="Self-Update Composer">
       </command>
    </extension>
    <extension
@@ -118,12 +136,11 @@
             name="Composer">
       </page>
    </extension>
-   <extension
+   <!--<extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
-      <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider"
-            >
+      <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider">
       </provider>
-   </extension>
+   </extension>-->
    <extension
          point="org.eclipse.ui.editors">
       <editor

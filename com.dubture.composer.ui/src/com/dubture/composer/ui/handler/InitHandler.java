@@ -15,7 +15,8 @@ import com.dubture.composer.ui.wizard.init.InitComposerWizard;
 
 public class InitHandler extends ComposerHandler
 {
-    @Override
+
+	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         final Shell shell = PlatformUI.getWorkbench()

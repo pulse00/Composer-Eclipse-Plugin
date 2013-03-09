@@ -22,9 +22,6 @@ public class PersonDialog extends Dialog {
 	private Text homepage;
 	private Text role;
 	
-	/**
-	 * @wbp.parser.constructor
-	 */
 	public PersonDialog(Shell parentShell, Person author) {
 		super(parentShell);
 		this.person = author;
@@ -41,6 +38,7 @@ public class PersonDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().setText("Edit Person");
 		
 		Composite contents = new Composite(parent, SWT.BORDER | SWT.NO_BACKGROUND | SWT.NO_FOCUS | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE | SWT.NO_RADIO_GROUP | SWT.EMBEDDED);
 		contents.setLayout(new GridLayout(2, false));

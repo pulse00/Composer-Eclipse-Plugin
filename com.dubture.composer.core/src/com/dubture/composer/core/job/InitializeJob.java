@@ -45,7 +45,7 @@ public class InitializeJob extends ComposerJob
             throw new FileNotFoundException("Cannot initialize a project without composer.phar");
         }
         
-        composer = phar.getLocation().toOSString();
+        composerPhar = phar.getLocation().toOSString();
     }
 
     @Override

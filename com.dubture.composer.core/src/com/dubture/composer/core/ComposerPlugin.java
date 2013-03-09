@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.getcomposer.packages.PackageSearch;
+import org.getcomposer.packages.PackagistSearch;
 import org.osgi.framework.BundleContext;
 
 import com.dubture.composer.core.model.ModelAccess;
@@ -97,7 +98,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
             return packageDownloader;
         }
         
-        return packageDownloader = new PackageSearch();
+        return packageDownloader = new PackagistSearch();
     }
     
     public boolean isBuildpathContainerEnabled()

@@ -26,17 +26,28 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.databinding.property,
  org.getcomposer,
  org.eclipse.nebula.widgets.tablecombo,
- org.apache.commons.lang3
+ org.apache.commons.lang3,
+ org.eclipse.core.expressions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Export-Package: com.dubture.composer.ui.explorer;
+Export-Package: com.dubture.composer.ui,
+ com.dubture.composer.ui.actions,
+ com.dubture.composer.ui.controller,
+ com.dubture.composer.ui.converter,
+ com.dubture.composer.ui.dialogs,
+ com.dubture.composer.ui.editor,
+ com.dubture.composer.ui.editor.composer,
+ com.dubture.composer.ui.explorer;
   uses:="org.eclipse.dltk.internal.ui.scriptview,
    org.eclipse.dltk.internal.ui.navigator,
    org.eclipse.jface.viewers,
    org.eclipse.swt.graphics,
    org.eclipse.dltk.core",
  com.dubture.composer.ui.handler;uses:="org.eclipse.core.resources,org.eclipse.core.commands,org.eclipse.dltk.core",
+ com.dubture.composer.ui.parts,
+ com.dubture.composer.ui.parts.composer,
  com.dubture.composer.ui.preferences;uses:="org.eclipse.jface.preference,org.eclipse.ui,org.eclipse.swt.widgets",
+ com.dubture.composer.ui.utils,
  com.dubture.composer.ui.view.dependencies;
   uses:="org.eclipse.jface.action,
    com.dubture.composer.core.model,
@@ -47,6 +58,7 @@ Export-Package: com.dubture.composer.ui.explorer;
    org.eclipse.swt.widgets,
    org.eclipse.draw2d,
    org.eclipse.zest.core.viewers",
+ com.dubture.composer.ui.widgets,
  com.dubture.composer.ui.wizard.init;
   uses:="org.eclipse.jface.wizard,
    org.eclipse.dltk.ui.wizards,

@@ -166,7 +166,7 @@ public class Logger {
 
 	public static void debugMSG(String msg) {
 //		if (PEXCorePlugin.debug())
-//			System.out.println(msg);
+			System.out.println(msg);
 	}
 
 	public static void debugMSG(Class<? extends ASTNode> class1) {

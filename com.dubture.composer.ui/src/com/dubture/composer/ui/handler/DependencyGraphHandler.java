@@ -14,7 +14,7 @@ import com.dubture.composer.ui.view.dependencies.DependencyGraph;
 public class DependencyGraphHandler extends ComposerHandler implements IHandler
 {
 
-    @Override
+	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         try {

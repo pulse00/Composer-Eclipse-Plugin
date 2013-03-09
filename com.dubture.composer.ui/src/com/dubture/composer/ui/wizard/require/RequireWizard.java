@@ -28,7 +28,7 @@ public class RequireWizard extends Wizard
     private RequirePageOne firstPage;
     private RequirePageTwo secondPage;
     private final IResource composer;
-    private final IScriptProject project;
+//    private final IScriptProject project;
 
     public RequireWizard(IResource composer, IScriptProject project)
     {
@@ -36,7 +36,7 @@ public class RequireWizard extends Wizard
         setDialogSettings(DLTKUIPlugin.getDefault().getDialogSettings());
         setWindowTitle("Search packagist.org");
 
-        this.project = project;
+//        this.project = project;
         this.composer = composer;
     }
 

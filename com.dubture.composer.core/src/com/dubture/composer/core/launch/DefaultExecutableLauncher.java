@@ -78,6 +78,7 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			phpExe = LaunchUtil.getPHPExecutable();
 		} catch (ExecutableNotFoundException e) {
 		    showWarning();
+		    e.printStackTrace();
 	        Logger.logException(e);
 			return;
 		}
@@ -109,6 +110,8 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
                 }
             }
         };
+        
+//        System.out.println("Command: " + cmd.toString());
         
         executor.setWorkingDirectory(new File(new Path(scriptPath).removeLastSegments(1).toOSString()));
         executor.execute(cmd, resultHandler);

@@ -2,6 +2,7 @@ package com.dubture.composer.core.job;
 
 import java.io.IOException;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -14,7 +15,8 @@ import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 
 abstract public class ComposerJob extends Job
 {
-    protected String composer;
+    protected String composerPhar;
+    protected IProject project;
 
     protected static final IStatus ERROR_STATUS = new Status(Status.ERROR,
             ComposerPlugin.ID,
@@ -23,6 +25,12 @@ abstract public class ComposerJob extends Job
     public ComposerJob(String name)
     {
         super(name);
+    }
+    
+    public ComposerJob(IProject project, String name) {
+    	this(name);
+    	this.project = project;
+    	composerPhar = project.findMember("composer.phar").getLocation().toOSString();
     }
 
     protected void execute(String argument, IProgressMonitor monitor) throws IOException,
@@ -42,6 +50,6 @@ abstract public class ComposerJob extends Job
     
     private void doExecute(String[] arguments, IProgressMonitor monitor) throws IOException, InterruptedException, CoreException 
     {
-        new DefaultExecutableLauncher().launch(composer, arguments, new ConsoleResponseHandler(monitor));
+        new DefaultExecutableLauncher().launch(composerPhar, arguments, new ConsoleResponseHandler(monitor));
     }
 }

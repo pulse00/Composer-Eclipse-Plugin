@@ -12,7 +12,7 @@ import com.dubture.composer.ui.wizard.require.RequireWizard;
 
 public class RequireHandler extends ComposerHandler
 {
-    @Override
+	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();

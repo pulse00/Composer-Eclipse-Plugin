@@ -21,6 +21,9 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor PACKAGE = create(T_OBJ16, "package_obj.gif");
 	public static final ImageDescriptor PHP = create(T_OBJ16, "php-icon.png");
 	public static final ImageDescriptor BROWSER = create(T_OBJ16, "internal_browser.gif");
+	public static final ImageDescriptor INSTALL = create(T_OBJ16, "install_obj.gif");
+	public static final ImageDescriptor UPDATE = create(T_OBJ16, "update_obj.gif");
+	public static final ImageDescriptor SELFUPDATE = create(T_OBJ16, "selfupdate_obj.gif");
 
 	private static ImageDescriptor create(String prefix, String name) {
 		return create(prefix, name, true);

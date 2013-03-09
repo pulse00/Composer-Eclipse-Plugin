@@ -11,7 +11,7 @@ import com.dubture.composer.core.launch.PharNotFoundException;
 
 public class InstallHandler extends ComposerHandler
 {
-    @Override
+	@Override
     public Object execute(ExecutionEvent event) throws ExecutionException
     {
         try {

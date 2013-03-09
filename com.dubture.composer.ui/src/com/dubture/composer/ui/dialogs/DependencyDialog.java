@@ -7,6 +7,8 @@ import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
@@ -21,13 +23,14 @@ import org.getcomposer.VersionedPackage;
 import org.getcomposer.collection.Versions;
 import org.getcomposer.packages.PackagistDownloader;
 
+import com.dubture.composer.ui.parts.composer.VersionSuggestion;
+import com.dubture.composer.ui.utils.WidgetFactory;
+
 public class DependencyDialog extends Dialog {
 
 	private VersionedPackage dependency;
 	private Text name;
 	private Text version;
-	private List list;
-	private Versions versions;
 	
 	/**
 	 * @wbp.parser.constructor
@@ -36,26 +39,13 @@ public class DependencyDialog extends Dialog {
 	 */
 	public DependencyDialog(Shell parentShell, VersionedPackage dependency) {
 		super(parentShell);
+		setShellStyle(SWT.DIALOG_TRIM);
 		this.dependency = dependency;
-		initialize();
 	}
 
 	public DependencyDialog(IShellProvider parentShell, VersionedPackage dependency) {
 		super(parentShell);
 		this.dependency = dependency;
-		initialize();
-	}
-	
-	private void initialize() {
-		String name = dependency.getName();
-		if (name != null && name.trim() != "" && !name.trim().equals("") && !name.trim().equals("php")) {
-			PackagistDownloader downloader = new PackagistDownloader();
-			try {
-				versions = downloader.loadPackage(name).getVersions();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public VersionedPackage getDependency() {
@@ -64,9 +54,13 @@ public class DependencyDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
+		getShell().setText("Edit Dependency");
 		
-		Composite contents = new Composite(parent, SWT.BORDER | SWT.NO_BACKGROUND | SWT.NO_FOCUS | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE | SWT.NO_RADIO_GROUP | SWT.EMBEDDED);
+		Composite contents = new Composite(parent, SWT.NONE);
 		contents.setLayout(new GridLayout(2, false));
+		GridData gd_contents = new GridData();
+		gd_contents.widthHint = 350;
+		contents.setLayoutData(gd_contents);
 		
 		Label lblName = new Label(contents, SWT.NONE);
 		GridData gd_lblName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
@@ -78,6 +72,10 @@ public class DependencyDialog extends Dialog {
 		GridData gd_name = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
 		gd_name.widthHint = 150;
 		name.setLayoutData(gd_name);
+		name.setEnabled(false);
+		if (dependency.getName() != null) {
+			name.setText(dependency.getName());
+		}
 		
 		Label lblVersion = new Label(contents, SWT.NONE);
 		lblVersion.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
@@ -85,42 +83,17 @@ public class DependencyDialog extends Dialog {
 		
 		version = new Text(contents, SWT.BORDER);
 		version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Label lblAvailableVersions = new Label(contents, SWT.NONE);
-		lblAvailableVersions.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		lblAvailableVersions.setText("Available Versions");
-		
-		Label lblSelectingOneWill = new Label(contents, SWT.NONE);
-		lblSelectingOneWill.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		lblSelectingOneWill.setText("Selecting one will set your version to the selection");
-		
-		list = new List(contents, SWT.BORDER | SWT.V_SCROLL);
-		list.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
-		
-		list.setItems(versions.toArray());
-		
-		list.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				if (list.getSelectionCount() > 0) {
-					version.setText(list.getSelection()[0]);
-				}
+		if (dependency.getVersion() != null) {
+			version.setText(dependency.getVersion());
+		}
+		version.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+				dependency.setVersion(version.getText());
 			}
 		});
 		
+		new VersionSuggestion(dependency.getName(), parent, version, null, new WidgetFactory(null));
+		
 		return contents;
-	}
-	protected DataBindingContext initDataBindings() {
-		DataBindingContext bindingContext = new DataBindingContext();
-		//
-		IObservableValue observeTextNameObserveWidget = WidgetProperties.text(SWT.Modify).observe(name);
-		IObservableValue nameDependencyObserveValue = BeanProperties.value("name").observe(dependency);
-		bindingContext.bindValue(observeTextNameObserveWidget, nameDependencyObserveValue, null, null);
-		//
-		IObservableValue observeTextVersionObserveWidget = WidgetProperties.text(SWT.Modify).observe(version);
-		IObservableValue versionDependencyObserveValue = BeanProperties.value("version").observe(dependency);
-		bindingContext.bindValue(observeTextVersionObserveWidget, versionDependencyObserveValue, null, null);
-		//
-		return bindingContext;
 	}
 }
