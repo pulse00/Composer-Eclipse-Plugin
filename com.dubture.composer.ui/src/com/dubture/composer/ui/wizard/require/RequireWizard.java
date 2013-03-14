@@ -17,11 +17,11 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.statushandlers.StatusManager;
 
 import com.dubture.composer.core.ComposerPluginImages;
-import com.dubture.composer.core.launch.ConsoleResponseHandler;
 import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.core.model.ModelAccess;
+import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 
 public class RequireWizard extends Wizard
 {

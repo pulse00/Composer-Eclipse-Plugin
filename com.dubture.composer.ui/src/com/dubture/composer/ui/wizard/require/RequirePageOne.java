@@ -8,8 +8,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.progress.WorkbenchJob;
-import org.getcomposer.core.PackageInterface;
-import org.getcomposer.core.packagist.SearchResultDownloader;
+import org.getcomposer.core.core.PackageInterface;
+import org.getcomposer.core.core.packagist.SearchResultDownloader;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;

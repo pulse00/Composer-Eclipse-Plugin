@@ -1,4 +1,4 @@
-package com.dubture.composer.core.job;
+package com.dubture.composer.ui.job;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -18,11 +18,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.entities.Person;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.objects.Person;
 
 import com.dubture.composer.core.log.Logger;
 
+/**
+ * @deprecated
+ */
 public class InitializeJob extends ComposerJob
 {
     private final ComposerPackage phpPackage;

@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.collection.Persons;
-import org.getcomposer.entities.Person;
+import org.getcomposer.core.collection.Persons;
+import org.getcomposer.core.objects.Person;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.dialogs.PersonDialog;
@@ -109,7 +109,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 
 		authorViewer.setInput(composerPackage.getAuthors());
-		composerPackage.getAuthors().addPropertyChangeListener("authors", this);
+		composerPackage.addPropertyChangeListener("authors", this);
 		updateButtons();
 		
 		makeActions();
@@ -152,21 +152,18 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	
 	private void makeActions() {
 		addAction = new Action("Add...") {
-			@Override
 			public void run() {
 				handleAdd();
 			}
 		};
 		
 		editAction = new Action("Edit...") {
-			@Override
 			public void run() {
 				handleEdit();
 			}
 		};
 		
 		removeAction = new Action("Remove") {
-			@Override
 			public void run() {
 				handleRemove();
 			}
@@ -184,7 +181,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		PersonDialog diag = new PersonDialog(authorViewer.getTable().getShell(), new Person());
 		if (diag.open() == Dialog.OK) {
 			composerPackage.getAuthors().add(diag.getPerson());
-			refresh();
+//			refresh();
 		}
 	}
 	
@@ -192,8 +189,11 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		Person author = (Person)((StructuredSelection)authorViewer.getSelection()).getFirstElement();
 		PersonDialog diag = new PersonDialog(authorViewer.getTable().getShell(), author.clone());
 		if (diag.open() == Dialog.OK) {
-			author = diag.getPerson();
-			refresh();
+			author.setName(diag.getPerson().getName());
+			author.setEmail(diag.getPerson().getEmail());
+			author.setHomepage(diag.getPerson().getHomepage());
+			author.setRole(diag.getPerson().getRole());
+//			refresh();
 		}
 	}
 	
@@ -210,7 +210,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		
 		if (diag.open() == Dialog.OK) {
 			composerPackage.getAuthors().remove(author);
-			refresh();
+//			refresh();
 		}
 	}
 	

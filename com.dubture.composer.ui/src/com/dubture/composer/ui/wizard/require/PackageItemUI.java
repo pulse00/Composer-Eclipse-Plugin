@@ -12,8 +12,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.collection.Versions;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.Versions;
 
 import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.ui.wizard.iteminstaller.AbstractDescriptorItemUi;

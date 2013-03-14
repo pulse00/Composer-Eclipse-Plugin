@@ -14,9 +14,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.dubture.composer.core.job.DownloadJob;
 import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.job.DownloadJob;
 
 abstract public class ComposerHandler extends AbstractHandler
 {

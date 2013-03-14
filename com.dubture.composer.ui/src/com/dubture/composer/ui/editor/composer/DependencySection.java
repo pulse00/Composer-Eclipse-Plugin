@@ -17,8 +17,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.getcomposer.VersionedPackage;
-import org.getcomposer.collection.Dependencies;
+import org.getcomposer.core.VersionedPackage;
+import org.getcomposer.core.collection.Dependencies;
 
 import com.dubture.composer.ui.controller.DependencyController;
 import com.dubture.composer.ui.dialogs.DependencyDialog;

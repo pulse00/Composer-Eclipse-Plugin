@@ -9,7 +9,7 @@
 package com.dubture.composer.core.visitor;
 
 import org.eclipse.core.resources.IFile;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.ModelAccess;

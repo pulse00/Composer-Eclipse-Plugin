@@ -4,8 +4,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.getcomposer.entities.Autoload;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.objects.Autoload;
 
 import com.dubture.composer.core.log.Logger;
 

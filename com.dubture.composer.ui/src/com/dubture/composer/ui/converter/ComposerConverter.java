@@ -1,7 +1,7 @@
 package com.dubture.composer.ui.converter;
 
 import org.eclipse.core.databinding.conversion.Converter;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
 
 public abstract class ComposerConverter extends Converter {
 

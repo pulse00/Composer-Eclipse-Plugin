@@ -12,6 +12,9 @@ import java.io.IOException;
 import org.eclipse.core.runtime.CoreException;
 
 
+/**
+ * @deprecated
+ */
 public interface IPHPLauncher {
 
 	void launch(String scriptPath, String[] arguments, ILaunchResponseHandler handler) throws IOException, InterruptedException, CoreException;

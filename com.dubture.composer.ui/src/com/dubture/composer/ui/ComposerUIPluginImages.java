@@ -14,8 +14,8 @@ public class ComposerUIPluginImages {
 	private static final String T_OBJ16 = "obj16";	
 	private static final String T_WIZBAN = "wizban";
 
-	public static final ImageDescriptor DESC_WIZBAN_ADD_DEPENDENCY = create(
-			T_WIZBAN, "packagist.png");
+	public static final ImageDescriptor ADD_DEPENDENCY = create(T_WIZBAN, "packagist.png");
+	
 	public static final ImageDescriptor AUTHOR = create(T_OBJ16, "author.png");
 	public static final ImageDescriptor PAGE = create(T_OBJ16, "page_obj.gif");
 	public static final ImageDescriptor PACKAGE = create(T_OBJ16, "package_obj.gif");
@@ -24,6 +24,8 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor INSTALL = create(T_OBJ16, "install_obj.gif");
 	public static final ImageDescriptor UPDATE = create(T_OBJ16, "update_obj.gif");
 	public static final ImageDescriptor SELFUPDATE = create(T_OBJ16, "selfupdate_obj.gif");
+	public static final ImageDescriptor EVENT = create(T_OBJ16, "event3.png");
+	public static final ImageDescriptor SCRIPT = create(T_OBJ16, "script2.png");
 
 	private static ImageDescriptor create(String prefix, String name) {
 		return create(prefix, name, true);

@@ -12,7 +12,7 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
-import org.getcomposer.MinimalPackage;
+import org.getcomposer.core.MinimalPackage;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 

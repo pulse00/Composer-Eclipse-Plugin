@@ -1,4 +1,4 @@
-package com.dubture.composer.core.job;
+package com.dubture.composer.ui.job;
 
 import java.io.InputStream;
 
@@ -20,9 +20,9 @@ public class DownloadJob extends Job
     private IProject project;
     private PharDownloader downloader;
 
-    public DownloadJob(IProject project, String name)
+    public DownloadJob(IProject project)
     {
-        super(name);
+        super("Downloading composer.phar");
         this.project = project;
     }
 

@@ -11,11 +11,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
 
-import com.dubture.composer.core.job.DownloadJob;
-import com.dubture.composer.core.job.InitializeJob;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.job.DownloadJob;
+import com.dubture.composer.ui.job.InitializeJob;
 
 public class InitComposerWizard extends Wizard implements INewWizard
 {

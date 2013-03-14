@@ -19,15 +19,15 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.RepositoryPackage;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.RepositoryPackage;
 import org.getcomposer.packages.PackageDownloader;
 
-import com.dubture.composer.core.launch.ConsoleResponseHandler;
 import com.dubture.composer.core.launch.DefaultExecutableLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.model.EclipsePHPPackage;
 import com.dubture.composer.core.model.InstallableItem;
+import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 import com.dubture.composer.ui.wizard.iteminstaller.AbstractDescriptorItemUi;
 import com.dubture.composer.ui.wizard.iteminstaller.AbstractItemInstallerPage;
 

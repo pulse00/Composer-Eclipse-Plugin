@@ -5,9 +5,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 
-import com.dubture.composer.core.job.DownloadJob;
-import com.dubture.composer.core.job.InstallJob;
 import com.dubture.composer.core.launch.PharNotFoundException;
+import com.dubture.composer.ui.job.DownloadJob;
+import com.dubture.composer.ui.job.InstallJob;
 
 public class InstallHandler extends ComposerHandler
 {

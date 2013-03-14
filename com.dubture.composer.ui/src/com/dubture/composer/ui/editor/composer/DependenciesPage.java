@@ -13,8 +13,8 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.collection.Dependencies;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.Dependencies;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;

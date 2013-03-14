@@ -4,8 +4,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.SWT;
 
-import com.dubture.composer.core.job.UpdateJob;
 import com.dubture.composer.core.launch.PharNotFoundException;
+import com.dubture.composer.ui.job.UpdateJob;
 
 public class UpdateHandler extends ComposerHandler
 {

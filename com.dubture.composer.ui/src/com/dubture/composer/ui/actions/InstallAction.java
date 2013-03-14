@@ -3,12 +3,8 @@ package com.dubture.composer.ui.actions;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPartSite;
-
-import com.dubture.composer.core.execution.ComposerExecution;
-import com.dubture.composer.core.execution.ComposerJsonNotFoundException;
-import com.dubture.composer.core.launch.PharNotFoundException;
-import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.job.InstallJob;
 
 public class InstallAction extends ComposerAction {
 
@@ -18,14 +14,9 @@ public class InstallAction extends ComposerAction {
 	
 	@Override
 	public void run() {
-		ComposerExecution exec = new ComposerExecution(project);
-		try {
-			exec.install();
-		} catch (ComposerJsonNotFoundException e) {
-			Logger.logException(e);
-		} catch (PharNotFoundException e) {
-			shallInstallComposerPhar(exec);
-		}
+		InstallJob job = new InstallJob(project);
+		job.setUser(true);
+		job.schedule();
 	}
 
 	@Override

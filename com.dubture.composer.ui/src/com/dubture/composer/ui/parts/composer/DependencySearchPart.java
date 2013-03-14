@@ -8,8 +8,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.VersionedPackage;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.VersionedPackage;
 
 import com.dubture.composer.ui.utils.WidgetFactory;
 import com.dubture.composer.ui.utils.WidgetHelper;

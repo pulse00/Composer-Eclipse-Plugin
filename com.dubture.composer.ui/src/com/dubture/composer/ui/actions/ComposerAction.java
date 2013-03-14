@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.commands.ICommandService;
 
-import com.dubture.composer.core.execution.ComposerExecution;
+import com.dubture.composer.ui.job.DownloadJob;
 
 abstract public class ComposerAction extends Action {
 
@@ -23,7 +23,6 @@ abstract public class ComposerAction extends Action {
 		this.site = site;
 		id = commandId;
 		command = ((ICommandService) site.getService(ICommandService.class)).getCommand(id);
-		
 	}
 
 	@Override
@@ -35,12 +34,14 @@ abstract public class ComposerAction extends Action {
 		}
 	}
 	
-	protected void shallInstallComposerPhar(ComposerExecution exec) {
+	protected void shallInstallComposerPhar() {
 		MessageBox dialog = new MessageBox(site.getShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
         dialog.setText("composer.phar not found");
         dialog.setMessage("composer.phar can not be found. Download it now?");
         if (dialog.open() == SWT.OK) {
-        	exec.downloadPhar();
+        	DownloadJob job = new DownloadJob(project);
+        	job.setUser(true);
+    		job.schedule();
         }
 	}
 }

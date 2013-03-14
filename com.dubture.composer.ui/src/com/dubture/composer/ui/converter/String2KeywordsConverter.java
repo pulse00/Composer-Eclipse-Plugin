@@ -1,6 +1,6 @@
 package com.dubture.composer.ui.converter;
 
-import org.getcomposer.collection.GenericArray;
+import org.getcomposer.core.collection.JsonArray;
 
 public class String2KeywordsConverter extends ComposerConverter {
 
@@ -9,8 +9,8 @@ public class String2KeywordsConverter extends ComposerConverter {
 	}
 
 	@Override
-	public GenericArray convert(Object fromObject) {
-		GenericArray keywords = composerPackage.getKeywords();
+	public JsonArray convert(Object fromObject) {
+		JsonArray keywords = composerPackage.getKeywords();
 		String[] chunks = ((String)fromObject).split(",");
 
 		for (String chunk : chunks) {

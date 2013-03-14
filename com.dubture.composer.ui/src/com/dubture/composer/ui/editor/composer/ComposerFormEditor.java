@@ -6,8 +6,6 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.IDocument;
@@ -21,7 +19,7 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.ui.actions.InstallAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
@@ -93,13 +91,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		composerPackage = new ComposerPackage(json);
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
-				if (e.getOldValue() != e.getNewValue()) {
-//					System.out.println("Composer Property Changed: " + e.getPropertyName() + ", old: " + e.getOldValue() + ", new: " + e.getNewValue());
-					setDirty(true);
-				}
+				System.out.println("Composer Property Changed: " + e.getPropertyName() + ", old: " + e.getOldValue() + ", new: " + e.getNewValue());
+				setDirty(true);
 			}
 		});
-		
 		
 	}
 		
@@ -163,6 +158,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		try {
 			addOverview();
 			addDependencies();
+			addConfiguration();
 //			addDependencyGraph();
 //			setActivePage(DependenciesPage.ID);
 
@@ -179,6 +175,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 
 	protected void addDependencies() throws PartInitException {
 		addPage(new DependenciesPage(this, DependenciesPage.ID, "Dependencies"));
+	}
+	
+	protected void addConfiguration() throws PartInitException {
+		addPage(new ConfigurationPage(this, ConfigurationPage.ID, "Configuration"));
 	}
 	
 	protected void addDependencyGraph() throws PartInitException {

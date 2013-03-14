@@ -30,7 +30,7 @@ import com.dubture.composer.core.log.Logger;
 /**
  * 
  * @author "Robert Gruendler <r.gruendler@gmail.com>"
- *
+ * @deprecated
  */
 public class DefaultExecutableLauncher implements IPHPLauncher {
 

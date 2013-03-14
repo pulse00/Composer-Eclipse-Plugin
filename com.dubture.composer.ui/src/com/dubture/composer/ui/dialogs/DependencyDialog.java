@@ -19,8 +19,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.VersionedPackage;
-import org.getcomposer.collection.Versions;
+import org.getcomposer.core.VersionedPackage;
+import org.getcomposer.core.collection.Versions;
 import org.getcomposer.packages.PackagistDownloader;
 
 import com.dubture.composer.ui.parts.composer.VersionSuggestion;

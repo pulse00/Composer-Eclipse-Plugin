@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.serialization.ComposerPackageSerializer;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.serialization.ComposerPackageSerializer;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;

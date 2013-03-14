@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.ComposerConstants;
+import org.getcomposer.core.ComposerConstants;
 
 import com.dubture.composer.ui.converter.Keywords2StringConverter;
 import com.dubture.composer.ui.converter.License2StringConverter;

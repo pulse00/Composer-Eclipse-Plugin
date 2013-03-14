@@ -9,7 +9,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.getcomposer.ComposerPackage;
+import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 

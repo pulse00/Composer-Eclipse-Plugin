@@ -22,9 +22,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.ComposerPackage;
-import org.getcomposer.collection.Persons;
-import org.getcomposer.entities.Person;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.Persons;
+import org.getcomposer.core.objects.Person;
 
 /**
  * 

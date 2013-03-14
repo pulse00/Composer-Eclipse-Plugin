@@ -1,4 +1,4 @@
-package com.dubture.composer.core.execution;
+package com.dubture.composer.core.launch;
 
 public class ComposerJsonNotFoundException extends Exception {
 

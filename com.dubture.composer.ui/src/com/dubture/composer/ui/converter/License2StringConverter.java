@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.conversion.Converter;
-import org.getcomposer.collection.License;
+import org.getcomposer.core.collection.License;
 
 public class License2StringConverter extends Converter {
 
