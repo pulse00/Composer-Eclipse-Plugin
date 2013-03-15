@@ -7,14 +7,14 @@ import org.eclipse.core.resources.IProject;
 
 import com.dubture.composer.core.launch.ComposerLauncher;
 
-public class UpdateJob extends ComposerJob {
+public class UpdateNoDevJob extends ComposerJob {
 
-	public UpdateJob(IProject project) {
-		super(project, "Updating composer dependencies...");
+	public UpdateNoDevJob(IProject project) {
+		super(project, "Updating composer dependencies (no-dev)...");
 	}
 
 	protected void launch(ComposerLauncher launcher) throws ExecuteException,
 			IOException, InterruptedException {
-		launcher.launch("update");
+		launcher.launch("update", "--no-dev");
 	}
 }

@@ -12,7 +12,7 @@ import org.eclipse.core.resources.IResource;
 import com.dubture.composer.core.launch.environment.Environment;
 import com.dubture.composer.core.launch.environment.EnvironmentFactory;
 import com.dubture.composer.core.launch.execution.ComposerExecutor;
-import com.dubture.composer.core.launch.execution.ResponseHandler;
+import com.dubture.composer.core.launch.execution.ExecutionResponseListener;
 
 public class ComposerLauncher {
 
@@ -20,7 +20,9 @@ public class ComposerLauncher {
 	private IProject project;
 	private IResource composerJson;
 	
-	private Set<ResponseHandler> listeners = new HashSet<ResponseHandler>();
+	private ComposerExecutor executor;
+	
+	private Set<ExecutionResponseListener> listeners = new HashSet<ExecutionResponseListener>();
 	
 	private static Environment env = null;
 	
@@ -36,6 +38,14 @@ public class ComposerLauncher {
 		
 		this.environment.setUp(project);
 	}
+
+	public void addResponseListener(ExecutionResponseListener listener) {
+		listeners.add(listener);
+	}
+
+	public void removeResponseListener(ExecutionResponseListener listener) {
+		listeners.remove(listener);
+	}
 	
 	public void launch(String composerCommand) throws ExecuteException, IOException, InterruptedException {
 		launch(composerCommand, new String[]{});
@@ -45,29 +55,24 @@ public class ComposerLauncher {
 		launch(composerCommand, new String[]{param});
 	}
 	
-	public void addResponseHandler(ResponseHandler handler) {
-		listeners.add(handler);
-	}
-	
-	public void removeResponseHandler(ResponseHandler handler) {
-		listeners.remove(handler);
-	}
-	
 	public void launch(String composerCommand, String[] params) throws ExecuteException, IOException, InterruptedException {
 		CommandLine cmd = environment.getCommand();
 		cmd.addArgument(composerCommand);
 		cmd.addArguments(params);
 		
-		ComposerExecutor executor = new ComposerExecutor();
+		executor = new ComposerExecutor();
 		executor.setWorkingDirectory(project.getLocation().toFile());
 		
-		for (ResponseHandler listener : listeners) {
-			executor.addResponseHandler(listener);
+		for (ExecutionResponseListener listener : listeners) {
+			executor.addResponseListener(listener);
 		}
 		
 		executor.execute(cmd);
 	}
 	
+	public void abort() {
+		executor.abort();
+	}
 	
 	private static Environment getEnvironment() {
 		if (env == null) {

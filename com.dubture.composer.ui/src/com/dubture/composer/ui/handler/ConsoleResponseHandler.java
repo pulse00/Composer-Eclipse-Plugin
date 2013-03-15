@@ -1,21 +1,17 @@
 package com.dubture.composer.ui.handler;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import com.dubture.composer.core.launch.execution.ResponseHandler;
+import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 
-public class ConsoleResponseHandler implements ResponseHandler {
+public class ConsoleResponseHandler extends ExecutionResponseAdapter {
 
-	private IProgressMonitor monitor;
-
-	public ConsoleResponseHandler(IProgressMonitor monitor) {
-		this.monitor = monitor;
+	public ConsoleResponseHandler() {
 	}
 
 	private MessageConsole findConsole(String name) {
@@ -31,17 +27,21 @@ public class ConsoleResponseHandler implements ResponseHandler {
 		conMan.addConsoles(new IConsole[] { console });
 		return console;
 	}
-
-	public void handle(int exitValue, String response) {
+	
+	@Override
+	public void executionAboutToStart() {
 		MessageConsole console = findConsole("Composer");
 		console.clearConsole();
+	}
+	
+	@Override
+	public void executionMessage(String message) {
+		MessageConsole console = findConsole("Composer");
 		MessageConsoleStream out = console.newMessageStream();
-		out.println(response);
-		
-		monitor.subTask(response);
+		out.print(message);
 	}
 
-	public void handleError(String response) {
+	public void executionFailed(String response, Exception e) {
 		Logger.log(Logger.ERROR, response);
 	}
 

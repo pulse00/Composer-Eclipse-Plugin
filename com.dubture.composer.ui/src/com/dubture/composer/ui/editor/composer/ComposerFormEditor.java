@@ -7,6 +7,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.IEditorInput;
@@ -22,8 +23,10 @@ import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.ui.actions.InstallAction;
+import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
+import com.dubture.composer.ui.actions.UpdateNoDevAction;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;
@@ -34,7 +37,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	private IProject project;
 	
 	private IAction installAction = null;
+	private IAction installDevAction = null;
 	private IAction updateAction = null;
+	private IAction updateNoDevAction = null;
 	private IAction selfUpdateAction = null;
 	
 	// TODO JsonTextEditor some day...
@@ -69,18 +74,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		
-		// eclipse way to get input, unfortunately does not exist for some
-		// reasons?
-//		File json = ((IFileEditorInput) input).getFile().getFullPath().toFile();
-			
-		// workaround
-//		String composerJsonFilePath =
-//				ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() +
-//				((IFileEditorInput) input).getFile().getFullPath().toString();
-//		
-//		composerFile = new File(composerJsonFilePath);
-		
+
 		if (input instanceof IFileEditorInput) {
 			project = ((IFileEditorInput)input).getFile().getProject();
 		}
@@ -91,7 +85,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		composerPackage = new ComposerPackage(json);
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
-				System.out.println("Composer Property Changed: " + e.getPropertyName() + ", old: " + e.getOldValue() + ", new: " + e.getNewValue());
 				setDirty(true);
 			}
 		});
@@ -116,8 +109,13 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		// this does not work for some reasons? how to make it working and get rid of the action package?
 //		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
 //		menuService.populateContributionManager(manager, "toolbar:com.dubture.composer.ui.editor.toolbar");
+		
 		manager.add(getInstallAction());
+		manager.add(getInstallDevAction());
+		manager.add(new Separator());
+		manager.add(getUpdateNoDevAction());
 		manager.add(getUpdateAction());
+		manager.add(new Separator());
 		manager.add(getSelfUpdateAction());
 	}
 	
@@ -137,12 +135,28 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		return installAction;
 	}
 	
+	protected IAction getInstallDevAction() {
+		if (installDevAction == null) {
+			installDevAction = new InstallDevAction(project, getSite());
+		}
+		
+		return installDevAction;
+	}
+	
 	protected IAction getUpdateAction() {
 		if (updateAction == null) {
 			updateAction = new UpdateAction(project, getSite());
 		}
 		
 		return updateAction;
+	}
+	
+	protected IAction getUpdateNoDevAction() {
+		if (updateNoDevAction == null) {
+			updateNoDevAction = new UpdateNoDevAction(project, getSite());
+		}
+		
+		return updateNoDevAction;
 	}
 	
 	protected IAction getSelfUpdateAction() {

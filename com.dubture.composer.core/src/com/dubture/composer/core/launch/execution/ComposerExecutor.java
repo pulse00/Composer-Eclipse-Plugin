@@ -1,8 +1,16 @@
 package com.dubture.composer.core.launch.execution;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,45 +18,77 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
+import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 
-import com.dubture.composer.core.launch.execution.ResponseHandler;
+import com.dubture.composer.core.launch.execution.ExecutionResponseListener;
 
 public class ComposerExecutor {
 
 	private DefaultExecutor executor;
+	private ExecuteWatchdog watchdog;
+	
 	private PumpStreamHandler streamHandler;
-	private ByteArrayOutputStream outputStream;
-	private ByteArrayOutputStream errStream;
-	private long timeout = TIMEOUT;
+//	private PipedOutputStream out;
+	private ByteArrayOutputStream out;
+	private ByteArrayOutputStream err;
+	
+	private StringBuilder outBuilder;
+	private StringBuilder errBuilder;
 
 	private static final int TIMEOUT = 60000;
 
-	private Set<ResponseHandler> listeners = new HashSet<ResponseHandler>();
+	private Set<ExecutionResponseListener> listeners = new HashSet<ExecutionResponseListener>();
+	
+	private DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler() {
+		
+		public void onProcessComplete(int exitValue) {
+			String response = outBuilder.toString();
+			System.out.println("ComposerExecutor, complete: " + exitValue + ", response: " + response);
+			
+			super.onProcessComplete(exitValue);
+			
+			for (ExecutionResponseListener handler : listeners) {
+				handler.executionFinished(response, exitValue);
+			}
+		}
+
+		public void onProcessFailed(ExecuteException e) {
+			String response = errBuilder.toString();
+			System.out.println("ComposerExecutor, failed, response: " + response);
+//			e.printStackTrace();
+			
+			super.onProcessFailed(e);
+			
+			for (ExecutionResponseListener handler : listeners) {
+				handler.executionFailed(response, e);
+			}
+		}
+	};
 
 	public ComposerExecutor() {
-
-		outputStream = new ByteArrayOutputStream();
-		errStream = new ByteArrayOutputStream();
-		streamHandler = new PumpStreamHandler(outputStream, errStream);
-
+		out = new ByteArrayOutputStream();
+		err = new ByteArrayOutputStream();
+		streamHandler = new PumpStreamHandler(out, err);
+		
 		executor = new DefaultExecutor();
 		executor.setStreamHandler(streamHandler);
 
-		setTimeout(TIMEOUT);
-//		setExitValue(1);
+		watchdog = new ExecuteWatchdog(TIMEOUT);
+		executor.setWatchdog(watchdog);
 	}
 
-	public void addResponseHandler(ResponseHandler handler) {
-		listeners.add(handler);
+	public void addResponseListener(ExecutionResponseListener listener) {
+		listeners.add(listener);
 	}
 
-	public void removeResponseHandler(ResponseHandler handler) {
-		listeners.remove(handler);
+	public void removeResponseListener(ExecutionResponseListener listener) {
+		listeners.remove(listener);
 	}
 
 	public void setTimeout(long timeout) {
-		this.timeout = timeout;
+		watchdog = new ExecuteWatchdog(timeout);
+		executor.setWatchdog(watchdog);
 	}
 	
 	public void setExitValue(int exitValue) {
@@ -60,46 +100,34 @@ public class ComposerExecutor {
 	}
 
 	public void execute(CommandLine cmd) throws ExecuteException, IOException, InterruptedException {
-		DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler() {
-			public void onProcessComplete(int exitValue) {
-				String response = "";
-				if (outputStream != null) {
-					response = outputStream.toString();
-				}
-				
-				System.out.println("ComposerExecutor, complete: " + exitValue + ", response: " + response);
-				
-				super.onProcessComplete(exitValue);
-				
-				
-				
-				for (ResponseHandler handler : listeners) {
-					handler.handle(exitValue, response);
-				}
-			}
-
-			public void onProcessFailed(ExecuteException e) {
-				String response = "";
-				if (errStream != null) {
-					response = errStream.toString();
-				}
-				
-				System.out.println("ComposerExecutor, failed, response: " + response);
-				e.printStackTrace();
-				
-				super.onProcessFailed(e);
-				
-				
-
-				for (ResponseHandler handler : listeners) {
-					handler.handleError(response);
-				}
-			}
-		};
+		for (ExecutionResponseListener handler : listeners) {
+			handler.executionAboutToStart();
+		}
+		
+		outBuilder = new StringBuilder();
+		errBuilder = new StringBuilder();
+		
+		Thread outThread = new Thread(new Reader(out));
+		Thread errThread = new Thread(new Reader(err));
+		
+		outThread.start();
+		errThread.start();
 		
 		executor.execute(cmd, handler);
 		
-		handler.waitFor(timeout);
+		for (ExecutionResponseListener handler : listeners) {
+			handler.executionStarted();
+		}
+		
+		handler.waitFor();
+		outThread.interrupt();
+		errThread.interrupt();
+	}
+	
+	public void abort() {
+		if (watchdog != null) {
+            watchdog.destroyProcess();
+        }
 	}
 	
 	public void setWorkingDirectory(File dir) {
@@ -108,5 +136,40 @@ public class ComposerExecutor {
 	
 	public File getWorkingDirectory() {
 		return executor.getWorkingDirectory();
+	}
+
+	private class Reader implements Runnable {
+		private ByteArrayOutputStream stream;
+		private boolean out = true;
+		
+		public Reader(ByteArrayOutputStream in) {
+			if (in == err) {
+				this.out = false;
+			}
+			stream = in;
+		}
+
+		public void run() {
+			while (!Thread.interrupted()) {
+				String content = stream.toString();
+				stream.reset();
+				if (!content.isEmpty()) {
+					
+					if (this.out) {
+						outBuilder.append(content);
+					} else {
+						errBuilder.append(content);
+					}
+					
+					for (ExecutionResponseListener listener : listeners) {
+						if (this.out) {
+							listener.executionMessage(content);
+						} else {
+							listener.executionError(content);
+						}
+					}
+				}
+			}
+		}
 	}
 }

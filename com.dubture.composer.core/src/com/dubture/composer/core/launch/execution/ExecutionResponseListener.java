@@ -7,9 +7,16 @@
  ******************************************************************************/
 package com.dubture.composer.core.launch.execution;
 
-public interface ResponseHandler {
+public interface ExecutionResponseListener {
 	
-	void handle(int exitValue, String response);
-	void handleError(String response);
+	// when finished
+	public void executionFinished(String response, int exitValue);
+	public void executionFailed(String response, Exception exception);
 
+	// instant notification
+	public void executionError(String message);
+	public void executionMessage(String message);
+	
+	public void executionAboutToStart();
+	public void executionStarted();
 }

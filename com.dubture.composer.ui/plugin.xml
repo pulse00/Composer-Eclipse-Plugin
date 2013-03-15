@@ -9,12 +9,9 @@
       <menuContribution
             allPopups="false"
             locationURI="toolbar:com.dubture.composer.ui.editor.toolbar">
-         <toolbar
-               id="com.dubture.composer.ui.editor.toolbar">
-         </toolbar>
          <command
-               commandId="com.dubture.composer.core.command.install"
-               icon="icons/full/obj16/install_obj.gif"
+               commandId="com.dubture.composer.ui.command.install"
+               icon="icons/full/obj16/install.gif"
                label="Install"
                style="push">
          </command>
@@ -57,9 +54,19 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            id="com.dubture.composer.ui.command.projectnature"
+            name="Convert to composer nature">
+      </command>
+      <command
+            defaultHandler="com.dubture.composer.ui.handler.InstallHandler"
             description="Run `composer.phar install`"
             id="com.dubture.composer.ui.command.install"
             name="Install dependencies">
+      </command>
+      <command
+            description="Run `composer.phar install --dev`"
+            id="com.dubture.composer.ui.command.installDev"
+            name="Install Dependencies (dev)">
       </command>
       <command
             description="Run `composer.phar update`"
@@ -67,25 +74,26 @@
             name="Update dependencies">
       </command>
       <command
-            id="com.dubture.composer.ui.command.adddependency"
-            name="Add dependency">
+            description="Run `composer.phar update --no-dev`"
+            id="com.dubture.composer.ui.command.updateNoDev"
+            name="Update Dependencies (no-dev)">
+      </command>
+      <command
+            description="Run `composer.phar self-update`"
+            id="com.dubture.composer.ui.command.selfupdate"
+            name="Self-Update Composer">
       </command>
       <command
             id="com.dubture.composer.ui.command.graph"
             name="Dependency Graph">
       </command>
       <command
-            id="com.dubture.composer.ui.command.projectnature"
-            name="Convert to composer nature">
+            id="com.dubture.composer.ui.command.adddependency"
+            name="Add dependency">
       </command>
       <command
             id="com.dubture.composer.ui.command.init"
             name="Initialize composer">
-      </command>
-      <command
-            description="Run `composer.phar self-update`"
-            id="com.dubture.composer.ui.command.selfupdate"
-            name="Self-Update Composer">
       </command>
    </extension>
    <extension

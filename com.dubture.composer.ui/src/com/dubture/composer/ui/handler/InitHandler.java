@@ -13,6 +13,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.ui.wizard.init.InitComposerWizard;
 
+/**
+ * @deprecated
+ */
 public class InitHandler extends ComposerHandler
 {
 

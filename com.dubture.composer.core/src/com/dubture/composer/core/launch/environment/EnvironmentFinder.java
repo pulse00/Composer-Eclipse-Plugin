@@ -8,7 +8,7 @@ import org.eclipse.php.internal.debug.core.xdebug.communication.XDebugCommunicat
 import org.eclipse.php.internal.debug.core.zend.communication.DebuggerCommunicationDaemon;
 
 import com.dubture.composer.core.launch.execution.ComposerExecutor;
-import com.dubture.composer.core.launch.execution.ResponseHandler;
+import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 
 @SuppressWarnings("restriction")
 public class EnvironmentFinder {
@@ -127,12 +127,12 @@ public class EnvironmentFinder {
 	private static String exec(String cmd) {
 		result = null;
 		ComposerExecutor executor = new ComposerExecutor();
-		executor.addResponseHandler(new ResponseHandler() {
-			public void handle(int exitCode, String response) {
+		executor.addResponseListener(new ExecutionResponseAdapter() {
+			public void executionFinished(String response, int exitValue) {
 				result = response;
 			}
 
-			public void handleError(String response) {
+			public void executionFailed(String response, Exception e) {
 				result = null;
 			}
 		});

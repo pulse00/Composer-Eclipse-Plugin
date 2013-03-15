@@ -7,6 +7,9 @@ import org.eclipse.swt.SWT;
 import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.ui.job.UpdateJob;
 
+/**
+ * @deprecated
+ */
 public class UpdateHandler extends ComposerHandler
 {
 

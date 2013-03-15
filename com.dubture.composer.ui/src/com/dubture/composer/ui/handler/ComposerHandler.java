@@ -18,6 +18,9 @@ import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.job.DownloadJob;
 
+/**
+ * @deprecated
+ */
 abstract public class ComposerHandler extends AbstractHandler
 {
     protected IResource composer;

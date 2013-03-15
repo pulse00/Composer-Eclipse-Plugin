@@ -8,6 +8,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
@@ -15,6 +17,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.launch.ComposerPharNotFoundException;
+import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 
@@ -53,7 +56,7 @@ abstract public class ComposerJob extends Job {
 	}
 
 	@Override
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus run(final IProgressMonitor monitor) {
 		try {
 			ComposerLauncher launcher = null;
 
@@ -63,9 +66,33 @@ abstract public class ComposerJob extends Job {
 				return shallInstallComposerPhar();
 			}
 			
-			launcher.addResponseHandler(new ConsoleResponseHandler(monitor));
+			launcher.addResponseListener(new ConsoleResponseHandler());
+			launcher.addResponseListener(new ExecutionResponseAdapter() {
+				public void executionFailed(final String response,
+						Exception exception) {
+					
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							
+							monitor.done();
+							
+							MessageDialog diag = new MessageDialog(
+									Display.getDefault().getActiveShell(), 
+									getName() + " FAILED!", 
+									null, 
+									response.trim(), 
+									MessageDialog.ERROR,
+									new String[] {"Ok"},
+									0);
+							
+							
+							diag.open();
+						};
+					});
+				}
+			});
 
-			monitor.beginTask("Running composer.phar install", 3);
+			monitor.beginTask(getName(), 3);
 			monitor.worked(1);
 			launch(launcher);
 			monitor.worked(2);
@@ -86,10 +113,4 @@ abstract public class ComposerJob extends Job {
 	}
 	
 	abstract protected void launch(ComposerLauncher launcher) throws ExecuteException, IOException, InterruptedException;
-
-//	private void doExecute(String[] arguments, IProgressMonitor monitor)
-//			throws IOException, InterruptedException, CoreException {
-//		new DefaultExecutableLauncher().launch(composerPhar, arguments,
-//				new ConsoleResponseHandler(monitor));
-//	}
 }

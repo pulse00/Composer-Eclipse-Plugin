@@ -10,6 +10,9 @@ import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.wizard.require.RequireWizard;
 
+/**
+ * @deprecated
+ */
 public class RequireHandler extends ComposerHandler
 {
 	@Override
