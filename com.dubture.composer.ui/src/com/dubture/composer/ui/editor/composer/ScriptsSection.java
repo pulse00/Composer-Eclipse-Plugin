@@ -169,7 +169,7 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 
 		scriptsViewer.setInput(composerPackage.getScripts());
-		composerPackage.addPropertyChangeListener("scripts", this);
+		composerPackage.addPropertyChangeListener(this);
 		updateButtons();
 		
 		makeActions();
@@ -201,8 +201,10 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		refresh();
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName().startsWith("scripts")) { 
+			refresh();
+		}
 	}
 	
 	protected void selectionChanged(IStructuredSelection sel) {
@@ -288,8 +290,7 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 				String handler = diag.getHandler();
 				if (!handler.equalsIgnoreCase(text)) {
 					JsonArray events = composerPackage.getScripts().getAsArray(event);
-					events.remove(text);
-					events.add(handler);
+					events.replace(text, handler);
 				}
 			}
 		}

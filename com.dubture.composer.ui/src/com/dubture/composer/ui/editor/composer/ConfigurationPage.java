@@ -63,5 +63,7 @@ public class ConfigurationPage extends ComposerFormPage {
 		right = toolkit.createComposite(form.getBody());
 		right.setLayout(new TableWrapLayout());
 		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		
+		new RepositoriesSection(this, right);
 	}
 }

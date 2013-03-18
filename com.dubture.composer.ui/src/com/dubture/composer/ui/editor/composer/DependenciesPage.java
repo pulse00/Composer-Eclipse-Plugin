@@ -114,6 +114,7 @@ public class DependenciesPage extends ComposerFormPage {
 					: composerPackage.getRequireDev();
 						
 				deps.addAll(dependencies);
+				activeSection.setFocus();
 			}
 		});
 		

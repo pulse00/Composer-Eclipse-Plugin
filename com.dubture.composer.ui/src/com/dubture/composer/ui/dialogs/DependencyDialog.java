@@ -23,6 +23,7 @@ import org.getcomposer.core.VersionedPackage;
 import org.getcomposer.core.collection.Versions;
 import org.getcomposer.packages.PackagistDownloader;
 
+import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.parts.composer.VersionSuggestion;
 import com.dubture.composer.ui.utils.WidgetFactory;
 
@@ -64,13 +65,13 @@ public class DependencyDialog extends Dialog {
 		
 		Label lblName = new Label(contents, SWT.NONE);
 		GridData gd_lblName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_lblName.widthHint = 100;
+		gd_lblName.widthHint = ComposerUIPluginConstants.DIALOG_LABEL_WIDTH;
 		lblName.setLayoutData(gd_lblName);
 		lblName.setText("Name");
 		
 		name = new Text(contents, SWT.BORDER);
 		GridData gd_name = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_name.widthHint = 150;
+		gd_name.widthHint = ComposerUIPluginConstants.DIALOG_CONTROL_WIDTH;
 		name.setLayoutData(gd_name);
 		name.setEnabled(false);
 		if (dependency.getName() != null) {

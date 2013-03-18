@@ -17,6 +17,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.getcomposer.core.objects.Scripts;
 
+import com.dubture.composer.ui.ComposerUIPluginConstants;
+import com.dubture.composer.ui.ComposerUIPluginImages;
+
 public class ScriptDialog extends Dialog {
 	
 	private Combo eventControl;
@@ -42,19 +45,22 @@ public class ScriptDialog extends Dialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		getShell().setText("Edit Script");
+		getShell().setImage(ComposerUIPluginImages.EVENT.createImage());
 		
-		Composite contents = new Composite(parent, SWT.BORDER | SWT.NO_BACKGROUND | SWT.NO_FOCUS | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE | SWT.NO_RADIO_GROUP | SWT.EMBEDDED);
+		Composite contents = new Composite(parent, SWT.NONE);
 		contents.setLayout(new GridLayout(2, false));
 		
 		Label lblEvent = new Label(contents, SWT.NONE);
-		GridData gd_lblEvent = new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1);
-		gd_lblEvent.widthHint = 100;
+		GridData gd_lblEvent = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+		gd_lblEvent.widthHint = ComposerUIPluginConstants.DIALOG_LABEL_WIDTH;
 		lblEvent.setLayoutData(gd_lblEvent);
 		lblEvent.setText("Event");
 		
 		eventControl = new Combo(contents, SWT.READ_ONLY);
 		eventControl.setEnabled(eventEnabled);
-		eventControl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		GridData gd_eventControl = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_eventControl.widthHint = ComposerUIPluginConstants.DIALOG_CONTROL_WIDTH;
+		eventControl.setLayoutData(gd_eventControl);
 		eventControl.setItems(Scripts.getEvents());
 		eventControl.addSelectionListener(new SelectionAdapter() {
 			@Override

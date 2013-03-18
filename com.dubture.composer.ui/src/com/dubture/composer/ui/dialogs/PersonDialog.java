@@ -14,6 +14,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.getcomposer.core.objects.Person;
 
+import com.dubture.composer.ui.ComposerUIPluginConstants;
+import com.dubture.composer.ui.ComposerUIPluginImages;
+
 public class PersonDialog extends Dialog {
 
 	private Person person;
@@ -22,6 +25,9 @@ public class PersonDialog extends Dialog {
 	private Text homepage;
 	private Text role;
 	
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public PersonDialog(Shell parentShell, Person author) {
 		super(parentShell);
 		this.person = author;
@@ -38,20 +44,21 @@ public class PersonDialog extends Dialog {
 
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		getShell().setText("Edit Person");
+		getShell().setText("Person");
+		getShell().setImage(ComposerUIPluginImages.PERSON.createImage());
 		
-		Composite contents = new Composite(parent, SWT.BORDER | SWT.NO_BACKGROUND | SWT.NO_FOCUS | SWT.NO_MERGE_PAINTS | SWT.NO_REDRAW_RESIZE | SWT.NO_RADIO_GROUP | SWT.EMBEDDED);
+		Composite contents = new Composite(parent, SWT.NONE);
 		contents.setLayout(new GridLayout(2, false));
 		
 		Label lblName = new Label(contents, SWT.NONE);
 		GridData gd_lblName = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
-		gd_lblName.widthHint = 100;
+		gd_lblName.widthHint = ComposerUIPluginConstants.DIALOG_LABEL_WIDTH;
 		lblName.setLayoutData(gd_lblName);
 		lblName.setText("Name");
 		
 		name = new Text(contents, SWT.BORDER);
 		GridData gd_name = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd_name.widthHint = 150;
+		gd_name.widthHint = ComposerUIPluginConstants.DIALOG_CONTROL_WIDTH;
 		name.setLayoutData(gd_name);
 		if (person.getName() != null) {
 			name.setText(person.getName());

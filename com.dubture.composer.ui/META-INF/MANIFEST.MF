@@ -29,7 +29,8 @@ Require-Bundle: org.eclipse.ui,
  org.apache.commons.lang3,
  org.eclipse.core.expressions,
  org.apache.commons.exec,
- org.eclipse.ui.console
+ org.eclipse.ui.console,
+ org.apache.commons.collections
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.ui,

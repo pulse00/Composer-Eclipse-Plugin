@@ -48,7 +48,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	class AuthorController extends StyledCellLabelProvider implements IStructuredContentProvider {
 
 		private Persons authors;
-		private Image authorImage = ComposerUIPluginImages.AUTHOR.createImage();
+		private Image authorImage = ComposerUIPluginImages.PERSON.createImage();
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 			authors = (Persons)newInput;
@@ -109,7 +109,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 
 		authorViewer.setInput(composerPackage.getAuthors());
-		composerPackage.addPropertyChangeListener("authors", this);
+		composerPackage.addPropertyChangeListener(this);
 		updateButtons();
 		
 		makeActions();
@@ -141,8 +141,10 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		refresh();
+	public void propertyChange(PropertyChangeEvent e) {
+		if (e.getPropertyName().startsWith("authors")) {
+			refresh();
+		}
 	}
 	
 	protected void selectionChanged(IStructuredSelection sel) {

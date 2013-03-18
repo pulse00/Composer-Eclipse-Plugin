@@ -16,9 +16,10 @@ public class ComposerUIPluginImages {
 
 	public static final ImageDescriptor ADD_DEPENDENCY = create(T_WIZBAN, "packagist.png");
 	
-	public static final ImageDescriptor AUTHOR = create(T_OBJ16, "author.png");
+	public static final ImageDescriptor PERSON = create(T_OBJ16, "person.png");
 	public static final ImageDescriptor PAGE = create(T_OBJ16, "page.gif");
 	public static final ImageDescriptor PACKAGE = create(T_OBJ16, "package.gif");
+	public static final ImageDescriptor COMPOSER = create(T_OBJ16, "composer.png");
 	public static final ImageDescriptor PHP = create(T_OBJ16, "php.png");
 	public static final ImageDescriptor BROWSER = create(T_OBJ16, "browser.gif");
 	public static final ImageDescriptor INSTALL = create(T_OBJ16, "install.gif");
@@ -28,6 +29,16 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor SELFUPDATE = create(T_OBJ16, "selfupdate.gif");
 	public static final ImageDescriptor EVENT = create(T_OBJ16, "event3.png");
 	public static final ImageDescriptor SCRIPT = create(T_OBJ16, "script2.png");
+	
+	public static final ImageDescriptor REPO_GENERIC = create(T_OBJ16, "repo_generic.gif");
+	public static final ImageDescriptor REPO_GIT = create(T_OBJ16, "repo_git.png");
+	public static final ImageDescriptor REPO_SVN = create(T_OBJ16, "repo_svn.png");
+	public static final ImageDescriptor REPO_MERCURIAL = create(T_OBJ16, "repo_mercurial.png");
+	public static final ImageDescriptor REPO_PEAR = create(T_OBJ16, "repo_pear.png");
+	public static final ImageDescriptor REPO_PACKAGE = PACKAGE;
+	public static final ImageDescriptor REPO_COMPOSER = COMPOSER;
+	
+	
 
 	private static ImageDescriptor create(String prefix, String name) {
 		return create(prefix, name, true);
