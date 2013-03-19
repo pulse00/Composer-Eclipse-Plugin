@@ -2,7 +2,11 @@ package com.dubture.composer.ui.editor.composer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -40,6 +44,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	
 	public DependencySection(ComposerFormPage page, Composite parent, Dependencies dependencies, String title, String description, boolean expanded) {
 		super(page, parent, Section.EXPANDED | Section.DESCRIPTION | Section.TWISTIE | Section.TITLE_BAR, new String[]{"Edit...", "Remove"});
+		
 		this.dependencies = dependencies;
 		createClient(getSection(), page.getManagedForm().getToolkit(), title, description, expanded);
 	}
@@ -108,7 +113,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	}
 
 	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
+	public void propertyChange(PropertyChangeEvent e) {
 		refresh();
 	}
 	
@@ -143,25 +148,37 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		VersionedPackage dep = (VersionedPackage)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
 		DependencyDialog diag = new DependencyDialog(dependencyViewer.getTable().getShell(), dep.clone());
 		if (diag.open() == Dialog.OK) {
-			dep = diag.getDependency();
-			refresh();
+			dep.setVersion(diag.getDependency().getVersion());
+//			refresh();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void handleRemove() {
-		VersionedPackage dep = (VersionedPackage)((StructuredSelection)dependencyViewer.getSelection()).getFirstElement();
+		StructuredSelection selection = ((StructuredSelection)dependencyViewer.getSelection());
+		Iterator<Object> it = selection.iterator();
+		String[] names = new String[selection.size()];
+		List<VersionedPackage> deps = new ArrayList<VersionedPackage>();
+
+		for (int i = 0; it.hasNext(); i++) {
+			VersionedPackage dep = (VersionedPackage)it.next();
+			deps.add(dep);
+			names[i] = dep.getName();
+		}
+
 		MessageDialog diag = new MessageDialog(
 				dependencyViewer.getTable().getShell(), 
-				"Remove Dependency", 
+				"Remove Dependenc" + (selection.size() > 1 ? "ies" : "y"), 
 				null, 
-				"Do you really wan't to remove " + dep.getName() + "?", 
+				"Do you really wan't to remove " + StringUtils.join(names, ", ") + "?", 
 				MessageDialog.WARNING,
 				new String[] {"Yes", "No"},
 				0);
-		
+
 		if (diag.open() == Dialog.OK) {
-			dependencies.remove(dep);
-			refresh();
+			for (VersionedPackage dep : deps) {
+				dependencies.remove(dep);
+			}
 		}
 	}
 	

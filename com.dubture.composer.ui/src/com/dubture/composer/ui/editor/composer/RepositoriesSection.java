@@ -2,9 +2,13 @@ package com.dubture.composer.ui.editor.composer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -246,19 +250,33 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void handleRemove() {
-		Repository repo = (Repository)((StructuredSelection)repositoryViewer.getSelection()).getFirstElement();
+		StructuredSelection selection = ((StructuredSelection)repositoryViewer.getSelection());
+		Iterator<Object> it = selection.iterator();
+		String[] names = new String[selection.size()];
+		List<Repository> repos = new ArrayList<Repository>();
+
+		for (int i = 0; it.hasNext(); i++) {
+			Repository repo = (Repository)it.next();
+			repos.add(repo);
+			System.out.println("Repo name: " + repo.getName() + ", len: " + names.length);
+			names[i] = repo.getName();
+		}
+		
 		MessageDialog diag = new MessageDialog(
 				repositoryViewer.getTable().getShell(), 
-				"Remove Repository", 
+				"Remove Repositor" + (selection.size() > 1 ? "ies" : "y"), 
 				null, 
-				"Do you really wan't to remove " + repo.getName() + "?", 
+				"Do you really wan't to remove " + StringUtils.join(names, ", ") + "?", 
 				MessageDialog.WARNING,
 				new String[] {"Yes", "No"},
 				0);
 		
 		if (diag.open() == Dialog.OK) {
-			composerPackage.getRepositories().remove(repo);
+			for (Repository repo : repos) {
+				composerPackage.getRepositories().remove(repo);
+			}
 		}
 	}
 	

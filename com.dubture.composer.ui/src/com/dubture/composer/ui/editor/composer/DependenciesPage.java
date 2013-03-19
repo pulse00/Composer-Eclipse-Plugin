@@ -77,7 +77,7 @@ public class DependenciesPage extends ComposerFormPage {
 		
 		left = toolkit.createComposite(form.getBody(), SWT.NONE);
 		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
-		left.setLayoutData(new GridData(GridData.FILL_BOTH));		
+		left.setLayoutData(new GridData(GridData.FILL_BOTH));	
 		
 		requireSection = new DependencySection(this, left, composerPackage.getRequire(), "Require", "The dependencies for your package.", true);
 		requireDevSection = new DependencySection(this, left, composerPackage.getRequireDev(), "Require (Development)", "The development dependencies for your package.", false);

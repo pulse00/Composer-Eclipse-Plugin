@@ -2,7 +2,11 @@ package com.dubture.composer.ui.editor.composer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -195,24 +199,35 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 			author.setEmail(diag.getPerson().getEmail());
 			author.setHomepage(diag.getPerson().getHomepage());
 			author.setRole(diag.getPerson().getRole());
-//			refresh();
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void handleRemove() {
-		Person author = (Person)((StructuredSelection)authorViewer.getSelection()).getFirstElement();
+		StructuredSelection selection = ((StructuredSelection)authorViewer.getSelection());
+		Iterator<Object> it = selection.iterator();
+		String[] names = new String[selection.size()];
+		List<Person> persons = new ArrayList<Person>();
+
+		for (int i = 0; it.hasNext(); i++) {
+			Person person = (Person)it.next();
+			persons.add(person);
+			names[i] = person.getName();
+		}
+
 		MessageDialog diag = new MessageDialog(
 				authorViewer.getTable().getShell(), 
-				"Remove Author", 
+				"Remove Author" + (selection.size() > 1 ? "s" : ""), 
 				null, 
-				"Do you really wan't to remove " + author.getName() + "?", 
+				"Do you really wan't to remove " + StringUtils.join(names, ", ") + "?", 
 				MessageDialog.WARNING,
 				new String[] {"Yes", "No"},
 				0);
 		
 		if (diag.open() == Dialog.OK) {
-			composerPackage.getAuthors().remove(author);
-//			refresh();
+			for (Person person : persons) {
+				composerPackage.getAuthors().remove(person);
+			}
 		}
 	}
 	

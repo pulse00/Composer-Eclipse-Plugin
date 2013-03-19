@@ -149,7 +149,6 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		createClient(getSection(), page.getManagedForm().getToolkit());
 	}
 	
-
 	@Override
 	protected void createClient(Section section, FormToolkit toolkit) {
 		section.setText("Scripts");
@@ -157,7 +156,7 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 
 		Composite container = createClientContainer(section, 2, toolkit);
-		createViewerPartControl(container, SWT.MULTI, 2, toolkit);
+		createViewerPartControl(container, SWT.SINGLE, 2, toolkit);
 		TreePart treePart = getTreePart();
 		ScriptsController scriptsController = new ScriptsController();
 		scriptsViewer = treePart.getTreeViewer();
