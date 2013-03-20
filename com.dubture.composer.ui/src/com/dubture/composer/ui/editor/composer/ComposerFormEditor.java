@@ -42,6 +42,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	private IAction updateNoDevAction = null;
 	private IAction selfUpdateAction = null;
 	
+	protected OverviewPage overviewPage;
+	protected DependenciesPage dependenciesPage;
+	protected ConfigurationPage configurationPage;
+	protected BuildpathManagementPage buildpathManagementPage;
+	
 	// TODO JsonTextEditor some day...
 	protected ComposerTextEditor textEditor = new ComposerTextEditor(); 
 
@@ -167,13 +172,25 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		
 		return selfUpdateAction;
 	}
+	
+	@Override
+	protected void createPages() {
+		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
+		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
+		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
+		buildpathManagementPage = new BuildpathManagementPage(this, BuildpathManagementPage.ID, "Buildpath Management");
+		
+		super.createPages();
+	}
 
 	@Override
 	protected void addPages() {
 		try {
-			addOverview();
-			addDependencies();
-			addConfiguration();
+			addPage(overviewPage);
+			addPage(dependenciesPage);
+			addPage(configurationPage);
+			addPage(buildpathManagementPage);
+
 //			addDependencyGraph();
 //			setActivePage(DependenciesPage.ID);
 
@@ -183,24 +200,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			e.printStackTrace();
 		}
 	}
-
-	protected void addOverview() throws PartInitException {
-		addPage(new OverviewPage(this, OverviewPage.ID, "Overview"));
-	}
-
-	protected void addDependencies() throws PartInitException {
-		addPage(new DependenciesPage(this, DependenciesPage.ID, "Dependencies"));
-	}
 	
-	protected void addConfiguration() throws PartInitException {
-		addPage(new ConfigurationPage(this, ConfigurationPage.ID, "Configuration"));
-	}
-	
-	protected void addDependencyGraph() throws PartInitException {
-		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
-	}
-	
-	
+//	protected void addDependencyGraphPage() throws PartInitException {
+//		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
+//	}
 
 	public void doSave(IProgressMonitor monitor) {
 		try {
@@ -209,6 +212,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			document.set(composerPackage.toJson());
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
 			documentProvider.changed(getEditorInput());
+			
+			if (buildpathManagementPage != null) {
+				buildpathManagementPage.doSave(monitor);
+			}
 
 			setDirty(false);
 		} catch (Exception e) {
@@ -230,6 +237,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	public void setDirty(boolean value) {
 		this.dirty = value;
 		editorDirtyStateChanged();
+	}
+	
+	public IProject getProject() {
+		return project;
 	}
 
 	public ComposerPackage getComposerPackge() {

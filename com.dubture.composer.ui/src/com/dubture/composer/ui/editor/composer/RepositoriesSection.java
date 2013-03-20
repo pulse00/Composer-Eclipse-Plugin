@@ -153,10 +153,10 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.MULTI, 2, toolkit);
 		TablePart tablePart = getTablePart();
-		RepositoriesController authorController = new RepositoriesController();
+		RepositoriesController repositoriesController = new RepositoriesController();
 		repositoryViewer = tablePart.getTableViewer();
-		repositoryViewer.setContentProvider(authorController);
-		repositoryViewer.setLabelProvider(authorController);
+		repositoryViewer.setContentProvider(repositoriesController);
+		repositoryViewer.setLabelProvider(repositoriesController);
 		
 		toolkit.paintBordersFor(container);
 		section.setClient(container);

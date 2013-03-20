@@ -38,7 +38,8 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor REPO_PACKAGE = PACKAGE;
 	public static final ImageDescriptor REPO_COMPOSER = COMPOSER;
 	
-	
+	public static final ImageDescriptor BUILDPATH_INCLUDE = create(T_OBJ16, "buildpath_include.gif");
+	public static final ImageDescriptor BUILDPATH_EXCLUDE = create(T_OBJ16, "buildpath_exclude.gif");
 
 	private static ImageDescriptor create(String prefix, String name) {
 		return create(prefix, name, true);
