@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -38,7 +37,6 @@ public class BuildpathManagementPage extends ComposerFormPage {
 	public BuildpathManagementPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
 		this.editor = editor;
-		
 	}
 	
 	@Override
@@ -63,13 +61,13 @@ public class BuildpathManagementPage extends ComposerFormPage {
 		createHeader(form, toolkit);
 		
 		left = toolkit.createComposite(form.getBody());
-		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		left.setLayout(FormLayoutFactory.createFormTableWrapLayout(true, 1));
 		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB));
 		
 		includes = new PathSection(this, left, true);
 
 		right = toolkit.createComposite(form.getBody());
-		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		right.setLayout(FormLayoutFactory.createFormTableWrapLayout(true, 1));
 		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		excludes = new PathSection(this, right, false);
@@ -102,7 +100,12 @@ public class BuildpathManagementPage extends ComposerFormPage {
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 		
-		includes.save();
-		excludes.save();
+		if (includes != null) {
+			includes.save();
+		}
+		
+		if (excludes != null) {
+			excludes.save();
+		}
 	}
 }

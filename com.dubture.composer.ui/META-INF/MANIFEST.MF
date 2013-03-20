@@ -24,13 +24,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
  org.eclipse.core.databinding.property,
- org.getcomposer,
- org.eclipse.nebula.widgets.tablecombo,
  org.apache.commons.lang3,
  org.eclipse.core.expressions,
  org.apache.commons.exec,
  org.eclipse.ui.console,
- org.apache.commons.collections
+ org.apache.commons.collections,
+ org.getcomposer
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.ui,

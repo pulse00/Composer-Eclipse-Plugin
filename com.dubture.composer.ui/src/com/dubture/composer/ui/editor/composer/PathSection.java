@@ -26,7 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -107,7 +107,7 @@ public class PathSection extends TableSection {
 		}
 
 		paths.addAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get(key, ""))));
-		section.setLayoutData(new GridData(GridData.FILL_BOTH));
+		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.FILL_GRAB));
 
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.MULTI, 2, toolkit);
@@ -178,22 +178,23 @@ public class PathSection extends TableSection {
 	}
 	
 	private void handleAdd() {
-		ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
+		CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(
 				pathViewer.getTable().getShell(), 
 				new WorkbenchLabelProvider(), new BaseWorkbenchContentProvider());
 		
 		dialog.addFilter(new TypedViewerFilter(new Class[] { IFolder.class }));
-		dialog.setTitle("Tree Selection");
-		dialog.setMessage("Select the elements from the tree:");
+		dialog.setTitle("Add to " + (include ? "Include" : "Exclude") + " Path");
+		dialog.setMessage("Select folders:");
 		dialog.setInput(project);
 		dialog.setHelpAvailable(false);
 		
 		if (dialog.open() == Dialog.OK) {
-			Object result = dialog.getFirstResult();
-			if (result instanceof IFolder) {
-				paths.add(((IFolder)result).getProjectRelativePath().toString());
-				refresh();
+			for (Object result : dialog.getResult()) {
+				if (result instanceof IFolder) {
+					paths.add(((IFolder)result).getProjectRelativePath().toString());
+				}
 			}
+			refresh();
 		}
 	}
 	

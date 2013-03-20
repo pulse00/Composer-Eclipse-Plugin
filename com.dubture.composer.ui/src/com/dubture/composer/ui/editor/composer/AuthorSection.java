@@ -90,7 +90,6 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	
 	public AuthorSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION, new String[]{"Add...", "Edit...", "Remove"});
-//		createClient(getSection(), page.getManagedForm().getToolkit());
 	}
 	
 

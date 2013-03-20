@@ -33,7 +33,6 @@ Export-Package: com.dubture.composer.core;
    org.osgi.framework,
    org.eclipse.dltk.core",
  com.dubture.composer.core.build;uses:="org.eclipse.dltk.core.builder,org.eclipse.dltk.core",
- com.dubture.composer.core.execution,
  com.dubture.composer.core.facet;
   uses:="org.eclipse.core.runtime,
    org.eclipse.wst.common.project.facet.core,

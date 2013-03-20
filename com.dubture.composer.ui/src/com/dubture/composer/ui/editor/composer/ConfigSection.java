@@ -3,10 +3,16 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.php.internal.ui.util.TypedViewerFilter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.model.BaseWorkbenchContentProvider;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.ComposerSection;
@@ -16,6 +22,7 @@ import com.dubture.composer.ui.parts.BooleanFormEntry;
 import com.dubture.composer.ui.parts.FormEntry;
 import com.dubture.composer.ui.parts.IBooleanFormEntryListener;
 
+@SuppressWarnings("restriction")
 public class ConfigSection extends ComposerSection {
 
 	public ConfigSection(ComposerFormPage page, Composite parent) {
@@ -30,7 +37,7 @@ public class ConfigSection extends ComposerSection {
 		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
 		Composite client = toolkit.createComposite(section);
-		client.setLayout(FormLayoutFactory.createSectionClientTableWrapLayout(false, 2));
+		client.setLayout(FormLayoutFactory.createSectionClientTableWrapLayout(false, 3));
 		section.setClient(client);
 		
 		createProcessTimeoutEntry(client, toolkit);
@@ -67,8 +74,8 @@ public class ConfigSection extends ComposerSection {
 		});
 	}
 	
-	private void createVendorDirEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry vendorDirEntry = new FormEntry(client, toolkit, "vendor-dir", null, false);
+	private void createVendorDirEntry(final Composite client, FormToolkit toolkit) {
+		final FormEntry vendorDirEntry = new FormEntry(client, toolkit, "vendor-dir", "Browse...", false);
 		String vendorDir = composerPackage.getConfig().getVendorDir();
 		if (vendorDir != null) {
 			vendorDirEntry.setValue(vendorDir, true);
@@ -81,13 +88,31 @@ public class ConfigSection extends ComposerSection {
 				} else {
 					composerPackage.getConfig().set("vendor-dir", entry.getValue());
 				}
+			}
+
+			public void browseButtonSelected(FormEntry entry) {
+				ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
+						client.getShell(), 
+						new WorkbenchLabelProvider(), new BaseWorkbenchContentProvider());
 				
+				dialog.addFilter(new TypedViewerFilter(new Class[] { IFolder.class }));
+				dialog.setTitle("Select Vendor Dir");
+				dialog.setMessage("Select folder:");
+				dialog.setInput(getPage().getComposerEditor().getProject());
+				dialog.setHelpAvailable(false);
+				
+				if (dialog.open() == Dialog.OK) {
+					Object result = dialog.getFirstResult();
+					if (result instanceof IFolder) {
+						entry.setValue(((IFolder)result).getProjectRelativePath().toString());
+					}
+				}
 			}
 		});
 		composerPackage.getConfig().addPropertyChangeListener("vendor-dir", new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				String vendorDir = composerPackage.getConfig().getVendorDir();
-				if (vendorDir != null) {
+				if (vendorDir == null) {
 					vendorDirEntry.setValue("", true);
 				} else {
 					vendorDirEntry.setValue(composerPackage.getConfig().getVendorDir(), true);
@@ -96,8 +121,8 @@ public class ConfigSection extends ComposerSection {
 		});
 	}
 	
-	private void createBinDirEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry binDirEntry = new FormEntry(client, toolkit, "bin-dir", null, false);
+	private void createBinDirEntry(final Composite client, FormToolkit toolkit) {
+		final FormEntry binDirEntry = new FormEntry(client, toolkit, "bin-dir", "Browse...", false);
 		String binDir = composerPackage.getConfig().getBinDir();
 		if (binDir != null) {
 			binDirEntry.setValue(binDir, true);
@@ -109,6 +134,25 @@ public class ConfigSection extends ComposerSection {
 					composerPackage.getConfig().remove("bin-dir");
 				} else {
 					composerPackage.getConfig().set("bin-dir", entry.getValue());
+				}
+			}
+			
+			public void browseButtonSelected(FormEntry entry) {
+				ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(
+						client.getShell(), 
+						new WorkbenchLabelProvider(), new BaseWorkbenchContentProvider());
+				
+				dialog.addFilter(new TypedViewerFilter(new Class[] { IFolder.class }));
+				dialog.setTitle("Select Bin Dir");
+				dialog.setMessage("Select folder:");
+				dialog.setInput(getPage().getComposerEditor().getProject());
+				dialog.setHelpAvailable(false);
+				
+				if (dialog.open() == Dialog.OK) {
+					Object result = dialog.getFirstResult();
+					if (result instanceof IFolder) {
+						entry.setValue(((IFolder)result).getProjectRelativePath().toString());
+					}
 				}
 			}
 		});
