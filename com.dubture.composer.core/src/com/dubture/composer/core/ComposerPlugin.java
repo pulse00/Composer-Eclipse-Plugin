@@ -12,15 +12,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.getcomposer.core.packagist.SearchResultDownloader;
+import org.getcomposer.packages.PackageSearch;
+import org.getcomposer.packages.PackagistSearch;
 import org.osgi.framework.BundleContext;
 
 import com.dubture.composer.core.model.ModelAccess;
@@ -33,7 +33,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
 
     private static final String DEBUG = "com.dubture.composer.core/debug";
     
-    private SearchResultDownloader packageDownloader = null;
+    private PackageSearch packageDownloader = null;
 
 	/*
 	 * (non-Javadoc)
@@ -94,13 +94,17 @@ public class ComposerPlugin extends AbstractUIPlugin {
         plugin.getLog().log(status);
     }
     
-    public SearchResultDownloader getPackageDownloader() {
-        
+    public IEclipsePreferences getProjectPreferences(IProject project) {
+    	ProjectScope ps = new ProjectScope(project);
+    	return ps.getNode(ID);
+    }
+    
+    public PackageSearch getPackageDownloader() {
         if (packageDownloader != null) {
             return packageDownloader;
         }
         
-        return packageDownloader = new SearchResultDownloader();
+        return packageDownloader = new PackagistSearch();
     }
     
     public boolean isBuildpathContainerEnabled()

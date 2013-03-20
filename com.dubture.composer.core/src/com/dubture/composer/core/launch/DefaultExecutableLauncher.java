@@ -26,13 +26,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.core.ui.ExecutableNotFoundException;
-import com.dubture.composer.core.ui.LaunchUtil;
 
 /**
  * 
  * @author "Robert Gruendler <r.gruendler@gmail.com>"
- *
+ * @deprecated
  */
 public class DefaultExecutableLauncher implements IPHPLauncher {
 
@@ -80,6 +78,7 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
 			phpExe = LaunchUtil.getPHPExecutable();
 		} catch (ExecutableNotFoundException e) {
 		    showWarning();
+		    e.printStackTrace();
 	        Logger.logException(e);
 			return;
 		}
@@ -111,6 +110,8 @@ public class DefaultExecutableLauncher implements IPHPLauncher {
                 }
             }
         };
+        
+//        System.out.println("Command: " + cmd.toString());
         
         executor.setWorkingDirectory(new File(new Path(scriptPath).removeLastSegments(1).toOSString()));
         executor.execute(cmd, resultHandler);

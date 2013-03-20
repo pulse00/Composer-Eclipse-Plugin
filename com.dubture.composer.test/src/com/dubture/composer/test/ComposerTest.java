@@ -10,15 +10,23 @@
 package com.dubture.composer.test;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.ISourceModule;
 import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.tests.model.ModifyingResourceTests;
 import org.eclipse.php.internal.core.project.PHPNature;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.VersionedPackage;
+import org.getcomposer.core.collection.Dependencies;
+import org.getcomposer.packages.PharDownloader;
 
 import com.dubture.composer.core.ComposerNature;
+import com.dubture.composer.core.model.BuildPathParser;
 import com.dubture.composer.core.model.InstalledPackage;
 import com.dubture.composer.core.model.NamespaceMapping;
 import com.dubture.composer.core.visitor.AutoloadVisitor;
@@ -90,5 +98,61 @@ public class ComposerTest extends ModifyingResourceTests
 			e.printStackTrace();
 			fail();
 		}
+    }
+    
+    public void testBuildpathParser() {
+    	try {
+			IScriptProject p = createScriptProject("P", TEST_NATURE, null);
+			IProject project = p.getProject();
+			
+			// create Composer json
+			ComposerPackage composer = new ComposerPackage();
+			Dependencies require = composer.getRequire();
+			
+			// add symfony dep
+			VersionedPackage symfony = new VersionedPackage();
+			symfony.setName("symfony/symfony");
+			symfony.setVersion("2.2.0");
+			require.add(symfony);
+			
+			// add symfony routing dep
+			VersionedPackage routing = new VersionedPackage();
+			routing.setName("symfony/routing");
+			routing.setVersion("2.2.0");
+			require.add(routing);
+			
+			String contents = composer.toJson();
+			System.out.println(contents);
+			createFile("P/composer.json", contents);
+			
+			// download composer.phar
+			PharDownloader downloader = new PharDownloader();
+			InputStream stream = downloader.download();
+			
+			createFile("P/composer.phar", stream);
+			
+			// install dependencies
+//			final CountDownLatch counter = new CountDownLatch(1);
+//			InstallJob install = new InstallJob(project);
+//			install.addJobChangeListener(new JobChangeAdapter() {
+//				public void done(IJobChangeEvent event) {
+//					counter.countDown();
+//				}
+//			});
+//			
+//			counter.await(10, TimeUnit.SECONDS);
+			
+			// test buildpath findings
+			BuildPathParser parser = new BuildPathParser(project);
+			
+			for (String path : parser.getPaths()) {
+				System.out.println("Found path: " + path);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail();
+		}
+    	
     }
 }

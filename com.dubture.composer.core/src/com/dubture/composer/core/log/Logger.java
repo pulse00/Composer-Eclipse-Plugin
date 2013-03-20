@@ -15,8 +15,6 @@ import org.osgi.framework.Bundle;
 
 import com.dubture.composer.core.ComposerPlugin;
 
-
-@SuppressWarnings("restriction")
 public class Logger {
 
 	private static final String PLUGIN_ID = ComposerPlugin.ID;
@@ -86,6 +84,9 @@ public class Logger {
 	 */
 	protected static void _trace(String category, String message,
 			Throwable exception) {
+		// debug TODO: remove the next line
+		exception.printStackTrace();
+		
 		if (isTracing(category)) {
 			message = (message != null) ? message : "null"; //$NON-NLS-1$
 			Status statusObj = new Status(IStatus.OK, PLUGIN_ID, IStatus.OK,
@@ -166,7 +167,7 @@ public class Logger {
 
 	public static void debugMSG(String msg) {
 //		if (PEXCorePlugin.debug())
-//			System.out.println(msg);
+			System.out.println(msg);
 	}
 
 	public static void debugMSG(Class<? extends ASTNode> class1) {

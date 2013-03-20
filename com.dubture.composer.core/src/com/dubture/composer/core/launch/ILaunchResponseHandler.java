@@ -7,6 +7,9 @@
  ******************************************************************************/
 package com.dubture.composer.core.launch;
 
+/**
+ * @deprecated
+ */
 public interface ILaunchResponseHandler {
 	
 	void handle(String response);
