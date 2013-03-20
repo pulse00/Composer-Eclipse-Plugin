@@ -1,3 +1,0 @@
-[submodule "org.getcomposer.core"]
-	path = org.getcomposer.core
-	url = https://github.com/pulse00/Composer-Java-Bindings.git
