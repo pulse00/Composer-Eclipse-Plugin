@@ -14,11 +14,11 @@ import com.dubture.composer.core.log.Logger;
 import com.dubture.indexing.core.ExtensionManager;
 import com.dubture.indexing.core.build.BuildParticipant;
 
-public class AddNatureHandler extends AbstractHandler {
+public class AddComposerSupportHandler extends AbstractHandler {
 
 	private IProject project;
 	
-	public AddNatureHandler(IProject project) {
+	public AddComposerSupportHandler(IProject project) {
 		this.project = project;
 	}
 

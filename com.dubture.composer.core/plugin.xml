@@ -12,9 +12,6 @@
                class="com.dubture.composer.core.ComposerNature">
          </run>
       </runtime>
-      <builder
-            id="com.dubture.composer.core.composerBuilder">
-      </builder>
    </extension>
    <extension
          point="org.eclipse.dltk.core.buildParticipant">
@@ -35,29 +32,11 @@
       </participant>
    </extension>
    <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
-         <command
-               commandId="com.dubture.composer.core.command.projectnature"
-               label="Convert to Composer project"
-               style="push">
-         </command>
-      </menuContribution>
-   </extension>
-   <extension
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer
             class="com.dubture.composer.core.ComposerBuildpathContainerInitializer"
             id="com.dubture.composer.core.CONTAINER">
       </buildpathContainerInitializer>
-   </extension>
-   <extension
-         point="org.eclipse.php.ui.phpTreeContentProviders">
-      <provider labelProvider="com.dubture.composer.core.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.core.ui.explorer.PackageTreeContentProvider"
-            >
-      </provider>
    </extension>
    <extension
          point="org.eclipse.wst.common.project.facet.core.facets">
@@ -99,6 +78,18 @@
                class="com.dubture.composer.core.facet.FacetInstallWizardPage">
          </page>
       </wizard-pages>
+   </extension>
+   <extension
+         id="com.dubture.composer.core.builder.automatedBuildpathBuilder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            callOnEmptyDelta="false"
+            hasNature="true"
+            isConfigurable="true">
+         <run
+               class="com.dubture.composer.core.IncrementalProjectBuilder1">
+         </run>
+      </builder>
    </extension>
    
 

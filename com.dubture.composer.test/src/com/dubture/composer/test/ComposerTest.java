@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.dltk.ast.declarations.ModuleDeclaration;
@@ -26,7 +28,9 @@ import org.getcomposer.core.collection.Dependencies;
 import org.getcomposer.packages.PharDownloader;
 
 import com.dubture.composer.core.ComposerNature;
-import com.dubture.composer.core.model.BuildPathParser;
+import com.dubture.composer.core.buildpath.BuildpathParser;
+import com.dubture.composer.core.launch.ComposerLauncher;
+import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.model.InstalledPackage;
 import com.dubture.composer.core.model.NamespaceMapping;
 import com.dubture.composer.core.visitor.AutoloadVisitor;
@@ -122,7 +126,6 @@ public class ComposerTest extends ModifyingResourceTests
 			require.add(routing);
 			
 			String contents = composer.toJson();
-			System.out.println(contents);
 			createFile("P/composer.json", contents);
 			
 			// download composer.phar
@@ -132,22 +135,34 @@ public class ComposerTest extends ModifyingResourceTests
 			createFile("P/composer.phar", stream);
 			
 			// install dependencies
-//			final CountDownLatch counter = new CountDownLatch(1);
-//			InstallJob install = new InstallJob(project);
-//			install.addJobChangeListener(new JobChangeAdapter() {
-//				public void done(IJobChangeEvent event) {
-//					counter.countDown();
-//				}
-//			});
-//			
-//			counter.await(10, TimeUnit.SECONDS);
+			final CountDownLatch counter = new CountDownLatch(1);
+			ComposerLauncher launcher = ComposerLauncher.getLauncher(project);
+			launcher.addResponseListener(new ExecutionResponseAdapter() {
+				public void executionFailed(final String response, Exception e) {
+//					Logger.logException(e);
+					e.printStackTrace();
+					fail();
+					counter.countDown();
+				}
+				
+				public void executionFinished(String response, int exitValue) {
+					counter.countDown();
+				}
+			});
+			launcher.launch("install");
+			
+			counter.await(30, TimeUnit.SECONDS);
 			
 			// test buildpath findings
-			BuildPathParser parser = new BuildPathParser(project);
+			BuildpathParser parser = new BuildpathParser(project);
 			
-			for (String path : parser.getPaths()) {
-				System.out.println("Found path: " + path);
-			}
+			List<ComposerPackage> pkgs = parser.getInstalledPackages();
+			
+			System.out.println("Installed packages: " + pkgs.size());
+			
+//			for (String path : parser.getPaths()) {
+//				System.out.println("Found path: " + path);
+//			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,16 +1,8 @@
 package com.dubture.composer.core.launch.execution;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,15 +13,12 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 
-import com.dubture.composer.core.launch.execution.ExecutionResponseListener;
-
 public class ComposerExecutor {
 
 	private DefaultExecutor executor;
 	private ExecuteWatchdog watchdog;
 	
 	private PumpStreamHandler streamHandler;
-//	private PipedOutputStream out;
 	private ByteArrayOutputStream out;
 	private ByteArrayOutputStream err;
 	
@@ -44,7 +33,7 @@ public class ComposerExecutor {
 		
 		public void onProcessComplete(int exitValue) {
 			String response = outBuilder.toString();
-			System.out.println("ComposerExecutor, complete: " + exitValue + ", response: " + response);
+//			System.out.println("ComposerExecutor, complete: " + exitValue + ", response: " + response);
 			
 			super.onProcessComplete(exitValue);
 			
@@ -55,7 +44,7 @@ public class ComposerExecutor {
 
 		public void onProcessFailed(ExecuteException e) {
 			String response = errBuilder.toString();
-			System.out.println("ComposerExecutor, failed, response: " + response);
+//			System.out.println("ComposerExecutor, failed, response: " + response);
 //			e.printStackTrace();
 			
 			super.onProcessFailed(e);

@@ -1,4 +1,4 @@
-package com.dubture.composer.core.model;
+package com.dubture.composer.core.buildpath;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,17 +8,18 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
+import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
 import org.getcomposer.core.objects.Autoload;
 import org.getcomposer.core.objects.Namespace;
 
-public class BuildPathParser {
+public class BuildpathParser {
 	
 	private IProject project;
 	private ComposerPackage composer = null;
 	private IResource json = null;
 
-	public BuildPathParser(IProject project) {
+	public BuildpathParser(IProject project) {
 		this.project = project;
 	}
 	
@@ -45,7 +46,26 @@ public class BuildPathParser {
 		return composer;
 	}
 	
-	public List<String> getPaths() {
+	private String getVendorDir(ComposerPackage composer) {
+		// find 'vendor' folder
+		String vendor = composer.getConfig().getVendorDir();
+		
+		if (vendor == null || vendor.trim().isEmpty()) {
+			vendor = ComposerConstants.VENDOR_DIR_DEFAULT; // default
+		}
+		
+		return vendor;
+	}
+	
+	private IPath getVendorPath(String vendor) {
+		IResource json = getComposerJson();
+		IPath root = json.getLocation();
+
+		return root.addTrailingSeparator().append(vendor);
+	}
+	
+	
+	public List<ComposerPackage> getInstalledPackages() {
 		
 		ComposerPackage composer = getComposerPackage();
 		
@@ -53,26 +73,17 @@ public class BuildPathParser {
 			return null;
 		}
 		
-		
-		// find 'vendor' folder
-		String vendor = composer.getConfig().getVendorDir();
-		
-		if (vendor == null || vendor.isEmpty()) {
-			vendor = "vendor"; // default
-		}
+		String vendor = getVendorDir(composer);
 		
 		
 		// root folder for packages
-		IResource json = getComposerJson();
-		IPath root = json.getLocation();
-
-		IPath packages = root.addTrailingSeparator().append(vendor);
+		IPath packageRoot = getVendorPath(vendor);
 
 		
 		// find installed composer packages
-		List<ComposerPackage> composers = new ArrayList<ComposerPackage>();
-		if (packages.toFile().exists()) {
-			File[] vendors = packages.toFile().listFiles();
+		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
+		if (packageRoot.toFile().exists()) {
+			File[] vendors = packageRoot.toFile().listFiles();
 			
 			for (File v : vendors) {
 				if (v.isDirectory()) {
@@ -81,7 +92,7 @@ public class BuildPathParser {
 							File composerJson = new File(p, "composer.json");
 							if (composerJson.exists()) {
 								try {
-									composers.add(new ComposerPackage(composerJson));
+									packages.add(new ComposerPackage(composerJson));
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
@@ -91,11 +102,23 @@ public class BuildPathParser {
 				}
 			}
 		}
-
+		
+		return packages;
+	}
+	
+	public List<String> getPaths() {
+		List<ComposerPackage> packages = getInstalledPackages();
+		if (packages == null) {
+			return null;
+		}
+		
+		ComposerPackage composer = getComposerPackage();
+		String vendor = getVendorDir(composer);
+		IPath packageRoot = getVendorPath(vendor);
 		
 		// find paths for found composer packages
 		List<String> paths = new ArrayList<String>();
-		for (ComposerPackage p : composers) {
+		for (ComposerPackage p : packages) {
 			Autoload a = p.getAutoload();
 			
 			// psr first
@@ -107,19 +130,20 @@ public class BuildPathParser {
 			
 			// classmap
 			for (Object path : a.getClassMap()) {
-				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packages);
+				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packageRoot);
 				addPath(cleanedPath, paths);
 			}
 			
 			// files
 			for (Object path : a.getFiles()) {
-				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packages);
+				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packageRoot);
 				addPath(cleanedPath, paths);
 			}
 		}
 		
 		return paths;
 	}
+	
 	
 	private String getDirectory(String path, IPath root) {
 		String cleanedPath = null;
@@ -135,7 +159,7 @@ public class BuildPathParser {
 	}
 	
 	private void addPath(String path, List<String> paths) {
-		if (path != null && !paths.contains(path)) {
+		if (path != null && !path.trim().isEmpty() && !paths.contains(path)) {
 			paths.add(path);
 		}
 	}

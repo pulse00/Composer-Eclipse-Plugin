@@ -16,6 +16,15 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
+         <command
+               commandId="com.dubture.composer.core.command.projectnature"
+               label="Add Composer Support"
+               style="push">
+         </command>
+      </menuContribution>
       <!--<menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -54,8 +63,9 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
+            defaultHandler="com.dubture.composer.ui.handler.AddComposerSupportHandler"
             id="com.dubture.composer.ui.command.projectnature"
-            name="Convert to composer nature">
+            name="Add Composer Support">
       </command>
       <command
             defaultHandler="com.dubture.composer.ui.handler.InstallHandler"
@@ -87,40 +97,12 @@
             id="com.dubture.composer.ui.command.graph"
             name="Dependency Graph">
       </command>
-      <command
-            id="com.dubture.composer.ui.command.adddependency"
-            name="Add dependency">
-      </command>
-      <command
-            id="com.dubture.composer.ui.command.init"
-            name="Initialize composer">
-      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="com.dubture.composer.ui.handler.InstallHandler"
-            commandId="com.dubture.composer.ui.command.install">
-      </handler>
-      <handler
-            class="com.dubture.composer.ui.handler.UpdateHandler"
-            commandId="com.dubture.composer.ui.command.update">
-      </handler>
-      <handler
-            class="com.dubture.composer.ui.handler.RequireHandler"
-            commandId="com.dubture.composer.ui.command.adddependency">
-      </handler>
-      <handler
-            class="com.dubture.composer.ui.handler.DependencyGraphHandler"
-            commandId="com.dubture.composer.ui.command.graph">
-      </handler>
-      <handler
-            class="com.dubture.composer.ui.handler.AddNatureHandler"
+            class="com.dubture.composer.ui.handler.AddComposerSupportHandler"
             commandId="com.dubture.composer.ui.command.projectnature">
-      </handler>
-      <handler
-            class="com.dubture.composer.ui.handler.InitHandler"
-            commandId="com.dubture.composer.ui.command.init">
       </handler>
    </extension>
    <extension
@@ -144,11 +126,12 @@
             name="Composer">
       </page>
    </extension>
-   <!--<extension
+   <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
-      <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider">
+      <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider"
+            >
       </provider>
-   </extension>-->
+   </extension>
    <extension
          point="org.eclipse.ui.editors">
       <editor
