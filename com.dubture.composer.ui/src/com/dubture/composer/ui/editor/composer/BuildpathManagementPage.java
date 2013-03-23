@@ -102,7 +102,12 @@ public class BuildpathManagementPage extends ComposerFormPage {
 	public void doSave(IProgressMonitor monitor) {
 		super.doSave(monitor);
 		
-		includes.save();
-		excludes.save();
+		if (includes != null) {
+			includes.save();
+		}
+		
+		if (excludes != null) {
+			excludes.save();
+		}
 	}
 }

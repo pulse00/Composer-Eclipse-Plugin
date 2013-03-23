@@ -6,7 +6,8 @@
   <version>0.0.7-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.getcomposer.core</module>
+    <module>com.googlecode.json-simple</module>
+    <module>../Composer-Java-Bindings</module>
     <module>com.dubture.composer.core</module>
     <module>com.dubture.composer.test</module>
     <module>com.dubture.composer.feature</module>
@@ -28,7 +29,7 @@
               <repository>
               	<id>orbit</id>
               	<layout>p2</layout>
-              	<url>http://download.eclipse.org/tools/orbit/downloads/drops/I20130207191801/repository/</url>
+              	<url>http://build.eclipse.org/orbit/committers/orbit-I/20130321031113/I20130321031113/repository/</url>
               </repository>
 
                <repository>

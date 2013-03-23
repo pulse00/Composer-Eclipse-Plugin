@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.serialization.ComposerPackageSerializer;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -53,7 +51,7 @@ public class ModelAccess implements NamespaceResolverInterface
     {
         try {
             gson = new GsonBuilder()
-                .registerTypeAdapter(ComposerPackage.class, new ComposerPackageSerializer())
+//                .registerTypeAdapter(ComposerPackage.class, new ComposerPackageSerializer())
                 .registerTypeAdapter(IPath.class, new PathDeserializer())
                 .create();
             

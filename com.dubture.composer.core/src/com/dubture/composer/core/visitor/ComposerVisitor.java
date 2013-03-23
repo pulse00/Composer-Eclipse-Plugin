@@ -17,6 +17,7 @@ import com.dubture.indexing.core.index.AbstractIndexingVisitor;
 import com.dubture.indexing.core.index.JsonIndexingVisitor;
 import com.google.gson.FieldNamingStrategy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * 
@@ -64,7 +65,8 @@ public class ComposerVisitor extends AbstractIndexingVisitor implements
     @Override
     public Gson getBuilder()
     {
-        return ComposerPackage.getBuilder();
+    	GsonBuilder builder = new GsonBuilder();
+    	return builder.create();
     }
 
     @Override

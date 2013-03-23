@@ -21,34 +21,38 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.io,
  org.apache.commons.exec,
  org.eclipse.ui.ide,
- org.getcomposer.core
+ org.getcomposer.core,
+ com.googlecode.json-simple
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core;
   uses:="org.eclipse.core.runtime,
-   org.getcomposer.core.packagist,
    org.eclipse.jface.resource,
    org.eclipse.core.resources,
    org.eclipse.ui.plugin,
    org.osgi.framework,
+   org.eclipse.core.runtime.preferences,
    org.eclipse.dltk.core",
  com.dubture.composer.core.build;uses:="org.eclipse.dltk.core.builder,org.eclipse.dltk.core",
+ com.dubture.composer.core.builder,
+ com.dubture.composer.core.buildpath,
  com.dubture.composer.core.facet;
   uses:="org.eclipse.core.runtime,
    org.eclipse.wst.common.project.facet.core,
    org.eclipse.core.resources,
    org.eclipse.swt.widgets,
    org.eclipse.wst.common.project.facet.ui",
- com.dubture.composer.core.launch;uses:="org.eclipse.core.runtime",
- com.dubture.composer.core.launch.environment,
- com.dubture.composer.core.launch.execution,
+ com.dubture.composer.core.launch;uses:="org.eclipse.core.resources,com.dubture.composer.core.launch.execution,com.dubture.composer.core.launch.environment",
+ com.dubture.composer.core.launch.environment;uses:="org.eclipse.core.resources,org.apache.commons.exec",
+ com.dubture.composer.core.launch.execution;uses:="org.apache.commons.exec",
  com.dubture.composer.core.log,
  com.dubture.composer.core.model;
   uses:="org.eclipse.core.runtime,
    org.getcomposer.core,
    org.eclipse.core.resources,
-   org.eclipse.dltk.core,
-   com.google.gson",
+   com.google.gson,
+   org.eclipse.dltk.core",
+ com.dubture.composer.core.util,
  com.dubture.composer.core.visitor;
   uses:="org.eclipse.php.internal.core.compiler.ast.visitor,
    org.eclipse.php.internal.core.compiler.ast.nodes,
@@ -56,5 +60,6 @@ Export-Package: com.dubture.composer.core;
    org.eclipse.core.resources,
    org.eclipse.dltk.core,
    com.google.gson"
+Bundle-ClassPath: .
 
 
