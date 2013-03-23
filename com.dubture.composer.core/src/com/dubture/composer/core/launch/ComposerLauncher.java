@@ -82,10 +82,10 @@ public class ComposerLauncher {
 		return env;
 	}
 	
-	public static ComposerLauncher getLauncher(IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException, ExecutableNotFoundException {
+	public static ComposerLauncher getLauncher(IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException {
 		Environment env = getEnvironment();
 		if (env == null) {
-			throw new ExecutableNotFoundException("Can't find any executable");
+			throw new ComposerPharNotFoundException("Can't find any executable");
 		}
 		return new ComposerLauncher(env, project);
 	}

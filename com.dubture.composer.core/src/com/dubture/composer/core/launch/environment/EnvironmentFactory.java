@@ -1,5 +1,6 @@
 package com.dubture.composer.core.launch.environment;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.dubture.composer.core.ComposerConstants;

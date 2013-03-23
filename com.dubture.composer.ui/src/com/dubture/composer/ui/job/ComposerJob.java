@@ -8,11 +8,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.launch.ComposerLauncher;
@@ -39,20 +39,10 @@ abstract public class ComposerJob extends Job {
 	}
 
 	protected IStatus shallInstallComposerPhar() {
-		MessageBox dialog = new MessageBox(Display.getDefault()
-				.getActiveShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
-		dialog.setText("composer.phar not found");
-		dialog.setMessage("composer.phar can not be found. Download it now?");
 		
-		if (dialog.open() == SWT.OK) {
-			DownloadJob job = new DownloadJob(project);
-			job.setUser(true);
-			job.schedule();
-			schedule();
-			return Status.OK_STATUS;
-		} else {
-			return ERROR_STATUS;
-		}
+		InstallRunner runner = new InstallRunner();
+		Display.getDefault().syncExec(runner);
+		return runner.getStatus();
 	}
 
 	@Override
@@ -113,4 +103,38 @@ abstract public class ComposerJob extends Job {
 	}
 	
 	abstract protected void launch(ComposerLauncher launcher) throws ExecuteException, IOException, InterruptedException;
+	
+	private class InstallRunner implements Runnable {
+
+		private IStatus status = ERROR_STATUS;
+		
+		@Override
+		public void run() {
+			
+			Shell shell = Display.getCurrent().getActiveShell();
+			
+			if (shell == null) {
+				Logger.debug("Unable to get shell for message dialog.");
+				return;
+			}
+			
+			MessageBox dialog = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+			dialog.setText("composer.phar not found");
+			dialog.setMessage("composer.phar can not be found. Download it now?");
+			
+			if (dialog.open() == SWT.OK) {
+				DownloadJob job = new DownloadJob(project);
+				job.setUser(true);
+				job.schedule();
+				schedule();
+				status = Status.OK_STATUS;
+			} else {
+				status = ERROR_STATUS;
+			}
+		}
+		
+		public IStatus getStatus() {
+			return status;
+		}
+	}
 }

@@ -9,6 +9,7 @@ import org.eclipse.php.internal.debug.core.zend.communication.DebuggerCommunicat
 
 import com.dubture.composer.core.launch.execution.ComposerExecutor;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
+import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
 public class EnvironmentFinder {
@@ -28,7 +29,7 @@ public class EnvironmentFinder {
 	private static String[] paths = new String[]{"/usr/local/bin/", "/usr/bin/"};
 	
 	private static String result;
-
+	
 	/**
 	 * Searches for a executable composer and returns the path or <code>null</code> if not
 	 * found.
@@ -116,8 +117,9 @@ public class EnvironmentFinder {
 	private static String findInPath(String file, boolean executable) {
 		for (String location : paths) {
 			File f = new File(location + file);
-			
-			if (f.exists() && executable ? f.canExecute() : true) {
+			Logger.debug("Searching for file " + f.getAbsolutePath());
+			if (f.exists() && (executable ? f.canExecute() : true)) {
+				Logger.debug("File exists and is executable: " + f.getAbsolutePath());
 				return f.getAbsolutePath();
 			}
 		}

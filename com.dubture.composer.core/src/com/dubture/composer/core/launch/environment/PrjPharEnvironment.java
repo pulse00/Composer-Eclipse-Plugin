@@ -15,7 +15,11 @@ public abstract class PrjPharEnvironment implements Environment {
 			throw new ComposerPharNotFoundException("No composer.phar found in project " + project.getName());
 		}
 		
-		this.phar = phar.getFullPath().toOSString();
+		if (phar.getFullPath().segmentCount() != 2) {
+			throw new ComposerPharNotFoundException("The composer.phar file in project " + project.getName() + " is in the wrong location."); 
+		}
+		
+		this.phar = phar.getFullPath().removeFirstSegments(1).toOSString();
 	}
 
 	
