@@ -3,6 +3,7 @@ package com.dubture.composer.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
@@ -10,7 +11,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 
-import com.dubture.composer.core.builder.AutomatedBuildpathBuilder;
+import com.dubture.composer.core.builder.ComposerBuildPathManagementBuilder;
 
 public class ComposerNature implements IProjectNature {
 	public static final String NATURE_ID = "com.dubture.composer.core.composerNature";
@@ -19,11 +20,15 @@ public class ComposerNature implements IProjectNature {
 
 	@Override
 	public void configure() throws CoreException {
+		
+		if (hasBuilder()) {
+			return;
+		}
 
 		// install builder
 		IProjectDescription description = project.getDescription();
 		final ICommand buildCommand = description.newCommand();
-		buildCommand.setBuilderName(AutomatedBuildpathBuilder.ID);
+		buildCommand.setBuilderName(ComposerBuildPathManagementBuilder.ID);
 
 		final List<ICommand> commands = new ArrayList<ICommand>();
 		commands.add(buildCommand);
@@ -43,7 +48,7 @@ public class ComposerNature implements IProjectNature {
 		commands.addAll(Arrays.asList(description.getBuildSpec()));
 
 		for (final ICommand buildSpec : description.getBuildSpec()) {
-			if (AutomatedBuildpathBuilder.ID.equals(buildSpec.getBuilderName())) {
+			if (ComposerBuildPathManagementBuilder.ID.equals(buildSpec.getBuilderName())) {
 				// remove builder
 				commands.remove(buildSpec);
 			}
@@ -52,6 +57,32 @@ public class ComposerNature implements IProjectNature {
 		description
 				.setBuildSpec(commands.toArray(new ICommand[commands.size()]));
 		project.setDescription(description, null);
+	}
+	
+	private boolean hasBuilder() {
+		try {
+			for (ICommand cmd : project.getDescription().getBuildSpec()) {
+				// activated builder
+				if (ComposerBuildPathManagementBuilder.ID.equals(cmd.getBuilderName())) {
+					return true;
+				}
+				
+				// deactivated builder
+				if ("org.eclipse.ui.externaltools.ExternalToolBuilder".equals(cmd.getBuilderName())) {
+					Map<String, String> args = cmd.getArguments();
+					if (args.containsKey("LaunchConfigHandle")) {
+						String launch = args.get("LaunchConfigHandle");
+						if (launch.contains(ComposerBuildPathManagementBuilder.ID)) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
+		return false;
 	}
 
 	@Override

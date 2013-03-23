@@ -7,7 +7,7 @@ import org.eclipse.swt.widgets.Layout;
 public class WidgetHelper {
 
 	/**
-	 * Trims a composite and its vertical and horizontal padding 
+	 * Trims a composite and its vertical and horizontal spacing 
 	 * 
 	 * @param composite
 	 * @param top
@@ -88,18 +88,52 @@ public class WidgetHelper {
 	}
 	
 	/**
+	 * Trims a composite
+	 * 
+	 * @param composite
+	 * @param topbottom
+	 * @param rightleft
+	 */
+	public static void trimComposite(Composite composite, int all) {
+		Layout raw = composite.getLayout();
+		if (raw instanceof GridLayout) {
+			GridLayout layout = (GridLayout)raw;
+			layout.marginTop = all;
+			layout.marginRight = all;
+			layout.marginBottom = all;
+			layout.marginLeft = all;
+		}
+	}
+	
+	/**
+	 * Sets spacing for a composite
+	 * 
+	 * @param composite
+	 * @param vertical
+	 * @param horizontal
+	 */
+	public static void setSpacing(Composite composite, int vertical, int horizontal) {
+		Layout raw = composite.getLayout();
+		if (raw instanceof GridLayout) {
+			GridLayout layout = (GridLayout)raw;
+			layout.verticalSpacing = vertical;
+			layout.horizontalSpacing = horizontal;
+		}
+	}
+	
+	/**
 	 * Sets padding for a composite
 	 * 
 	 * @param composite
 	 * @param vertical
 	 * @param horizontal
 	 */
-	public static void padComposite(Composite composite, int vertical, int horizontal) {
+	public static void setMargin(Composite composite, int vertical, int horizontal) {
 		Layout raw = composite.getLayout();
 		if (raw instanceof GridLayout) {
 			GridLayout layout = (GridLayout)raw;
-			layout.verticalSpacing = vertical;
-			layout.horizontalSpacing = horizontal;
+			layout.marginHeight = vertical;
+			layout.marginWidth = horizontal;
 		}
 	}
 }

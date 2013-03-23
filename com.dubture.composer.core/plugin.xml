@@ -4,7 +4,7 @@
 
 
    <extension
-         id="composerNature"
+         id="com.dubture.composer.core.composerNature"
          name="Composer Project Nature"
          point="org.eclipse.core.resources.natures">
       <runtime>
@@ -80,14 +80,15 @@
       </wizard-pages>
    </extension>
    <extension
-         id="com.dubture.composer.core.builder.automatedBuildpathBuilder"
+         id="com.dubture.composer.core.builder.buildPathManagementBuilder"
+         name="Composer Build Path Management"
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="false"
             hasNature="true"
             isConfigurable="true">
          <run
-               class="com.dubture.composer.core.IncrementalProjectBuilder1">
+               class="com.dubture.composer.core.builder.ComposerBuildPathManagementBuilder">
          </run>
       </builder>
    </extension>

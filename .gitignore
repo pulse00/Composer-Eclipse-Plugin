@@ -1,5 +1,6 @@
 .DS_Store
 
+com.dubture.composer.core/.settings/org.eclipse.mylyn.tasks.ui.prefs
 com.dubture.composer.core/bin/*
 com.dubture.composer.core/target/*
 com.dubture.composer.ui/bin/*
