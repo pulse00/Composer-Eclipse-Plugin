@@ -24,6 +24,9 @@ import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 abstract public class ComposerJob extends Job {
 	
 	protected IProject project;
+	private IProgressMonitor monitor;
+	private boolean cancelling = false;
+	private ComposerLauncher launcher;
 
 	protected static final IStatus ERROR_STATUS = new Status(Status.ERROR,
 			ComposerPlugin.ID,
@@ -44,11 +47,24 @@ abstract public class ComposerJob extends Job {
 		Display.getDefault().syncExec(runner);
 		return runner.getStatus();
 	}
-
+	
+	@Override
+	protected void canceling() {
+		
+		if (cancelling || launcher == null || !monitor.isCanceled()) {
+			return;
+		}
+		
+		launcher.abort();
+		monitor.done();
+		cancelling = true;
+	}
+	
 	@Override
 	protected IStatus run(final IProgressMonitor monitor) {
 		try {
-			ComposerLauncher launcher = null;
+			
+			this.monitor = monitor;
 
 			try {
 				launcher = ComposerLauncher.getLauncher(project);
@@ -66,11 +82,16 @@ abstract public class ComposerJob extends Job {
 							
 							monitor.done();
 							
+							String message = "Launching composer failed. See the .metadata/.log file in your workspace for details.";
+							if (response != null && response.length() > 0) {
+								message = response.trim();
+							}
+							
 							MessageDialog diag = new MessageDialog(
 									Display.getDefault().getActiveShell(), 
 									getName() + " FAILED!", 
 									null, 
-									response.trim(), 
+									message, 
 									MessageDialog.ERROR,
 									new String[] {"Ok"},
 									0);
