@@ -14,9 +14,9 @@ import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.log.Logger;
 
-public class AutomatedBuildpathBuilder extends IncrementalProjectBuilder {
+public class ComposerBuildPathManagementBuilder extends IncrementalProjectBuilder {
 
-	public static final String ID = "com.dubture.composer.core.builder.automatedBuildpathBuilder";
+	public static final String ID = "com.dubture.composer.core.builder.buildPathManagementBuilder";
 	
 	@Override
 	protected IProject[] build(int kind, Map<String, String> args,

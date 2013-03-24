@@ -68,7 +68,6 @@
             name="Add Composer Support">
       </command>
       <command
-            defaultHandler="com.dubture.composer.ui.handler.InstallHandler"
             description="Run `composer.phar install`"
             id="com.dubture.composer.ui.command.install"
             name="Install dependencies">
@@ -142,6 +141,28 @@
             id="com.dubture.composer.ui.editor.composer.ComposerEditor"
             name="Composer">
       </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            class="com.dubture.composer.ui.preferences.ComposerPropertyPage"
+            id="com.dubture.composer.ui.preferences.project"
+            name="Composer">
+            <enabledWhen>
+            	<adapt type="org.eclipse.core.resources.IProject">
+                  <test
+                        property="org.eclipse.core.resources.projectNature"
+                        value="com.dubture.composer.core.composerNature">
+                  </test>
+               </adapt>
+            </enabledWhen>
+      </page>
+      <page
+            category="com.dubture.composer.ui.preferences.project"
+            class="com.dubture.composer.ui.preferences.BuildPathManagementPage"
+            id="com.dubture.composer.ui.preferences.project.buildpathManagement"
+            name="Build Path Management">
+      </page>
    </extension>
    
 
