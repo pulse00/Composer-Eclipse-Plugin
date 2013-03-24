@@ -45,7 +45,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected OverviewPage overviewPage;
 	protected DependenciesPage dependenciesPage;
 	protected ConfigurationPage configurationPage;
-	protected BuildpathManagementPage buildpathManagementPage;
 	
 	// TODO JsonTextEditor some day...
 	protected ComposerTextEditor textEditor = new ComposerTextEditor(); 
@@ -178,8 +177,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
-		buildpathManagementPage = new BuildpathManagementPage(this, BuildpathManagementPage.ID, "Buildpath Management");
-		
+
 		super.createPages();
 	}
 
@@ -189,7 +187,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			addPage(overviewPage);
 			addPage(dependenciesPage);
 			addPage(configurationPage);
-			addPage(buildpathManagementPage);
 
 //			addDependencyGraph();
 //			setActivePage(DependenciesPage.ID);
@@ -212,10 +209,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			document.set(composerPackage.toJson());
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
 			documentProvider.changed(getEditorInput());
-			
-			if (buildpathManagementPage != null) {
-				buildpathManagementPage.doSave(monitor);
-			}
 
 			setDirty(false);
 		} catch (Exception e) {
