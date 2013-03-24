@@ -27,6 +27,7 @@ import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
+import com.dubture.composer.ui.editor.composer.autoload.AutoloadPage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected boolean dirty = false;

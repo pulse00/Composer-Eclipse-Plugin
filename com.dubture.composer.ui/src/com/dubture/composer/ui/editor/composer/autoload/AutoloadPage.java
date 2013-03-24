@@ -1,4 +1,4 @@
-package com.dubture.composer.ui.editor.composer;
+package com.dubture.composer.ui.editor.composer.autoload;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -8,6 +8,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
+import com.dubture.composer.ui.editor.composer.ComposerFormEditor;
 
 public class AutoloadPage extends ComposerFormPage {
 

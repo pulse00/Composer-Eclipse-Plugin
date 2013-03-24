@@ -82,6 +82,9 @@ public class Psr0Dialog extends Dialog {
 	}
 
 	public String getNamespace() {
+		if (namespace == null) {
+			return "";
+		}
 		return namespace;
 	}
 
