@@ -47,7 +47,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected ConfigurationPage configurationPage;
 	
 	// TODO JsonTextEditor some day...
-	protected ComposerTextEditor textEditor = new ComposerTextEditor(); 
+	protected ComposerTextEditor textEditor = new ComposerTextEditor();
+	private AutoloadPage autoloadPage; 
 
 	public ComposerFormEditor() {
 		super();
@@ -177,6 +178,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
+		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
 
 		super.createPages();
 	}
@@ -186,6 +188,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		try {
 			addPage(overviewPage);
 			addPage(dependenciesPage);
+			addPage(autoloadPage);
 			addPage(configurationPage);
 
 //			addDependencyGraph();
