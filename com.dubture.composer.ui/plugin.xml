@@ -100,7 +100,6 @@
    <extension
          point="org.eclipse.ui.handlers">
       <handler
-            class="com.dubture.composer.ui.handler.AddComposerSupportHandler"
             commandId="com.dubture.composer.ui.command.projectnature">
       </handler>
    </extension>
