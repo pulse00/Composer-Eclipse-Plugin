@@ -23,14 +23,6 @@
       </buildParticipant>
    </extension>
 
-   <extension point="com.dubture.indexing.core.buildParticipant">
-      <participant
-            file_extensions="json"
-            name="ComposerBuildParticipant"
-            nature_id="com.dubture.composer.core.composerNature"
-            visitor="com.dubture.composer.core.visitor.ComposerVisitor">
-      </participant>
-   </extension>
    <extension
          point="org.eclipse.dltk.core.buildpathContainerInitializer">
       <buildpathContainerInitializer

@@ -22,7 +22,6 @@ import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.model.ComposerBuildpathContainer;
 import com.dubture.composer.core.util.BuildpathUtil;
-import com.dubture.indexing.core.IndexingCorePlugin;
 
 /**
  * Facet installation action delegate to add the composer nature to a PHP
@@ -62,7 +61,6 @@ public class InstallActionDelegate implements IDelegate
             // add the composer buildpathentry to the project
             BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
 
-            IndexingCorePlugin.getDefault().setupBuilder(project);
             BuildpathUtil.setupVendorBuildpath(scriptProject, progress);
             
         }
