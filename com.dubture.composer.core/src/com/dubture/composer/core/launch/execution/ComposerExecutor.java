@@ -33,7 +33,6 @@ public class ComposerExecutor {
 		
 		public void onProcessComplete(int exitValue) {
 			String response = outBuilder.toString();
-//			System.out.println("ComposerExecutor, complete: " + exitValue + ", response: " + response);
 			
 			super.onProcessComplete(exitValue);
 			
@@ -44,8 +43,6 @@ public class ComposerExecutor {
 
 		public void onProcessFailed(ExecuteException e) {
 			String response = errBuilder.toString();
-//			System.out.println("ComposerExecutor, failed, response: " + response);
-//			e.printStackTrace();
 			
 			super.onProcessFailed(e);
 			

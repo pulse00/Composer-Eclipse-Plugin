@@ -109,9 +109,6 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 
 			composerPackage.getAutoload().getPsr0().add(ns);
 		}
-
-		System.err.println("aha");
-		System.err.println(composerPackage.toString());
 	}
 
 	private JsonArray getPaths(String paths) {
@@ -211,7 +208,6 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 				return;
 			}
 
-			System.err.println(element.key);
 			dialog.setNamespace(element.key);
 			dialog.setPaths(element.getPathsAsString());
 		}

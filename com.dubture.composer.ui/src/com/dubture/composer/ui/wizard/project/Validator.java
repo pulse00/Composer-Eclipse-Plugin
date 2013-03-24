@@ -31,6 +31,16 @@ public final class Validator implements Observer {
 	public void update(Observable o, Object arg) {
 		final IWorkspace workspace = DLTKUIPlugin.getWorkspace();
 		final String name = this.composerProjectWizardFirstPage.nameGroup.getName();
+		
+		final String vendor = this.composerProjectWizardFirstPage.settingsGroup.getVendor();
+		
+		if (vendor == null || vendor.length() == 0) {
+			this.composerProjectWizardFirstPage.setErrorMessage(null);
+			this.composerProjectWizardFirstPage.setMessage("Enter a vendor name.");
+			this.composerProjectWizardFirstPage.setPageComplete(false);
+			return;
+		}
+		
 		// check whether the project name field is empty
 		if (name.length() == 0) {
 			this.composerProjectWizardFirstPage.setErrorMessage(null);

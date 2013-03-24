@@ -27,7 +27,7 @@ public class ComposerBuildPathManagementBuilder extends IncrementalProjectBuilde
 	
 		
 		// return when no composer.json present
-		IResource composer = project.findMember("composer.json"); 
+		IResource composer = project.findMember(ComposerConstants.COMPOSER_JSON); 
 		if (composer == null) {
 			return null;
 		}

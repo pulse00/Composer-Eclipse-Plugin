@@ -8,4 +8,5 @@ public class ComposerConstants
     public static final String PREF_ENVIRONMENT = "prefs.composer.environment";
     
     public static final String COMPOSER_FACET = "php.composer.component";
+    public static final String COMPOSER = "composer.json";
 }

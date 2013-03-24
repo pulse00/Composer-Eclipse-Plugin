@@ -25,7 +25,7 @@ public class BuildpathParser {
 	
 	private IResource getComposerJson() {
 		if (json == null) {
-			json = project.findMember("composer.json");
+			json = project.findMember(ComposerConstants.COMPOSER_JSON);
 		}
 		return json;
 	}
@@ -89,7 +89,7 @@ public class BuildpathParser {
 				if (v.isDirectory()) {
 					for (File p : v.listFiles()) {
 						if (p.isDirectory()) {
-							File composerJson = new File(p, "composer.json");
+							File composerJson = new File(p, ComposerConstants.COMPOSER_JSON);
 							if (composerJson.exists()) {
 								try {
 									packages.add(new ComposerPackage(composerJson));

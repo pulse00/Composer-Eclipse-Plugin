@@ -260,7 +260,6 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		for (int i = 0; it.hasNext(); i++) {
 			Repository repo = (Repository)it.next();
 			repos.add(repo);
-			System.out.println("Repo name: " + repo.getName() + ", len: " + names.length);
 			names[i] = repo.getName();
 		}
 		

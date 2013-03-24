@@ -28,6 +28,7 @@ import org.getcomposer.packages.AsyncPackagistSearch;
 import org.getcomposer.packages.PackageSearchListenerInterface;
 import org.getcomposer.packages.SearchResult;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.controller.IPackageCheckStateChangedListener;
 import com.dubture.composer.ui.controller.PackageController;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
@@ -189,7 +190,6 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		}
 		
 		clearing = true;
-		System.out.println("Clear search text begin");
 		searchResults.setInput(null);
 		searchField.setText("");
 		downloader.abort();
@@ -197,25 +197,18 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		shownQuery = null;
 		queryThread.interrupt();
 		resetThread.interrupt();
-		System.out.println("Clear search text end");
 		clearing = false;
 	}
 	
-//	protected void setPackages(String[] packages) {
-//		searchResults.setInput(packages);
-//		System.err.println("Packages: " + packages);
-//	}
-//	
-	
 	@Override
 	public void aborted(String url) {
-		System.out.println("Download aborted on: " + url);
+		
 	}
 
 	@Override
 	public void packagesFound(final List<MinimalPackage> packages, String query, SearchResult result) {
 		foundQuery = query;
-		System.out.println("Found Packages for: " + query + " => " + packages.size());
+		Logger.debug("Found Packages for: " + query + " => " + packages.size());
 		
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
@@ -244,7 +237,6 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	}
 	
 	protected void searchTextChanged() {
-		System.out.println("Search Text changed");
 		currentQuery = searchField.getText();
 		
 		if (currentQuery.trim().isEmpty()) {
@@ -279,7 +271,6 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		if (lastQuery == currentQuery) {
 			return;
 		}
-		System.out.println("Search Packages: " + currentQuery);
 		downloader.search(currentQuery);
 		
 		if (resetThread != null) {

@@ -73,7 +73,6 @@ public class ComposerPlugin extends AbstractUIPlugin {
     {
         if (plugin == null) {
             // tests
-            System.err.println(message);
             return;
         }
         

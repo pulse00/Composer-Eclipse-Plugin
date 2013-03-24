@@ -8,6 +8,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.getcomposer.core.ComposerConstants;
 
 import com.dubture.composer.core.launch.environment.Environment;
 import com.dubture.composer.core.launch.environment.EnvironmentFactory;
@@ -30,7 +31,7 @@ public class ComposerLauncher {
 		this.environment = environment;
 		this.project = project;
 		
-		composerJson = project.findMember("composer.json");
+		composerJson = project.findMember(ComposerConstants.COMPOSER_JSON);
 		
 		if (composerJson == null) {
 			throw new ComposerJsonNotFoundException(null);

@@ -1,9 +1,11 @@
 package com.dubture.composer.ui.wizard.project;
 
+import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -26,6 +28,8 @@ import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
+import org.getcomposer.core.ComposerConstants;
+import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.facet.ComposerFacetConstants;
 import com.dubture.composer.core.log.Logger;
@@ -39,7 +43,6 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 	private ComposerProjectWizardFirstPage firstPage;
 	private ComposerProjectWizardSecondPage secondPage;
 	private ComposerProjectWizardSecondPage lastPage;
-	
 	private IConfigurationElement config;
 
 	public ComposerProjectCreationWizard() {
@@ -99,7 +102,14 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 			if (version == null) {
 				version = ProjectOptions.getDefaultPhpVersion();
 			}
+			
 			installFacets(project, version);
+			
+			try {
+				installComposer(project, version, new NullProgressMonitor());
+			} catch (CoreException e1) {
+				Logger.logException(e1);
+			}
 			
 			WizardModel model = firstPage.getWizardData();
 
@@ -159,5 +169,21 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 		} catch (CoreException ex) {
 			Logger.logException(ex.getMessage(), ex);
 		}
+	}
+	
+	protected void installComposer(IProject project, PHPVersion version, IProgressMonitor monitor) throws CoreException {
+
+		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
+		
+		if (file.exists()) {
+			Logger.debug("composer.json already exists in the location");
+			return;
+		}
+		
+		ComposerPackage composerPackage = firstPage.getPackage();
+		ByteArrayInputStream bis = new ByteArrayInputStream(composerPackage.toJson().getBytes());
+		file.create(bis, true, monitor);
+		project.refreshLocal(0, monitor);
+		
 	}
 }

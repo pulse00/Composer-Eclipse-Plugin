@@ -22,6 +22,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.getcomposer.core.ComposerPackage;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.actions.InstallAction;
 import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
@@ -91,7 +92,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		composerPackage = new ComposerPackage(json);
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
-				System.out.println("Property change: " + e.getPropertyName() + ", oldValue: " + e.getOldValue() + ", newValue: " + e.getNewValue());
+				Logger.debug("Property change: " + e.getPropertyName() + ", oldValue: " + e.getOldValue() + ", newValue: " + e.getNewValue());
 				setDirty(true);
 			}
 		});

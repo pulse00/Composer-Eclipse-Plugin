@@ -2,6 +2,8 @@ package com.dubture.composer.ui.wizard.project;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -22,22 +24,27 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
-public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPProjectCreateWizardPage {
+public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPProjectCreateWizardPage, Observer {
 
-	NameGroup nameGroup;
-	LocationGroup PHPLocationGroup;
+	public NameGroup nameGroup;
+	public BasicSettingsGroup settingsGroup;
+	public LocationGroup PHPLocationGroup;
+	public VersionGroup versionGroup;
+	
 	protected String fInitialName;
+	protected WizardFragment fragment;
+	protected ComposerPackage composerPackage;
+	
 	private DetectGroup detectGroup;
 	private Validator pdtValidator;
-	protected WizardFragment fragment;
-	public VersionGroup versionGroup;
 
 	protected ComposerProjectWizardFirstPage() {
-		super("Basic setup");
+		super("Basic Composer Configuration");
 		setPageComplete(false);
-		setTitle("Basic setup");
+		setTitle("Basic Composer Configuration");
 		setDescription("Setup your new composer project");
 	}
 
@@ -52,6 +59,11 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		fInitialName = "";
 		// create UI elements
 		nameGroup = new NameGroup(composite, fInitialName, getShell());
+		settingsGroup = new BasicSettingsGroup(composite, getShell());
+		
+		nameGroup.addObserver(this);
+		settingsGroup.addObserver(this);
+		
 		PHPLocationGroup = new LocationGroup(composite, nameGroup, getShell());
 
 		CompositeData data = new CompositeData();
@@ -63,7 +75,6 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 				ComposerProjectWizardFirstPage.class.getName());
 
 		versionGroup = new VersionGroup(this, composite);
-
 		detectGroup = new DetectGroup(composite, PHPLocationGroup, nameGroup);
 
 		nameGroup.addObserver(PHPLocationGroup);
@@ -75,15 +86,17 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		pdtValidator = new Validator(this);
 
 		nameGroup.addObserver(pdtValidator);
+		settingsGroup.addObserver(pdtValidator);
 		PHPLocationGroup.addObserver(pdtValidator);
 
 		setControl(composite);
+		composerPackage = new ComposerPackage();
+		
 	}
 
 	@Override
 	public void initPage() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	public GridLayout initGridLayout(GridLayout layout, boolean margins) {
@@ -163,4 +176,17 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		return null;
 	}
 
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (o instanceof BasicSettingsGroup) {
+			if (settingsGroup.getVendor() != null && nameGroup.getName() != null) {
+				composerPackage.setName(String.format("%s/%s", settingsGroup.getVendor(), nameGroup.getName()));
+			}
+		}
+	}
+	
+	public ComposerPackage getPackage() {
+		return composerPackage;
+	}
 }

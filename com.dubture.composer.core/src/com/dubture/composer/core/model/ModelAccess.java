@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
+import org.getcomposer.core.ComposerConstants;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
@@ -159,7 +160,7 @@ public class ModelAccess implements NamespaceResolverInterface
                 if (installed.targetDir != null && installed.targetDir.length() > 0) {
                     path = path.append(installed.targetDir);
                 }
-                return project.getProject().findMember(path.append("composer.json"));
+                return project.getProject().findMember(path.append(ComposerConstants.COMPOSER_JSON));
             }
         }
         return null;
