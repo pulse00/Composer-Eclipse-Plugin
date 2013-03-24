@@ -30,6 +30,7 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.VersionedPackage;
 
 import com.dubture.composer.core.facet.ComposerFacetConstants;
 import com.dubture.composer.core.log.Logger;
@@ -181,6 +182,11 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 		}
 		
 		ComposerPackage composerPackage = firstPage.getPackage();
+		VersionedPackage phpVersion = new VersionedPackage();
+		phpVersion.setName("php");
+		phpVersion.setVersion(">=" + version.getAlias());
+		composerPackage.getRequire().add(phpVersion);
+		
 		ByteArrayInputStream bis = new ByteArrayInputStream(composerPackage.toJson().getBytes());
 		file.create(bis, true, monitor);
 		project.refreshLocal(0, monitor);
