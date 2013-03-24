@@ -15,6 +15,7 @@ public class ComposerUIPluginImages {
 	private static final String T_WIZBAN = "wizban";
 
 	public static final ImageDescriptor ADD_DEPENDENCY = create(T_WIZBAN, "packagist.png");
+	public static final ImageDescriptor CREATE_PROJECT = create(T_WIZBAN, "newpack_wiz.png");
 	
 	public static final ImageDescriptor PERSON = create(T_OBJ16, "person.png");
 	public static final ImageDescriptor PAGE = create(T_OBJ16, "page.gif");

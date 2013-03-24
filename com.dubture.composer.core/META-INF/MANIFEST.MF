@@ -14,14 +14,14 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.php.debug.core,
  org.eclipse.php.core,
  org.eclipse.php.ui,
- com.google.gson,
  org.eclipse.wst.common.project.facet.core,
  org.eclipse.wst.common.project.facet.ui,
  org.apache.commons.io,
  org.apache.commons.exec,
  org.eclipse.ui.ide,
  org.getcomposer.core,
- com.googlecode.json-simple
+ com.googlecode.json-simple,
+ org.apache.commons.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.core;

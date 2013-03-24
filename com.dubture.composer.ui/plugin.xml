@@ -163,6 +163,27 @@
             name="Build Path Management">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.php.project.ui"
+            class="com.dubture.composer.ui.wizard.project.ComposerProjectCreationWizard"
+            finalPerspective="org.eclipse.php.perspective"
+            icon="icons/full/obj16/composer_project.gif"
+            id="com.dubture.composer.ui.projectwizard"
+            name="Composer Project"
+            preferredPerspectives="org.eclipse.php.perspective">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.php.perspective">
+         <newWizardShortcut
+               id="com.dubture.composer.ui.projectwizard">
+         </newWizardShortcut>
+      </perspectiveExtension>
+   </extension>
    
 
 </plugin>

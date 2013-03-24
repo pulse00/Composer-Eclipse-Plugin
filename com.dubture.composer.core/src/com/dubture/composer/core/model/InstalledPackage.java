@@ -4,8 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +16,10 @@ import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
+import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Represents a package inside installed(_dev).json
@@ -30,7 +27,7 @@ import com.google.gson.reflect.TypeToken;
  * @author Robert Gruendler <r.gruendler@gmail.com>
  *
  */
-public class InstalledPackage
+public class InstalledPackage extends ComposerPackage
 {
     private IPath path;
     private File localFile;
@@ -45,14 +42,6 @@ public class InstalledPackage
     public Map<String, String> suggest;
     public String targetDir;
     
-    /**
-     * Do not remove the no-args constructor! It's needed by gson for deserializing
-     * from json.
-     */
-    public InstalledPackage()
-    {
-        
-    }
     
     public IPath getPath()
     {
@@ -91,15 +80,8 @@ public class InstalledPackage
     public static List<InstalledPackage> deserialize(InputStream input)
             throws IOException
     {
-//        Gson gson = new GsonBuilder().setFieldNamingStrategy(new ComposerFieldNamingStrategy()).create();
-        Gson gson = new GsonBuilder().create();
-        InputStreamReader reader = new InputStreamReader(input);
-        Type listOfObjects = new TypeToken<List<InstalledPackage>>()
-        {
-        }.getType();
-        List<InstalledPackage> result = gson.fromJson(reader, listOfObjects);
-        reader.close();
-        return result;
+    	List<InstalledPackage> pkgs = new ArrayList<InstalledPackage>();
+        return pkgs;
     }
 
     public static List<InstalledPackage> deserialize(String propertyValue)

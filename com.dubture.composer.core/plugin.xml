@@ -35,7 +35,7 @@
       <project-facet
             id="php.composer.component">
          <label>
-            Composer PHP facet
+            Composer facet
          </label>
          <description>
             Adds composer support to your PHP project.
@@ -83,6 +83,23 @@
                class="com.dubture.composer.core.builder.ComposerBuildPathManagementBuilder">
          </run>
       </builder>
+   </extension>
+   <extension
+         point="org.eclipse.wst.common.project.facet.core.presets">
+      <static-preset
+            extends="default.configuration"
+            id="com.dubture.composer.core.static-preset">
+         <label>
+            Composer
+         </label>
+         <description>
+            Sets up a composer PHP project.
+         </description>
+         <facet
+               id="php.composer.component"
+               version="1">
+         </facet>
+      </static-preset>
    </extension>
    
 

@@ -8,7 +8,6 @@
  */
 package com.dubture.composer.core.model;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +20,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -45,16 +39,10 @@ public class ModelAccess implements NamespaceResolverInterface
     
     private Map<String, List<NamespaceMapping> > namespaceMap = new HashMap<String, List<NamespaceMapping> >();
     
-    private Gson gson;
     
     private ModelAccess()
     {
         try {
-            gson = new GsonBuilder()
-//                .registerTypeAdapter(ComposerPackage.class, new ComposerPackageSerializer())
-                .registerTypeAdapter(IPath.class, new PathDeserializer())
-                .create();
-            
             initNamespaceMap();
         } catch (Exception e) {
             ComposerPlugin.logException(e);
@@ -66,8 +54,11 @@ public class ModelAccess implements NamespaceResolverInterface
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+        	
             String prefKey = "namespacemap#" + project.getName();
             String json = instancePreferences.get(prefKey, "{}");
+
+            /*
             Type typeOfHashMap = new TypeToken<List<NamespaceMapping>>() { }.getType();
             try {
                 List<NamespaceMapping> newMap = gson.fromJson(json, typeOfHashMap);
@@ -75,6 +66,7 @@ public class ModelAccess implements NamespaceResolverInterface
             } catch (JsonParseException e) {
                 Logger.logException(e);
             }
+            */
             
             Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
@@ -130,6 +122,7 @@ public class ModelAccess implements NamespaceResolverInterface
     public void updateNamespaces(List<NamespaceMapping> namespaces,
             IScriptProject scriptProject)
     {
+    	/*
         String json = gson.toJson(namespaces);
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         
@@ -141,6 +134,7 @@ public class ModelAccess implements NamespaceResolverInterface
         } catch (BackingStoreException e) {
             Logger.logException(e);
         }
+        */
     }
 
     public List<NamespaceMapping> getNamespaceMappings(IProject project)

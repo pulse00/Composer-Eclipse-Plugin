@@ -31,38 +31,36 @@ import com.dubture.composer.core.util.BuildpathUtil;
  * 
  */
 @SuppressWarnings("restriction")
-public class InstallActionDelegate implements IDelegate
-{
-    @Override
-    public void execute(IProject project, IProjectFacetVersion version,
-            Object object, IProgressMonitor progress) throws CoreException
-    {
-        if (!project.hasNature(PHPNature.ID)) {
-            return;
-        }
+public class InstallActionDelegate implements IDelegate {
+	@Override
+	public void execute(IProject project, IProjectFacetVersion version,
+			Object object, IProgressMonitor progress) throws CoreException {
+		if (!project.hasNature(PHPNature.ID)) {
+			return;
+		}
 
-        progress.subTask("Installing composer nature");
-        IScriptProject scriptProject = DLTKCore.create(project);
+		progress.subTask("Installing composer nature");
+		IScriptProject scriptProject = DLTKCore.create(project);
 
-        // add the composer nature
-        ResourceUtil.addNature(project, progress, ComposerNature.NATURE_ID);
+		// add the composer nature
+		ResourceUtil.addNature(project, progress, ComposerNature.NATURE_ID);
 
-        progress.subTask("Installing composer buildpath");
+		progress.subTask("Installing composer buildpath");
 
-        // create composer buildpath entry
+		// create composer buildpath entry
 
-        if (ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
-            IBuildpathContainer composerContainer = new ComposerBuildpathContainer(
-                    new Path(ComposerBuildpathContainerInitializer.CONTAINER),
-                    scriptProject);
-            List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
-            entries.add(DLTKCore.newContainerEntry(composerContainer.getPath()));
+		if (ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
+			IBuildpathContainer composerContainer = new ComposerBuildpathContainer(
+					new Path(ComposerBuildpathContainerInitializer.CONTAINER),
+					scriptProject);
+			List<IBuildpathEntry> entries = new ArrayList<IBuildpathEntry>();
+			entries.add(DLTKCore.newContainerEntry(composerContainer.getPath()));
 
-            // add the composer buildpathentry to the project
-            BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
+			// add the composer buildpathentry to the project
+			BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
 
-            BuildpathUtil.setupVendorBuildpath(scriptProject, progress);
-            
-        }
-    }
+			BuildpathUtil.setupVendorBuildpath(scriptProject, progress);
+
+		}
+	}
 }
