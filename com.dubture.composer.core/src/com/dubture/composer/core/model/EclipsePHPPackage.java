@@ -27,7 +27,7 @@ public class EclipsePHPPackage implements
     {
         Autoload autoload = phpPackage.getAutoload();
         
-        if (autoload == null || autoload.getPsr0Path() == null) {
+        if (autoload == null || autoload.getPsr0() == null || autoload.getPsr0().getFirst() == null) {
             Logger.debug("Unable to resolve namespace without autoload information " + phpPackage.getName());
             return null;
         }
@@ -37,7 +37,8 @@ public class EclipsePHPPackage implements
         IPath path = resource.getFullPath();
         IPath composerPath = getPath();
         
-        IPath psr0Path = composerPath.append(autoload.getPsr0Path());
+        
+        IPath psr0Path = composerPath.append(autoload.getPsr0().getFirst().getNamespace());
         int segments = psr0Path.segmentCount();
          
         if (path.matchingFirstSegments(psr0Path) == segments) {

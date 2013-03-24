@@ -122,8 +122,9 @@ public class BuildpathParser {
 			Autoload a = p.getAutoload();
 			
 			// psr first
-			for (Namespace psr : a.getPsr0()) {
-				for (Object path : psr.getAll()) {
+			for (String ns : a.getPsr0()) {
+				Namespace namespace = a.getPsr0().get(ns);
+				for (Object path : namespace.getAll()) {
 					paths.add(vendor + "/" + p.getName() + "/" + path);
 				}
 			}

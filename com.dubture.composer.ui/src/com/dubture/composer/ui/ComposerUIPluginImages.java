@@ -19,6 +19,8 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor PERSON = create(T_OBJ16, "person.png");
 	public static final ImageDescriptor PAGE = create(T_OBJ16, "page.gif");
 	public static final ImageDescriptor PACKAGE = create(T_OBJ16, "package.gif");
+	public static final ImageDescriptor NAMESPACE = create(T_OBJ16, "namespace_obj.gif");
+	public static final ImageDescriptor PACKAGE_FOLDER = create(T_OBJ16, "packagefolder_obj.gif");
 	public static final ImageDescriptor COMPOSER = create(T_OBJ16, "composer.png");
 	public static final ImageDescriptor PHP = create(T_OBJ16, "php.png");
 	public static final ImageDescriptor BROWSER = create(T_OBJ16, "browser.gif");
