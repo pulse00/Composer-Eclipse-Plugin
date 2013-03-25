@@ -31,7 +31,8 @@ Require-Bundle: org.eclipse.ui,
  org.getcomposer.core,
  org.eclipse.php.core,
  org.eclipse.wst.common.project.facet.core,
- org.pdtextensions.core.ui
+ org.pdtextensions.core.ui,
+ org.eclipse.help
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.ui,

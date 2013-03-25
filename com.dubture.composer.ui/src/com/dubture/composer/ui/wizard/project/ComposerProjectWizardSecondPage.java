@@ -49,6 +49,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.getcomposer.core.ComposerPackage;
 import org.getcomposer.core.VersionedPackage;
@@ -59,6 +60,7 @@ import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 
 @SuppressWarnings("restriction")
@@ -104,9 +106,8 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		autoloadGroup.addObserver(validator);
 		
 		Dialog.applyDialogFont(composite);
-		setHelpContext(composite);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_autoload");
 		setControl(composite);
-		
 		firstPage.settingsGroup.addObserver(this);		
 
 	}

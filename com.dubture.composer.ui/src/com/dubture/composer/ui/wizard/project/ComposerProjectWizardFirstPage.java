@@ -10,6 +10,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.environment.IEnvironment;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.php.internal.core.PHPVersion;
@@ -24,7 +25,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.getcomposer.core.ComposerPackage;
+
+import com.dubture.composer.ui.ComposerUIPlugin;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPProjectCreateWizardPage, Observer {
@@ -89,6 +93,9 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		settingsGroup.addObserver(pdtValidator);
 		PHPLocationGroup.addObserver(pdtValidator);
 
+		Dialog.applyDialogFont(composite);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
+		
 		setControl(composite);
 		composerPackage = new ComposerPackage();
 		

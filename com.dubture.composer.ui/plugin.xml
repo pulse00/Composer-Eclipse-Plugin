@@ -183,6 +183,12 @@
       <resolver
             class="com.dubture.composer.ui.pex.NamespaceResolver"></resolver>
    </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="Resources/help/help_contexts.xml">
+      </contexts>
+   </extension>
    
 
 </plugin>
