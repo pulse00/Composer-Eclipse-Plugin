@@ -16,15 +16,6 @@
                style="push">
          </command>
       </menuContribution>
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
-         <command
-               commandId="com.dubture.composer.core.command.projectnature"
-               label="Add Composer Support"
-               style="push">
-         </command>
-      </menuContribution>
       <!--<menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
@@ -93,12 +84,6 @@
       </command>
    </extension>
    <extension
-         point="org.eclipse.ui.handlers">
-      <handler
-            commandId="com.dubture.composer.ui.command.projectnature">
-      </handler>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
@@ -110,6 +95,8 @@
             restorable="true">
       </view>
    </extension>
+	<!-- disabled until the BuildPathContainer management works properly -->
+   <!--
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -119,6 +106,7 @@
             name="Composer">
       </page>
    </extension>
+   -->
    <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
       <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider"
@@ -138,6 +126,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.propertyPages">
+         
       <page
             class="com.dubture.composer.ui.preferences.ComposerPropertyPage"
             id="com.dubture.composer.ui.preferences.project"
@@ -167,8 +156,18 @@
             icon="icons/full/obj16/composer_project.gif"
             id="com.dubture.composer.ui.projectwizard"
             name="Composer Project"
-            preferredPerspectives="org.eclipse.php.perspective">
+            preferredPerspectives="org.eclipse.php.perspective"
+            project="true">
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+         <description>
+            Creates and initializes a composer project.
+         </description>
       </wizard>
+      <primaryWizard
+            id="com.dubture.composer.ui.projectwizard">
+      </primaryWizard>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
