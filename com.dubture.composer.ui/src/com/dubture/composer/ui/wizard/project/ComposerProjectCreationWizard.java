@@ -189,14 +189,14 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 					path = path.append(segment);
 					IFolder folder = project.getFolder(path);
 					if (!folder.exists()) {
-						folder.create(false, false, monitor);					
+						folder.create(false, true, monitor);					
 					}
 				}
 			} else {
 				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER).append(ns.getNamespace());
 				IFolder folder = project.getFolder(path);
 				if (!folder.exists()) {
-					folder.create(false, false, monitor);
+					folder.create(false, true, monitor);
 				}
 			}
 		}
