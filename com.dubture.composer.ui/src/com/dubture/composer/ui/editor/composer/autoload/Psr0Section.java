@@ -94,11 +94,9 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 		} else {
 
 			Namespace toBeRemoved = null;
-			for (String nsp : composerPackage.getAutoload().getPsr0()) {
-				Namespace namespace = composerPackage.getAutoload().getPsr0().get(nsp);
-
-				if (namespaceName.equals(namespace.getNamespace())) {
-					toBeRemoved = namespace;
+			for (Namespace nsp : composerPackage.getAutoload().getPsr0()) {
+				if (namespaceName.equals(nsp.getNamespace())) {
+					toBeRemoved = nsp;
 					break;
 				}
 			}

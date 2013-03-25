@@ -1,5 +1,7 @@
 package com.dubture.composer.ui.wizard.project;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -8,8 +10,10 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.apache.commons.lang.WordUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -46,9 +50,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.VersionedPackage;
 import org.getcomposer.core.objects.Namespace;
+import org.getcomposer.packages.PharDownloader;
 
 import com.dubture.composer.core.ComposerConstants;
+import com.dubture.composer.core.launch.ComposerLauncher;
+import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
+import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {
@@ -59,6 +70,8 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	protected AutoloadGroup autoloadGroup;
 	private Boolean fIsAutobuild;
 	private AutoloadValidator validator;
+	private PharDownloader downloader;
+	private ComposerLauncher launcher;
 
 	public ComposerProjectWizardSecondPage(ComposerProjectWizardFirstPage mainPage) {
 		super("Dependencies");
@@ -151,7 +164,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			monitor = new NullProgressMonitor();
 		}
 		try {
-			monitor.beginTask(NewWizardMessages.ScriptProjectWizardSecondPage_operation_initialize, 70);
+			monitor.beginTask("Initializing project", 70);
 			if (monitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
@@ -177,6 +190,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			List cpEntries = new ArrayList();
 			cpEntries.add(DLTKCore.newSourceEntry(projectPath.append(srcPath)));
 			cpEntries.add(DLTKCore.newContainerEntry(LanguageModelInitializer.LANGUAGE_CONTAINER_PATH));
+			cpEntries.add(DLTKCore.newSourceEntry(projectPath.append("vendor").append("composer")));
 
 			buildpathEntries = (IBuildpathEntry[]) cpEntries.toArray(new IBuildpathEntry[cpEntries.size()]);
 			if (monitor.isCanceled()) {
@@ -235,9 +249,10 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 
 	public void performFinish(IProgressMonitor monitor) throws CoreException, InterruptedException {
 		try {
-			monitor.beginTask(NewWizardMessages.ScriptProjectWizardSecondPage_operation_create, 3);
+			
+			monitor.beginTask("Initializing buildpaths", 10);
 			if (getProject() == null || !getProject().exists()) {
-				updateProject(new SubProgressMonitor(monitor, 1));
+				updateProject(new SubProgressMonitor(monitor, 3));
 			}
 
 			// flushing includepath changes in wizard page
@@ -245,7 +260,21 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			if (!(currentPage instanceof PHPProjectWizardFirstPage)) {
 				getBuildPathsBlock().configureScriptProject(monitor);
 			}
-
+			
+			monitor.setTaskName("Creating project structure");
+			addComposerJson(monitor);
+			monitor.worked(4);
+			
+			monitor.setTaskName("Installing composer.phar");
+			installComposer(monitor);
+			monitor.worked(4);
+			
+			monitor.setTaskName("Dumping autoloader");
+			dumpAutoload(monitor);
+			monitor.worked(2);
+		
+		} catch(Exception e) { 
+			Logger.logException(e);
 		} finally {
 			monitor.done();
 			if (fIsAutobuild != null) {
@@ -253,6 +282,73 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 				fIsAutobuild = null;
 			}
 		}
+	}
+
+	private void dumpAutoload(final IProgressMonitor monitor) throws Exception {
+
+		launcher = ComposerLauncher.getLauncher(getProject());
+		launcher.addResponseListener(new ConsoleResponseHandler());
+		launcher.addResponseListener(new ExecutionResponseAdapter() {
+			@Override
+			public void executionError(String message) {
+			}
+			
+			@Override
+			public void executionFailed(String response, Exception exception) {
+			}
+		});
+		
+		launcher.launch("dumpautoload");
+		getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
+	}
+
+	private void installComposer(IProgressMonitor monitor) throws CoreException {
+		downloader = new PharDownloader();
+		InputStream resource = downloader.download();
+		IFile file = getProject().getFile("composer.phar");
+		file.create(resource, true, monitor);
+		file.refreshLocal(IResource.DEPTH_ZERO, monitor);
+	}
+	
+	private void addComposerJson(IProgressMonitor monitor) throws CoreException {
+		
+		IFile file = getProject().getFile(org.getcomposer.core.ComposerConstants.COMPOSER_JSON);
+		Namespace ns = firstPage.getPackage().getAutoload().getPsr0().getFirst();
+		
+		if (ns != null) {
+			if (ns.getNamespace().contains("\\")) {
+				String[] split = ns.getNamespace().split("\\\\");
+				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER);
+				for (String segment : split) {
+					path = path.append(segment);
+					IFolder folder = getProject().getFolder(path);
+					if (!folder.exists()) {
+						folder.create(false, true, monitor);					
+					}
+				}
+			} else {
+				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER).append(ns.getNamespace());
+				IFolder folder = getProject().getFolder(path);
+				if (!folder.exists()) {
+					folder.create(false, true, monitor);
+				}
+			}
+		}
+		
+		if (file.exists()) {
+			Logger.debug("composer.json already exists in the location");
+			return;
+		}
+		
+		ComposerPackage composerPackage = firstPage.getPackage();
+		VersionedPackage phpVersion = new VersionedPackage();
+		phpVersion.setName("php");
+		phpVersion.setVersion(">=" + firstPage.getPHPVersionValue().getAlias().replace("php", ""));
+		composerPackage.getRequire().add(phpVersion);
+		
+		ByteArrayInputStream bis = new ByteArrayInputStream(composerPackage.toJson().getBytes());
+		file.create(bis, true, monitor);
+		getProject().refreshLocal(0, monitor);
 	}
 
 	protected void setPhpLangOptions() {
@@ -281,7 +377,13 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		ns.setNamespace(namespace);
 		ns.add(ComposerConstants.DEFAULT_SRC_FOLDER);
 		
-		firstPage.composerPackage.getAutoload().clearPsr0();
+		firstPage.composerPackage.getAutoload().getPsr0().clear();
 		firstPage.composerPackage.getAutoload().getPsr0().add(ns);
+	}
+
+	public void cancel() {
+		if (downloader != null) {
+			downloader.abort();
+		}
 	}
 }

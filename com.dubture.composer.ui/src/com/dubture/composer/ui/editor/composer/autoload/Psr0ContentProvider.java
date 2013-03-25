@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeItem;
 import org.getcomposer.core.collection.Psr0;
+import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 
@@ -79,11 +80,11 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 
 			List<NamespaceModel> elements = new ArrayList<NamespaceModel>();
 
-			Iterator<String> iterator = psr0.iterator();
+			Iterator<Namespace> iterator = psr0.iterator();
 
 			while (iterator.hasNext()) {
-				String next = iterator.next();
-				elements.add(new NamespaceModel(next, psr0.get(next)));
+				Namespace next = iterator.next();
+				elements.add(new NamespaceModel(next.getNamespace(), next));
 			}
 
 			return elements.toArray();

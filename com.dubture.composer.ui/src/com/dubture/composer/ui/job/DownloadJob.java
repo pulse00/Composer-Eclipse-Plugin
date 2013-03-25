@@ -19,6 +19,7 @@ public class DownloadJob extends Job {
 	
 	private IProject project;
 	private PharDownloader downloader;
+	private IProgressMonitor monitor;
 
 	public DownloadJob(IProject project) {
 		super("Downloading composer.phar");
@@ -29,6 +30,8 @@ public class DownloadJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		try {
 
+			this.monitor = monitor;
+			
 			monitor.beginTask("Downloading composer.phar from getcomposer.org",
 					3);
 
@@ -60,6 +63,8 @@ public class DownloadJob extends Job {
 	@Override
 	protected void canceling() {
 		super.canceling();
-		downloader.abort();
+		if (monitor != null && monitor.isCanceled() && downloader != null) {
+			downloader.abort();
+		}
 	}
 }

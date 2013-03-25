@@ -122,12 +122,15 @@ public class BuildpathParser {
 			Autoload a = p.getAutoload();
 			
 			// psr first
+			// @gossi: this has been broken by the commit http://git.io/-iEqEg
+			/*
 			for (String ns : a.getPsr0()) {
 				Namespace namespace = a.getPsr0().get(ns);
 				for (Object path : namespace.getAll()) {
 					paths.add(vendor + "/" + p.getName() + "/" + path);
 				}
 			}
+			*/
 			
 			// classmap
 			for (Object path : a.getClassMap()) {

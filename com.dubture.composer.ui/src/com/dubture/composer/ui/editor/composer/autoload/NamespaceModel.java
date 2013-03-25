@@ -20,8 +20,7 @@ class NamespaceModel {
 		this.namespace = value;
 		
 		List<NamespacePath> paths = new ArrayList<NamespacePath>();
-		
-		for (Object p: value.getAll()) {
+		for (Object p: value.getPaths()) {
 			paths.add(new NamespacePath(this, (String) p));
 		}
 		
@@ -32,7 +31,7 @@ class NamespaceModel {
 
 		StringBuilder builder = new StringBuilder();
 		
-		Object[] array = namespace.getAll().toArray();
+		Object[] array = namespace.getPaths().toArray();
 		List<Object> list = new ArrayList<Object>(Arrays.asList(array));
 		builder.append( list.remove(0));
 
