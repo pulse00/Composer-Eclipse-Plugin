@@ -90,6 +90,9 @@ public class ComposerExecutor {
 			handler.executionAboutToStart();
 		}
 		
+		String executable = cmd.getExecutable();
+		
+		
 		outBuilder = new StringBuilder();
 		errBuilder = new StringBuilder();
 		
@@ -98,6 +101,15 @@ public class ComposerExecutor {
 		
 		outThread.start();
 		errThread.start();
+		
+		if (cmd.getExecutable() == null || cmd.getExecutable().contains("which")) {
+
+			for (ExecutionResponseListener handler : listeners) {
+				handler.executionError("Invalid executable");
+			}
+			
+			return;
+		}
 		
 		executor.execute(cmd, handler);
 		

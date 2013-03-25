@@ -1,6 +1,5 @@
 package com.dubture.composer.core.launch.environment;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.dubture.composer.core.ComposerConstants;
@@ -46,36 +45,37 @@ public class EnvironmentFactory {
 			if (composerPhar != null) {
 				
 				php = EnvironmentFinder.findPhp();
-				if (php != null) {
+				if (php != null && php.length() > 0) {
 					prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_SYS_PHAR);
 					return create(ENV_SYS_PHP_SYS_PHAR);
 				}
 				
 				pdt = EnvironmentFinder.findPdtPhp();
-				if (pdt != null) {
+				if (pdt != null && pdt.length() > 0) {
 					prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_SYS_PHAR);
 					return create(ENV_PDT_PHP_SYS_PHAR);	
 				}
 			}
 			
-			if (php == null) {
+			if (php == null || php.length() == 0) {
 				php = EnvironmentFinder.findPhp();
 			}
 			
-			if (php != null) {
+			if (php != null && php.length() > 0) {
 				prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_PRJ_PHAR);
 				return create(ENV_SYS_PHP_PRJ_PHAR);
 			}
 			
-			if (pdt == null) {
+			if (pdt == null || php.length() == 0) {
 				pdt = EnvironmentFinder.findPdtPhp();
 			}
 			
-			if (pdt != null) {
+			if (pdt != null && pdt.length() > 0) {
 				prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_PRJ_PHAR);
 				return create(ENV_PDT_PHP_PRJ_PHAR);	
 			}
 		}
+		
 		return null;
 	}
 	

@@ -8,8 +8,10 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.ExecuteException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.getcomposer.core.ComposerConstants;
 
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.launch.environment.Environment;
 import com.dubture.composer.core.launch.environment.EnvironmentFactory;
 import com.dubture.composer.core.launch.execution.ComposerExecutor;
@@ -56,7 +58,8 @@ public class ComposerLauncher {
 		launch(composerCommand, new String[]{param});
 	}
 	
-	public void launch(String composerCommand, String[] params) throws ExecuteException, IOException, InterruptedException {
+	public void 
+	launch(String composerCommand, String[] params) throws ExecuteException, IOException, InterruptedException {
 		CommandLine cmd = environment.getCommand();
 		cmd.addArgument(composerCommand);
 		cmd.addArguments(params);
@@ -75,19 +78,31 @@ public class ComposerLauncher {
 		executor.abort();
 	}
 	
-	private static Environment getEnvironment() {
+	private static Environment getEnvironment() throws ExecutableNotFoundException {
 		if (env == null) {
 			env = EnvironmentFactory.getEnvironment();
+			if (env == null) {
+				throw new ExecutableNotFoundException("Unable to find php executable");
+			}
 		}
 		
 		return env;
 	}
 	
-	public static ComposerLauncher getLauncher(IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException {
+	public static void reserEnvironment() {
+		synchronized (env) {
+			IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
+			prefs.setValue(com.dubture.composer.core.ComposerConstants.PREF_ENVIRONMENT, 0);
+			env = null;
+		}
+	}
+	
+	public static ComposerLauncher getLauncher(IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException, ExecutableNotFoundException {
 		Environment env = getEnvironment();
 		if (env == null) {
 			throw new ComposerPharNotFoundException("Can't find any executable");
 		}
+		
 		return new ComposerLauncher(env, project);
 	}
 }

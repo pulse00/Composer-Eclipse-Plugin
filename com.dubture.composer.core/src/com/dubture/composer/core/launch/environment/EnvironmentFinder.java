@@ -27,6 +27,8 @@ public class EnvironmentFinder {
 	private static boolean pdtPhpSearched = false;
 	
 	private static String[] paths = new String[]{"/opt/local/bin", "/usr/local/bin/", "/usr/bin/"};
+	// used for debugging
+//	private static String[] paths = new String[]{};
 	private static String result;
 	
 	/**
