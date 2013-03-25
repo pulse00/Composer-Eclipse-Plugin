@@ -6,12 +6,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
@@ -31,6 +34,7 @@ import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
 import org.getcomposer.core.VersionedPackage;
+import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.core.facet.ComposerFacetConstants;
 import com.dubture.composer.core.log.Logger;
@@ -175,6 +179,27 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 	protected void installComposer(IProject project, PHPVersion version, IProgressMonitor monitor) throws CoreException {
 
 		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
+		Namespace ns = firstPage.getPackage().getAutoload().getPsr0().getFirst();
+		
+		if (ns != null) {
+			if (ns.getNamespace().contains("\\")) {
+				String[] split = ns.getNamespace().split("\\\\");
+				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER);
+				for (String segment : split) {
+					path = path.append(segment);
+					IFolder folder = project.getFolder(path);
+					if (!folder.exists()) {
+						folder.create(false, false, monitor);					
+					}
+				}
+			} else {
+				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER).append(ns.getNamespace());
+				IFolder folder = project.getFolder(path);
+				if (!folder.exists()) {
+					folder.create(false, false, monitor);
+				}
+			}
+		}
 		
 		if (file.exists()) {
 			Logger.debug("composer.json already exists in the location");

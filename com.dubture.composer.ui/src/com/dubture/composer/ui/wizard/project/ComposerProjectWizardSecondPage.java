@@ -48,6 +48,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.getcomposer.core.objects.Namespace;
 
+import com.dubture.composer.core.ComposerConstants;
+
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {
 
@@ -159,7 +161,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			IBuildpathEntry[] buildpathEntries = null;
 			
 			//TODO: see https://github.com/pulse00/Composer-Eclipse-Plugin/issues/37
-			IPath srcPath = new Path("src");
+			IPath srcPath = new Path(ComposerConstants.DEFAULT_SRC_FOLDER);
 
 			if (srcPath.segmentCount() > 0) {
 				IFolder folder = getProject().getFolder(srcPath);
@@ -277,7 +279,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 
 		Namespace ns = new Namespace();
 		ns.setNamespace(namespace);
-		ns.add("src");
+		ns.add(ComposerConstants.DEFAULT_SRC_FOLDER);
 		
 		firstPage.composerPackage.getAutoload().clearPsr0();
 		firstPage.composerPackage.getAutoload().getPsr0().add(ns);
