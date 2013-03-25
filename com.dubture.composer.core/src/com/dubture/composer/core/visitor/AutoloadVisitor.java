@@ -71,13 +71,7 @@ public class AutoloadVisitor extends PHPASTVisitor
                 resourcePath = resourcePath.replaceFirst("/", "");
             }
             
-            System.err.println("add mapping");
             String ns = namespace.getValue().replace("'", "").replace("\\\\", "\\");
-            
-            System.err.println(ns);
-            System.err.println(resourcePath);
-
-
             psr0.add(new Namespace(ns, resourcePath));
             
             return true;
