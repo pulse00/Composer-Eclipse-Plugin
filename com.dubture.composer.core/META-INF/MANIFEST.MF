@@ -52,6 +52,7 @@ Export-Package: com.dubture.composer.core;
    com.google.gson,
    org.eclipse.dltk.core",
  com.dubture.composer.core.util,
+ com.dubture.composer.core.validation,
  com.dubture.composer.core.visitor;
   uses:="org.eclipse.php.internal.core.compiler.ast.visitor,
    org.eclipse.php.internal.core.compiler.ast.nodes,

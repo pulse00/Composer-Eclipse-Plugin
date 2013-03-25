@@ -4,7 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
+import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -38,22 +41,28 @@ import org.eclipse.php.internal.ui.wizards.PHPBuildpathDetector;
 import org.eclipse.php.internal.ui.wizards.PHPProjectWizardFirstPage;
 import org.eclipse.php.ui.util.PHPProjectUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.getcomposer.core.objects.Namespace;
 
 @SuppressWarnings("restriction")
-public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage {
+public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {
 
 	protected static final String FILENAME_BUILDPATH = ".buildpath"; //$NON-NLS-1$
 	protected final ComposerProjectWizardFirstPage firstPage;
 	protected URI currentProjectLocation; // null if location is platform location
+	protected AutoloadGroup autoloadGroup;
 	private Boolean fIsAutobuild;
+	private AutoloadValidator validator;
 
 	public ComposerProjectWizardSecondPage(ComposerProjectWizardFirstPage mainPage) {
 		super("Dependencies");
-
+		setPageComplete(false);
+		setTitle("Autoloading settings");
+		setDescription("Setup autoloading for your project.");
 		firstPage = mainPage;
 		currentProjectLocation = null;
 		fIsAutobuild = null;
@@ -62,15 +71,28 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	@Override
 	public void createControl(Composite parent) {
 
+		int numColumns = 1;
+		
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setFont(parent.getFont());
-		composite.setLayout(new GridLayout(1, false));
-
-		Label dummy = new Label(composite, SWT.NONE);
-		dummy.setText("Nothing to see here, move along...");
+		composite.setLayout(new GridLayout(numColumns, false));
+		
+		final Group group = new Group(composite, SWT.None);
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setLayout(new GridLayout(numColumns, false));
+		group.setText("PSR-0");
+		
+		autoloadGroup = new AutoloadGroup(group, getShell());
+		autoloadGroup.addObserver(this);
+		
+		validator = new AutoloadValidator(this);
+		autoloadGroup.addObserver(validator);
+		
 		Dialog.applyDialogFont(composite);
 		setHelpContext(composite);
 		setControl(composite);
+		
+		firstPage.settingsGroup.addObserver(this);		
 
 	}
 
@@ -238,5 +260,26 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		ProjectOptions.setSupportingAspTags(useASPTags, getProject());
 		ProjectOptions.setPhpVersion(phpVersion, getProject());
 
+	}
+
+	@Override
+	public void update(Observable observable, Object object) {
+		
+		if (observable instanceof BasicSettingsGroup) {
+			autoloadGroup.setNamespace(WordUtils.capitalize(firstPage.settingsGroup.getVendor()));
+			return;
+		}
+		
+		updateNamespace(autoloadGroup.getNamespace());
+	}
+	
+	protected void updateNamespace(String namespace) {
+
+		Namespace ns = new Namespace();
+		ns.setNamespace(namespace);
+		ns.add("src");
+		
+		firstPage.composerPackage.getAutoload().clearPsr0();
+		firstPage.composerPackage.getAutoload().getPsr0().add(ns);
 	}
 }

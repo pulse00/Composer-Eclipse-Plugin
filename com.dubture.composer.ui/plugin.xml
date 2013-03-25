@@ -63,11 +63,6 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            defaultHandler="com.dubture.composer.ui.handler.AddComposerSupportHandler"
-            id="com.dubture.composer.ui.command.projectnature"
-            name="Add Composer Support">
-      </command>
-      <command
             description="Run `composer.phar install`"
             id="com.dubture.composer.ui.command.install"
             name="Install dependencies">
