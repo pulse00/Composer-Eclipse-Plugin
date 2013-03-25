@@ -82,14 +82,9 @@ public class ModelAccess implements NamespaceResolverInterface
         for(Namespace namespace : namespaces) {
         	for(Object object : namespace.getPaths()) {
         		if (!(object instanceof String)) {
-        			System.err.println("is no string...");
         			continue;
         		}
         		String path = (String) object;
-        		System.err.println("");
-        		System.err.println("resolving");
-        		System.err.println(root.toString());
-        		System.err.println(path);
         		if (root.toString().startsWith((String) path)) {
         			return new Path(root.toString().replace(path+"/", ""));
         		}

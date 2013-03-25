@@ -179,6 +179,11 @@
          </newWizardShortcut>
       </perspectiveExtension>
    </extension>
+   <extension
+         point="org.pdtextensions.core.ui.namespaceresolver">
+      <resolver
+            class="com.dubture.composer.ui.pex.NamespaceResolver"></resolver>
+   </extension>
    
 
 </plugin>
