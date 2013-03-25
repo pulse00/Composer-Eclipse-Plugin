@@ -22,11 +22,16 @@ import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 
 /**
- * Represents a package inside installed(_dev).json
+ * Represents a package inside installed(_dev).json. This class is used to handle
+ * the BuildpathContainerEntry of the experimental feature which copies installed
+ * packages to a temporary to increase indexing performance by sharing the index
+ * of the same package/version combination over several projects.
+ * 
+ * This is deprecated and will be refactored to extend the Java-Bindings API
  * 
  * @author Robert Gruendler <r.gruendler@gmail.com>
- *
  */
+@Deprecated
 public class InstalledPackage extends ComposerPackage
 {
     private IPath path;

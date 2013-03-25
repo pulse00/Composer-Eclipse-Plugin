@@ -8,4 +8,5 @@ Fragment-Host: com.dubture.composer.core;bundle-version="0.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit,
  org.eclipse.dltk.core.tests,
- org.getcomposer.core
+ org.getcomposer.core,
+ org.apache.commons.lang

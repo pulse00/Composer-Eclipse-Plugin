@@ -1,15 +1,12 @@
 package com.dubture.composer.ui.wizard.project;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
@@ -17,18 +14,12 @@ import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.wizards.NewElementWizard;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.php.internal.core.PHPVersion;
-import org.eclipse.php.internal.core.facet.PHPFacets;
-import org.eclipse.php.internal.core.facet.PHPFacetsConstants;
 import org.eclipse.php.internal.core.project.ProjectOptions;
 import org.eclipse.php.internal.ui.wizards.WizardModel;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject;
-import org.eclipse.wst.common.project.facet.core.IProjectFacet;
-import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
-import com.dubture.composer.core.facet.ComposerFacetConstants;
-import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.facet.FacetManager;
 import com.dubture.composer.ui.ComposerUIPluginImages;
 
 @SuppressWarnings("restriction")
@@ -90,17 +81,13 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 			
 			BasicNewProjectResourceWizard.updatePerspective(config);
 			selectAndReveal(lastPage.getScriptProject().getProject());
-
-			
-			
 			IProject project = lastPage.getScriptProject().getProject();
 			PHPVersion version = firstPage.getPHPVersionValue();
 			if (version == null) {
 				version = ProjectOptions.getDefaultPhpVersion();
 			}
 			
-			installFacets(project, version);
-						
+			FacetManager.installFacets(project, version, null);
 			WizardModel model = firstPage.getWizardData();
 
 			Object eanblement = null;
@@ -132,33 +119,6 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 		}
 		
 		return res;
-	}
-	
-	protected void installFacets(IProject project, PHPVersion version) {
-		try {
-			
-			NullProgressMonitor monitor = new NullProgressMonitor();
-			
-			final IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
-			final Set<IProjectFacet> fixedFacets = new HashSet<IProjectFacet>();
-			IProjectFacet coreFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_CORE_COMPONENT);
-			fixedFacets.add(coreFacet);
-			
-			IProjectFacet composerFacet = ProjectFacetsManager.getProjectFacet(ComposerFacetConstants.COMPOSER_COMPONENT);
-			fixedFacets.add(composerFacet);
-			
-			IProjectFacet phpFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_COMPONENT);
-			fixedFacets.add(phpFacet);
-			facetedProject.setFixedProjectFacets(fixedFacets);
-
-			// install the fixed facets
-			facetedProject.installProjectFacet(coreFacet.getDefaultVersion(), null, monitor);
-			facetedProject.installProjectFacet(PHPFacets.convertToFacetVersion(version), null, monitor);
-			facetedProject.installProjectFacet(composerFacet.getVersion(ComposerFacetConstants.COMPOSER_COMPONENT_VERSION_1), composerFacet, monitor);
-			
-		} catch (CoreException ex) {
-			Logger.logException(ex.getMessage(), ex);
-		}
 	}
 	
 	@Override

@@ -9,7 +9,6 @@
 package com.dubture.composer.core.model;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -20,7 +19,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.core.ComposerConstants;
+import org.getcomposer.core.collection.Psr0;
+import org.getcomposer.core.objects.Namespace;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
@@ -35,11 +36,8 @@ import com.dubture.composer.core.log.Logger;
 public class ModelAccess implements NamespaceResolverInterface
 {
     private PackageManager packageManager = null;
-
     private static ModelAccess instance = null;
-    
-    private Map<String, List<NamespaceMapping> > namespaceMap = new HashMap<String, List<NamespaceMapping> >();
-    
+    private Map<String, Psr0> psr0Map = new HashMap<String, Psr0>();
     
     private ModelAccess()
     {
@@ -53,22 +51,10 @@ public class ModelAccess implements NamespaceResolverInterface
     protected void initNamespaceMap() 
     {
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
-        
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-        	
             String prefKey = "namespacemap#" + project.getName();
             String json = instancePreferences.get(prefKey, "{}");
-
-            /*
-            Type typeOfHashMap = new TypeToken<List<NamespaceMapping>>() { }.getType();
-            try {
-                List<NamespaceMapping> newMap = gson.fromJson(json, typeOfHashMap);
-                namespaceMap.put(project.getName(), newMap);
-            } catch (JsonParseException e) {
-                Logger.logException(e);
-            }
-            */
-            
+            psr0Map.put(project.getName(), new Psr0(json));
             Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
     }
@@ -87,16 +73,27 @@ public class ModelAccess implements NamespaceResolverInterface
     {
         IPath root = resource.getFullPath().removeFirstSegments(1);
         
-        if (!namespaceMap.containsKey(resource.getProject().getName())) {
+        if (!psr0Map.containsKey(resource.getProject().getName())) {
             return null;
         }
         
-        List<NamespaceMapping> namespaces = namespaceMap.get(resource.getProject().getName());
+        Psr0 namespaces = psr0Map.get(resource.getProject().getName());
         
-        for(NamespaceMapping mapping : namespaces) {
-            if (root.toString().startsWith(mapping.getPath())) {
-                return new Path(mapping.getNamespace());
-            }
+        for(Namespace namespace : namespaces) {
+        	for(Object object : namespace.getPaths()) {
+        		if (!(object instanceof String)) {
+        			System.err.println("is no string...");
+        			continue;
+        		}
+        		String path = (String) object;
+        		System.err.println("");
+        		System.err.println("resolving");
+        		System.err.println(root.toString());
+        		System.err.println(path);
+        		if (root.toString().startsWith((String) path)) {
+        			return new Path(root.toString().replace(path+"/", ""));
+        		}
+        	}
         }
         
         return null;
@@ -120,14 +117,11 @@ public class ModelAccess implements NamespaceResolverInterface
         return instance.packageManager;
     }
 
-    public void updateNamespaces(List<NamespaceMapping> namespaces,
-            IScriptProject scriptProject)
+    public void updatePsr0(Psr0 psr0, IScriptProject scriptProject)
     {
-    	/*
-        String json = gson.toJson(namespaces);
+        String json = psr0.toJson();
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
-        
-        namespaceMap.put(scriptProject.getProject().getName(), namespaces);
+        psr0Map.put(scriptProject.getProject().getName(), psr0);
         instancePreferences.put("namespacemap#"+scriptProject.getProject().getName(), json);
         Logger.debug("updating namespacemap for project " + scriptProject.getProject().getName());
         try {
@@ -135,13 +129,12 @@ public class ModelAccess implements NamespaceResolverInterface
         } catch (BackingStoreException e) {
             Logger.logException(e);
         }
-        */
     }
 
-    public List<NamespaceMapping> getNamespaceMappings(IProject project)
+    public Psr0 getNamespaceMappings(IProject project)
     {
-        if (namespaceMap.containsKey(project.getName())) {
-            return namespaceMap.get(project.getName());
+        if (psr0Map.containsKey(project.getName())) {
+            return psr0Map.get(project.getName());
         }
         
         return null;
@@ -149,11 +142,12 @@ public class ModelAccess implements NamespaceResolverInterface
 
     public IResource getComposer(InstalledPackage installed, IScriptProject project)
     {
+    	/*
         if (!namespaceMap.containsKey(project.getProject().getName())) {
             return null;
         }
         
-        for (NamespaceMapping mapping : namespaceMap.get(project.getProject().getName())) {
+        for (Namespace mapping : namespaceMap.get(project.getProject().getName())) {
             
             if (mapping.getPath().contains(installed.name)) {
                 IPath path = new Path(mapping.getPath().substring(0, mapping.getPath().lastIndexOf(installed.name)+installed.name.length()));
@@ -163,6 +157,8 @@ public class ModelAccess implements NamespaceResolverInterface
                 return project.getProject().findMember(path.append(ComposerConstants.COMPOSER_JSON));
             }
         }
+        */
         return null;
+        
     }
 }

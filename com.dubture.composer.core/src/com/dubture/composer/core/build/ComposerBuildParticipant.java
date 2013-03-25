@@ -7,6 +7,7 @@ import org.eclipse.dltk.core.SourceParserUtil;
 import org.eclipse.dltk.core.builder.IBuildContext;
 import org.eclipse.dltk.core.builder.IBuildParticipant;
 
+import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.visitor.AutoloadVisitor;
 
@@ -15,7 +16,7 @@ public class ComposerBuildParticipant implements IBuildParticipant
     @Override
     public void build(IBuildContext context) throws CoreException
     {
-        if ("autoload_namespaces.php".equals(context.getSourceModule().getElementName()) == false) {
+        if (ComposerConstants.AUTOLOAD_NAMESPACES.equals(context.getSourceModule().getElementName()) == false) {
             return;
         }
         
