@@ -7,11 +7,11 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -41,13 +41,6 @@ abstract public class ComposerJob extends Job {
 		this.project = project;
 	}
 
-	protected IStatus shallInstallComposerPhar() {
-		
-		InstallRunner runner = new InstallRunner();
-		Display.getDefault().syncExec(runner);
-		return runner.getStatus();
-	}
-	
 	@Override
 	protected void canceling() {
 		
@@ -69,7 +62,9 @@ abstract public class ComposerJob extends Job {
 			try {
 				launcher = ComposerLauncher.getLauncher(project);
 			} catch (ComposerPharNotFoundException e) {
-				return shallInstallComposerPhar();
+				// run the downloader
+				Display.getDefault().asyncExec(new DownloadRunner());
+				return Status.OK_STATUS;
 			}
 			
 			launcher.addResponseListener(new ConsoleResponseHandler());
@@ -125,10 +120,8 @@ abstract public class ComposerJob extends Job {
 	
 	abstract protected void launch(ComposerLauncher launcher) throws ExecuteException, IOException, InterruptedException;
 	
-	private class InstallRunner implements Runnable {
+	private class DownloadRunner implements Runnable {
 
-		private IStatus status = ERROR_STATUS;
-		
 		@Override
 		public void run() {
 			
@@ -139,23 +132,18 @@ abstract public class ComposerJob extends Job {
 				return;
 			}
 			
-			MessageBox dialog = new MessageBox(shell, SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
-			dialog.setText("composer.phar not found");
-			dialog.setMessage("composer.phar can not be found. Download it now?");
-			
-			if (dialog.open() == SWT.OK) {
+			if (MessageDialog.openConfirm(shell, "composer.phar not found", "composer.phar can not be found. Download it now?")) {
 				DownloadJob job = new DownloadJob(project);
+				job.addJobChangeListener(new JobChangeAdapter() {
+					@Override
+					public void done(IJobChangeEvent event) {
+						// re-schedule the original job
+						ComposerJob.this.schedule();
+					}
+				});
 				job.setUser(true);
 				job.schedule();
-				schedule();
-				status = Status.OK_STATUS;
-			} else {
-				status = ERROR_STATUS;
 			}
-		}
-		
-		public IStatus getStatus() {
-			return status;
 		}
 	}
 }

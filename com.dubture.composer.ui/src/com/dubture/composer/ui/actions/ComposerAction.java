@@ -4,12 +4,8 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.commands.ICommandService;
-
-import com.dubture.composer.ui.job.DownloadJob;
 
 abstract public class ComposerAction extends Action {
 
@@ -32,16 +28,5 @@ abstract public class ComposerAction extends Action {
 		} catch (NotDefinedException e) {
 			return null;
 		}
-	}
-	
-	protected void shallInstallComposerPhar() {
-		MessageBox dialog = new MessageBox(site.getShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
-        dialog.setText("composer.phar not found");
-        dialog.setMessage("composer.phar can not be found. Download it now?");
-        if (dialog.open() == SWT.OK) {
-        	DownloadJob job = new DownloadJob(project);
-        	job.setUser(true);
-    		job.schedule();
-        }
 	}
 }
