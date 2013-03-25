@@ -48,6 +48,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
@@ -58,10 +59,12 @@ import org.getcomposer.packages.PharDownloader;
 
 import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.launch.ComposerLauncher;
+import com.dubture.composer.core.launch.ExecutableNotFoundException;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
+import com.dubture.composer.ui.job.MissingExecutableRunner;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {
@@ -287,7 +290,12 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 
 	private void dumpAutoload(final IProgressMonitor monitor) throws Exception {
 
-		launcher = ComposerLauncher.getLauncher(getProject());
+		try {
+			launcher = ComposerLauncher.getLauncher(getProject());
+		} catch (ExecutableNotFoundException e) {
+			Display.getDefault().asyncExec(new MissingExecutableRunner());
+			return;
+		}
 		launcher.addResponseListener(new ConsoleResponseHandler());
 		launcher.addResponseListener(new ExecutionResponseAdapter() {
 			@Override

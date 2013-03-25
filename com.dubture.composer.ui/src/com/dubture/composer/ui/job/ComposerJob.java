@@ -6,12 +6,10 @@ import org.apache.commons.exec.ExecuteException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -22,7 +20,6 @@ import com.dubture.composer.core.launch.ComposerPharNotFoundException;
 import com.dubture.composer.core.launch.ExecutableNotFoundException;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 
 abstract public class ComposerJob extends Job {
@@ -138,21 +135,6 @@ abstract public class ComposerJob extends Job {
 				});
 				job.setUser(true);
 				job.schedule();
-			}
-		}
-	}
-	
-	private class MissingExecutableRunner implements Runnable {
-		@Override
-		public void run() {
-			try {
-				String PID = ComposerUIPlugin.PLUGIN_ID;
-				MultiStatus info = new MultiStatus(PID, IStatus.WARNING, "Missing php executable", null);
-				//TODO: find a way to link the corresponding PHP preference page in the dialog.
-				info.add(new Status(IStatus.WARNING, PID, "Executing composer.phar failed due to a missing php executable. \n\nPlease setup a PHP valid executable in the PHP preference page."));
-				ErrorDialog.openError(Display.getCurrent().getActiveShell(), "Composer job failed", "Unable to execute composer.phar", info);
-			} catch (Exception e2) {
-				Logger.logException(e2);
 			}
 		}
 	}
