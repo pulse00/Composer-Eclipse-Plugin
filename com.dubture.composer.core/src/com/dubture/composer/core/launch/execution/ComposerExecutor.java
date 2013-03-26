@@ -45,10 +45,16 @@ public class ComposerExecutor {
 
 		public void onProcessFailed(ExecuteException e) {
 			String response = errBuilder.toString();
+			String stdOutResponse = outBuilder.toString();
 			
 			super.onProcessFailed(e);
 			
 			for (ExecutionResponseListener handler : listeners) {
+				
+				if (stdOutResponse.length() > 0) {
+					response = stdOutResponse;
+				}
+				
 				handler.executionFailed(response, e);
 			}
 		}

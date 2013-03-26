@@ -20,7 +20,7 @@ public class SysComposer implements Environment {
 	}
 
 	public CommandLine getCommand() {
-		return new CommandLine(composer);
+		return new CommandLine(composer.trim());
 	}
 	
 }

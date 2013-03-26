@@ -64,7 +64,7 @@ import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
-import com.dubture.composer.ui.job.MissingExecutableRunner;
+import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {

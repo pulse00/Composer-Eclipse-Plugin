@@ -22,8 +22,8 @@ public class SysPhpSysPhar implements Environment {
 	}
 
 	public CommandLine getCommand() {
-		CommandLine cmd = new CommandLine(php);
-		cmd.addArgument(phar);
+		CommandLine cmd = new CommandLine(php.trim());
+		cmd.addArgument(phar.trim());
 		
 		return cmd;
 	}

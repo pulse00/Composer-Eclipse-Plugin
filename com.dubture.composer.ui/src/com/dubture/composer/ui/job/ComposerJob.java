@@ -21,6 +21,8 @@ import com.dubture.composer.core.launch.ExecutableNotFoundException;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
+import com.dubture.composer.ui.job.runner.ComposerFailureMessageRunner;
+import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
 
 abstract public class ComposerJob extends Job {
 	
@@ -75,18 +77,7 @@ abstract public class ComposerJob extends Job {
 			launcher.addResponseListener(new ConsoleResponseHandler());
 			launcher.addResponseListener(new ExecutionResponseAdapter() {
 				public void executionFailed(final String response, final Exception exception) {
-					
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							monitor.done();
-							ComposerLauncher.reserEnvironment();
-							String message = "Launching composer failed. See the .metadata/.log file in your workspace for details.";
-							if (response != null && response.length() > 0) {
-								message = response.trim();
-							}
-							MessageDialog.openError(Display.getCurrent().getActiveShell(), "Composer execution failed", message);
-						};
-					});
+					Display.getDefault().asyncExec(new ComposerFailureMessageRunner(response, monitor));
 				}
 			});
 
