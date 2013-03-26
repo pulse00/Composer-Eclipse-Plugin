@@ -83,13 +83,8 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 			Iterator<Namespace> iterator = psr0.iterator();
 
 			while (iterator.hasNext()) {
-<<<<<<< HEAD
-				Namespace next = iterator.next();
-				elements.add(new NamespaceModel(next.getNamespace(), next));
-=======
 				Namespace namespace = iterator.next();
 				elements.add(new NamespaceModel(namespace.getNamespace(), namespace));
->>>>>>> Added json editor /w sync - yeah! And fixing keywords and license
 			}
 
 			return elements.toArray();

@@ -253,12 +253,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			saving = true;
-			System.out.println("Saving");
 			IDocument document = documentProvider.getDocument(getEditorInput());
 			
 			// load from json editor when currently active
 			if (getActivePage() == jsonEditorIndex) {
-				System.out.println("Load from json");
 				String json = document.get();
 				if (jsonDump != null && !jsonDump.equals(json)) {
 					composerPackage.fromJson(json);
@@ -266,7 +264,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 				jsonDump = json;
 			}
 			
-			
+			// write
 			documentProvider.aboutToChange(getEditorInput());
 			document.set(composerPackage.toJson());
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
