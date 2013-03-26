@@ -16,6 +16,7 @@ import com.dubture.composer.core.launch.environment.Environment;
 import com.dubture.composer.core.launch.environment.EnvironmentFactory;
 import com.dubture.composer.core.launch.execution.ComposerExecutor;
 import com.dubture.composer.core.launch.execution.ExecutionResponseListener;
+import com.dubture.composer.core.log.Logger;
 
 public class ComposerLauncher {
 
@@ -65,6 +66,8 @@ public class ComposerLauncher {
 		cmd.addArguments(params);
 		
 		executor = new ComposerExecutor();
+		
+		Logger.debug("Setting executor working directory to " + project.getLocation().toOSString());
 		executor.setWorkingDirectory(project.getLocation().toFile());
 		
 		for (ExecutionResponseListener listener : listeners) {

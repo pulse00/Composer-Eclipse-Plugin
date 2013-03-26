@@ -13,6 +13,8 @@ import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.PumpStreamHandler;
 
+import com.dubture.composer.core.log.Logger;
+
 public class ComposerExecutor {
 
 	private DefaultExecutor executor;
@@ -85,41 +87,42 @@ public class ComposerExecutor {
 		execute(CommandLine.parse(cmd));
 	}
 
-	public void execute(CommandLine cmd) throws ExecuteException, IOException, InterruptedException {
-		for (ExecutionResponseListener handler : listeners) {
-			handler.executionAboutToStart();
-		}
-		
-		String executable = cmd.getExecutable();
-		
-		
-		outBuilder = new StringBuilder();
-		errBuilder = new StringBuilder();
+	public void execute(CommandLine cmd) {
 		
 		Thread outThread = new Thread(new Reader(out));
 		Thread errThread = new Thread(new Reader(err));
 		
-		outThread.start();
-		errThread.start();
-		
-		if (cmd.getExecutable() == null || cmd.getExecutable().contains("which")) {
-
+		try {
 			for (ExecutionResponseListener handler : listeners) {
-				handler.executionError("Invalid executable");
+				handler.executionAboutToStart();
 			}
 			
-			return;
+			outBuilder = new StringBuilder();
+			errBuilder = new StringBuilder();
+			
+			outThread.start();
+			errThread.start();
+			
+			Logger.debug("executing command using executable: " + cmd.getExecutable());
+			executor.execute(cmd, handler);
+			
+			for (ExecutionResponseListener handler : listeners) {
+				handler.executionStarted();
+			}
+			
+			handler.waitFor();
+		} catch (Exception e) {
+			for (ExecutionResponseListener handler : listeners) {
+				handler.executionFailed("", e);
+			}
+		} finally {
+			if (outThread != null) {
+				outThread.interrupt();
+			}
+			if (errThread != null) {
+				errThread.interrupt();
+			}
 		}
-		
-		executor.execute(cmd, handler);
-		
-		for (ExecutionResponseListener handler : listeners) {
-			handler.executionStarted();
-		}
-		
-		handler.waitFor();
-		outThread.interrupt();
-		errThread.interrupt();
 	}
 	
 	public void abort() {
