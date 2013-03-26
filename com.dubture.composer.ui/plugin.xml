@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-
-
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -16,40 +13,6 @@
                style="push">
          </command>
       </menuContribution>
-      <!--<menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
-               icon="icons/full/obj16/composer.png"
-               id="com.dubture.composer.ui.menu"
-               label="Composer">
-            <command
-                  commandId="com.dubture.composer.ui.command.install"
-                  label="Install dependencies"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.ui.command.update"
-                  label="Update dependencies"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.ui.command.adddependency"
-                  label="Add dependency"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.ui.command.graph"
-                  label="Dependency Graph"
-                  style="push">
-            </command>
-            <command
-                  commandId="com.dubture.composer.ui.command.init"
-                  label="Initialize composer"
-                  style="push">
-            </command>
-         </menu>
-      </menuContribution>-->
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -95,8 +58,6 @@
             restorable="true">
       </view>
    </extension>
-	<!-- disabled until the BuildPathContainer management works properly -->
-   <!--
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
@@ -106,7 +67,6 @@
             name="Composer">
       </page>
    </extension>
-   -->
    <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
       <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider"

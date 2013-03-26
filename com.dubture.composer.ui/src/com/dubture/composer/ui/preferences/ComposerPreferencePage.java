@@ -1,69 +1,86 @@
 package com.dubture.composer.ui.preferences;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
+import org.eclipse.php.internal.ui.preferences.PropertyAndPreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
-import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.ComposerPlugin;
 
-public class ComposerPreferencePage extends PreferencePage implements
-        IWorkbenchPreferencePage
-{
-    private BooleanFieldEditor buildpathEnabled;
+@SuppressWarnings("restriction")
+public class ComposerPreferencePage extends PropertyAndPreferencePage {
+	
+	public static final String PREF_ID = "com.dubture.composer.ui.preferences.ComposerPreferencePage";
+	public static final String PROP_ID = "com.dubture.composer.ui.propertyPages.ComposerPreferencePage";
 
-    public ComposerPreferencePage()
-    {
-        setTitle("Composer");
-        setDescription("Composer settings");
-        
-        setPreferenceStore(ComposerPlugin.getDefault().getPreferenceStore());
-//        String[] packageNames = ModelAccess.getInstance().getPackageManager().getPackageNames();
+	private ComposerConfigurationBlock configurationBlock;
 
-    }
+	public ComposerPreferencePage() {
+		setTitle("Composer");
+		setDescription("Composer settings");
 
-    @Override
-    public void init(IWorkbench workbench)
-    {
-        // TODO Auto-generated method stub
-    }
-    
-    @Override
-    public IPreferenceStore getPreferenceStore()
-    {
-        return ComposerPlugin.getDefault().getPreferenceStore();
-    }
+		setPreferenceStore(ComposerPlugin.getDefault().getPreferenceStore());
+		// String[] packageNames =
+		// ModelAccess.getInstance().getPackageManager().getPackageNames();
 
-    @Override
-    protected Control createContents(Composite parent)
-    {
-        Composite composite = new Composite(parent, SWT.NONE);
-        composite.setFont(parent.getFont());
-        
-        buildpathEnabled = new BooleanFieldEditor(ComposerConstants.PREF_BUILDPATH_ENABLE, "Enable buildpath management for composer packages (experimental)", composite);
-        buildpathEnabled.setPreferenceStore(getPreferenceStore());
-        buildpathEnabled.load();
-        
-        Dialog.applyDialogFont(composite);
-        return composite;        
-    }
-    
-    @Override
-    protected void performDefaults()
-    {
-        buildpathEnabled.loadDefault();
-    }
-    
-    @Override
-    public boolean performOk()
-    {
-        buildpathEnabled.store();
-        return true;
-    }
+	}
+
+	@Override
+	public void createControl(Composite parent) {
+
+		IWorkbenchPreferenceContainer container = (IWorkbenchPreferenceContainer) getContainer();
+		configurationBlock = new ComposerConfigurationBlock(getNewStatusChangedListener(), getProject(), container);
+
+		super.createControl(parent);
+
+	}
+
+	@Override
+	public void init(IWorkbench workbench) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public IPreferenceStore getPreferenceStore() {
+		return ComposerPlugin.getDefault().getPreferenceStore();
+	}
+
+	@Override
+	protected void performDefaults() {
+		super.performDefaults();
+		if (configurationBlock != null) {
+			configurationBlock.performDefaults();
+		}
+	}
+
+	@Override
+	public boolean performOk() {
+		if (configurationBlock != null && !configurationBlock.performOk()) {
+			return false;
+		}
+		return super.performOk();
+	}
+	
+	@Override
+	protected Control createPreferenceContent(Composite composite) {
+		return configurationBlock.createContents(composite);
+	}
+	
+	@Override
+	protected boolean hasProjectSpecificOptions(IProject project) {
+		return configurationBlock.hasProjectSpecificOptions(project);
+	}
+
+	@Override
+	protected String getPreferencePageID() {
+		return PREF_ID;
+	}
+
+	@Override
+	protected String getPropertyPageID() {
+		return PROP_ID;
+	}
 }
