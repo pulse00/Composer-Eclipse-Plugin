@@ -94,9 +94,16 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 		} else {
 
 			Namespace toBeRemoved = null;
+<<<<<<< HEAD
 			for (Namespace nsp : composerPackage.getAutoload().getPsr0()) {
 				if (namespaceName.equals(nsp.getNamespace())) {
 					toBeRemoved = nsp;
+=======
+			for (Namespace namespace : composerPackage.getAutoload().getPsr0()) {
+
+				if (namespaceName.equals(namespace.getNamespace())) {
+					toBeRemoved = namespace;
+>>>>>>> Added json editor /w sync - yeah! And fixing keywords and license
 					break;
 				}
 			}

@@ -29,10 +29,14 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.console,
  org.apache.commons.collections,
  org.getcomposer.core,
+<<<<<<< HEAD
  org.eclipse.php.core,
  org.eclipse.wst.common.project.facet.core,
  org.pdtextensions.core.ui,
  org.eclipse.help
+=======
+ org.sourceforge.jsonedit.core
+>>>>>>> Added json editor /w sync - yeah! And fixing keywords and license
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: com.dubture.composer.ui,

@@ -122,8 +122,13 @@ public class BuildpathParser {
 			Autoload a = p.getAutoload();
 			
 			// psr first
+<<<<<<< HEAD
 			for (Namespace ns : a.getPsr0()) {
 				for (Object path : ns.getPaths()) {
+=======
+			for (Namespace namespace : a.getPsr0()) {
+				for (Object path : namespace.getPaths()) {
+>>>>>>> Added json editor /w sync - yeah! And fixing keywords and license
 					paths.add(vendor + "/" + p.getName() + "/" + path);
 				}
 			}

@@ -70,10 +70,6 @@ public class OverviewPage extends ComposerFormPage {
 		new AuthorSection(this, left);
 		new SupportSection(this, left);
 		
-//		createGeneralSection(left, toolkit);
-//		createAuthorsSection(left, toolkit);
-//		createSupportSection(left, toolkit);
-		
 		right = toolkit.createComposite(form.getBody());
 		right.setLayout(new TableWrapLayout());
 		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));

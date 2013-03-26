@@ -100,20 +100,23 @@ public class GeneralSection extends ComposerSection {
 		final FormEntry keywordsEntry = new FormEntry(client, toolkit, "Keywords", null, false);
 		
 		final Keywords2StringConverter converter = new Keywords2StringConverter();
-		
 		keywordsEntry.setValue(converter.convert(composerPackage.getKeywords()), true);
 		
 		keywordsEntry.addFormEntryListener(new FormEntryAdapter() {
+			String2KeywordsConverter converter;
+			public void focusGained(FormEntry entry) {
+				converter = new String2KeywordsConverter(composerPackage);
+			}
+			
 			public void focusLost(FormEntry entry) {
-				String2KeywordsConverter converter = new String2KeywordsConverter();
-				converter.setComposerPackage(composerPackage);
 				converter.convert(entry.getValue());
-//				composerPackage.set("keywords", converter.convert(entry.getValue()));
 			}
 		});
-		composerPackage.addPropertyChangeListener("keywords", new PropertyChangeListener() {
+		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
-				keywordsEntry.setValue(converter.convert(composerPackage.getKeywords()), true);
+				if (e.getPropertyName().startsWith("keywords")) {
+					keywordsEntry.setValue(converter.convert(composerPackage.getKeywords()), true);
+				}
 			}
 		});
 	}
@@ -138,24 +141,25 @@ public class GeneralSection extends ComposerSection {
 		final FormEntry licenseEntry = new FormEntry(client, toolkit, "License", null, false);
 		
 		final License2StringConverter converter = new License2StringConverter();
-		
 		licenseEntry.setValue(converter.convert(composerPackage.getLicense()), true);
 		
-		
 		licenseEntry.addFormEntryListener(new FormEntryAdapter() {
+			String2LicenseConverter converter;
+			public void focusGained(FormEntry entry) {
+				converter = new String2LicenseConverter(composerPackage);
+			}
+			
 			public void focusLost(FormEntry entry) {
-				String2LicenseConverter converter = new String2LicenseConverter();
-				converter.setComposerPackage(composerPackage);
-				converter.convert(entry.getValue());
-//				composerPackage.set("license", converter.convert(entry.getValue()));
+				converter.convert(entry.getValue());			
 			}
 		});
-		composerPackage.addPropertyChangeListener("license", new PropertyChangeListener() {
+		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
-				licenseEntry.setValue(converter.convert(composerPackage.getLicense()), true);
+				if (e.getPropertyName().startsWith("license")) {
+					licenseEntry.setValue(converter.convert(composerPackage.getLicense()), true);
+				}
 			}
 		});
-		
 	}
 	
 	private void createStabilityEntry(Composite client, FormToolkit toolkit) {
@@ -174,15 +178,4 @@ public class GeneralSection extends ComposerSection {
 			}
 		});
 	}
-	
-//	private void createBinding(String property, Control control) {
-//		createBinding(property, control, null, null);
-//	}
-//	
-//	private void createBinding(String property, Control control, UpdateValueStrategy control2model, UpdateValueStrategy model2control) {
-//		IObservableValue observedControl = WidgetProperties.text(SWT.Modify).observe((Text)control);
-//		IObservableValue observedValue = PojoProperties.value(property).observe(composerPackage);
-//		bindingContext.bindValue(observedControl, observedValue, control2model, model2control);
-//	}
-
 }

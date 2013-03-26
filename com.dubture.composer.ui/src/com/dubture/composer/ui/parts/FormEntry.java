@@ -272,6 +272,9 @@ public class FormEntry {
 	 * @param value
 	 */
 	public void setValue(String value) {
+		if (value == null)
+			value = "";
+
 		if (text != null && value != null && !value.equalsIgnoreCase(getValue()))
 			text.setText(value);
 	}

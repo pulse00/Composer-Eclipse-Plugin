@@ -7,11 +7,14 @@ import org.getcomposer.core.collection.JsonArray;
 public class Keywords2StringConverter extends Converter {
 
 	public Keywords2StringConverter() {
-		super(String[].class, String.class);
+		super(JsonArray.class, String.class);
 	}
 
 	@Override
 	public String convert(Object fromObject) {
+		if (fromObject == null) {
+			return "";
+		}
 		JsonArray keywords = (JsonArray)fromObject;
 		return StringUtils.join((String[])keywords.toArray(new String[]{}), ", ");
 	}

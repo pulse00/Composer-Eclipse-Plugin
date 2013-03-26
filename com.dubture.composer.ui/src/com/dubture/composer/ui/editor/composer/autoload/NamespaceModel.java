@@ -20,6 +20,10 @@ class NamespaceModel {
 		this.namespace = value;
 		
 		List<NamespacePath> paths = new ArrayList<NamespacePath>();
+<<<<<<< HEAD
+=======
+		
+>>>>>>> Added json editor /w sync - yeah! And fixing keywords and license
 		for (Object p: value.getPaths()) {
 			paths.add(new NamespacePath(this, (String) p));
 		}

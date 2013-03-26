@@ -9,7 +9,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -21,6 +23,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.getcomposer.core.ComposerPackage;
+import org.sourceforge.jsonedit.core.editors.JsonTextEditor;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.actions.InstallAction;
@@ -30,7 +33,7 @@ import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
 import com.dubture.composer.ui.editor.composer.autoload.AutoloadPage;
 
-public class ComposerFormEditor extends SharedHeaderFormEditor {
+public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener {
 	protected boolean dirty = false;
 	protected ComposerPackage composerPackage = null;
 	protected IDocumentProvider documentProvider;
@@ -44,16 +47,25 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	private IAction updateNoDevAction = null;
 	private IAction selfUpdateAction = null;
 	
+	private int jsonEditorIndex;
+	private int lastPageIndex = -1;
+	
 	protected OverviewPage overviewPage;
 	protected DependenciesPage dependenciesPage;
 	protected ConfigurationPage configurationPage;
+	protected AutoloadPage autoloadPage;
 	
 	// TODO JsonTextEditor some day...
+	protected JsonTextEditor jsonEditor = new JsonTextEditor();
 	protected ComposerTextEditor textEditor = new ComposerTextEditor();
-	private AutoloadPage autoloadPage; 
+
+	private String jsonDump;
+	private boolean saving = false;
 
 	public ComposerFormEditor() {
 		super();
+//		JsonTextEditor jsonEditor = new JsonTextEditor();
+//		jsonEditor.getDocumentProvider();
 		documentProvider = textEditor.getDocumentProvider();
 	}
 
@@ -62,6 +74,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		super.setInput(input);
 		try {
 			documentProvider.connect(input);
+			documentProvider.getDocument(getEditorInput()).addDocumentListener(this);
 			
 			// TODO some sort of listener to get notified when the file changes
 			//
@@ -99,6 +112,68 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		
 	}
 		
+	
+	
+	@Override
+	protected void createPages() {
+		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
+		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
+		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
+		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
+
+		super.createPages();
+	}
+
+	@Override
+	protected void addPages() {
+		try {
+			addPage(overviewPage);
+			addPage(dependenciesPage);
+			addPage(autoloadPage);
+			addPage(configurationPage);
+			jsonEditorIndex = addPage(jsonEditor, getEditorInput());
+			setPageText(jsonEditorIndex, jsonEditor.getTitle());
+			
+			
+
+//			addDependencyGraph();
+//			setActivePage(DependenciesPage.ID);
+
+			// Aww, can't use jsonedit here :(
+			// addPage(new JsonTextEditor(), getEditorInput());
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	protected void pageChange(int newPageIndex) {
+		// change page first
+		super.pageChange(newPageIndex);
+		
+		// react to it
+		if (getActiveEditor() == jsonEditor) {
+			IDocument document = documentProvider.getDocument(getEditorInput());
+			jsonDump = composerPackage.toJson();
+			document.set(jsonDump);
+			
+			getHeaderForm().getForm().setText(jsonEditor.getTitle());
+		}
+		
+		if (lastPageIndex != -1 && lastPageIndex == jsonEditorIndex) {
+			String json = documentProvider.getDocument(jsonEditor.getEditorInput()).get();
+			if (jsonDump != null && !jsonDump.equals(json)) {
+				composerPackage.fromJson(json);
+			}
+		}
+		
+		lastPageIndex = newPageIndex;
+	}
+	
+//	protected void addDependencyGraphPage() throws PartInitException {
+//		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
+//	}
+
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
 		ScrolledForm header = headerForm.getForm();
@@ -175,47 +250,30 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		return selfUpdateAction;
 	}
 	
-	@Override
-	protected void createPages() {
-		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
-		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
-		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
-		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
-
-		super.createPages();
-	}
-
-	@Override
-	protected void addPages() {
-		try {
-			addPage(overviewPage);
-			addPage(dependenciesPage);
-			addPage(autoloadPage);
-			addPage(configurationPage);
-
-//			addDependencyGraph();
-//			setActivePage(DependenciesPage.ID);
-
-			// Aww, can't use jsonedit here :(
-			// addPage(new JsonTextEditor(), getEditorInput());
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
-	
-//	protected void addDependencyGraphPage() throws PartInitException {
-//		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
-//	}
-
 	public void doSave(IProgressMonitor monitor) {
 		try {
+			saving = true;
+			System.out.println("Saving");
 			IDocument document = documentProvider.getDocument(getEditorInput());
+			
+			// load from json editor when currently active
+			if (getActivePage() == jsonEditorIndex) {
+				System.out.println("Load from json");
+				String json = document.get();
+				if (jsonDump != null && !jsonDump.equals(json)) {
+					composerPackage.fromJson(json);
+				}
+				jsonDump = json;
+			}
+			
+			
 			documentProvider.aboutToChange(getEditorInput());
 			document.set(composerPackage.toJson());
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
 			documentProvider.changed(getEditorInput());
 
 			setDirty(false);
+			saving = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -228,6 +286,18 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		return false;
 	}
 
+	@Override
+	public void documentAboutToBeChanged(DocumentEvent event) {
+
+	}
+
+	@Override
+	public void documentChanged(DocumentEvent event) {
+		if (!saving && jsonDump != null && !jsonDump.equals(event.getDocument().get())) {
+			setDirty(true);
+		}
+	}
+	
 	public boolean isDirty() {
 		return this.dirty;
 	}
@@ -244,5 +314,4 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	public ComposerPackage getComposerPackge() {
 		return composerPackage;
 	}
-	
 }

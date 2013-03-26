@@ -147,7 +147,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 	@Override
 	public void propertyChange(PropertyChangeEvent e) {
 		if (e.getPropertyName().startsWith("authors")) {
-			refresh();
+//			refresh();
 		}
 	}
 	

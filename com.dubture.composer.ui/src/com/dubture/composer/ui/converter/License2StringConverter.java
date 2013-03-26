@@ -1,7 +1,5 @@
 package com.dubture.composer.ui.converter;
 
-import java.util.ArrayList;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.conversion.Converter;
 import org.getcomposer.core.collection.License;
@@ -14,17 +12,11 @@ public class License2StringConverter extends Converter {
 
 	@Override
 	public String convert(Object fromObject) {
-		ArrayList<String> list = new ArrayList<String>();
-		License licenses = (License)fromObject;
-		for (String license : licenses) {
-			list.add(license);
-		}
-		
-		if (list.size() == 0) {
+		if (fromObject == null) {
 			return "";
 		}
-		
-		return StringUtils.join(list.toArray(), ", ");
+		License licenses = (License)fromObject;
+		return StringUtils.join((String[])licenses.toArray(new String[]{}), ", ");
 	}
 
 }

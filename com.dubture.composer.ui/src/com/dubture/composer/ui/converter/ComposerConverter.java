@@ -23,5 +23,8 @@ public abstract class ComposerConverter extends Converter {
 	 */
 	public void setComposerPackage(ComposerPackage composerPackage) {
 		this.composerPackage = composerPackage;
+		composerPackageUpdated();
 	}
+	
+	protected abstract void composerPackageUpdated();
 }
