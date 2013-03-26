@@ -6,9 +6,11 @@ import org.eclipse.php.internal.ui.preferences.PropertyAndPreferencePage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.ui.ComposerUIPlugin;
 
 @SuppressWarnings("restriction")
 public class ComposerPreferencePage extends PropertyAndPreferencePage {
@@ -21,10 +23,7 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 	public ComposerPreferencePage() {
 		setTitle("Composer");
 		setDescription("Composer settings");
-
 		setPreferenceStore(ComposerPlugin.getDefault().getPreferenceStore());
-		// String[] packageNames =
-		// ModelAccess.getInstance().getPackageManager().getPackageNames();
 
 	}
 
@@ -62,6 +61,11 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 			return false;
 		}
 		return super.performOk();
+	}
+	
+	@Override
+	public void performHelp() {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
 	}
 	
 	@Override
