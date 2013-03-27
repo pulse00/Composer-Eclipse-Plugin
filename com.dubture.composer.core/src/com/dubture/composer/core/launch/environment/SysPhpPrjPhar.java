@@ -9,7 +9,10 @@ public class SysPhpPrjPhar extends PrjPharEnvironment implements Environment {
 	public SysPhpPrjPhar() {
 		php = EnvironmentFinder.findPhp();
 	}
-	
+	public SysPhpPrjPhar(String executable) {
+		php = executable;
+	}
+
 	public boolean isAvailable() {
 		return php != null;
 	}

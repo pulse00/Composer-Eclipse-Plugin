@@ -1,9 +1,12 @@
 package com.dubture.composer.core.launch.environment;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
+import com.dubture.composer.core.preferences.PreferencesSupport;
 
 public class EnvironmentFactory {
 
@@ -14,11 +17,19 @@ public class EnvironmentFactory {
 	public static final int ENV_PDT_PHP_PRJ_PHAR = 5;
 	
 	
-	public static Environment getEnvironment() {
+	public static Environment getEnvironment(IProject project) {
+		
 		IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
 		int env = prefs.getInt(ComposerConstants.PREF_ENVIRONMENT);
 		
 		Environment e;
+		
+		PreferencesSupport prefSupport = new PreferencesSupport(ComposerPlugin.ID, prefs);
+		String executable = prefSupport.getPreferencesValue(Keys.PHP_EXECUTABLE, null, project);
+		
+		if (executable != null) {
+			return new SysPhpPrjPhar(executable);
+		}
 		
 		// preference for environment found
 		if (env > 0 && env <= 5) {

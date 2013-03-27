@@ -230,13 +230,27 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
 	
 	@Override
 	public boolean performApply() {
-		setValue(PHP_EXECUTABLE, exes.getText());
+		saveExecutable();
 		return super.performApply();
 	}
 	
 	@Override
 	public boolean performOk() {
-		setValue(PHP_EXECUTABLE, exes.getText());
+		saveExecutable();
 		return super.performOk();
+	}
+	
+	protected void saveExecutable() {
+		
+		String selected = exes.getText();
+		String executable = null;
+		
+		for (PHPexeItem exe : phpExes.getAllItems()) {
+			if (exe.getName().equals(selected)) {
+				executable = exe.getExecutable().getAbsolutePath();
+			}
+		}
+
+		setValue(PHP_EXECUTABLE, executable);
 	}
 }
