@@ -44,9 +44,9 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
 	private Button testButton;
 	private PHPexes phpExes;
 
-	public ComposerConfigurationBlock(IStatusChangeListener newStatusChangedListener, IProject project,
-			IWorkbenchPreferenceContainer container) {
-		super(newStatusChangedListener, project, getKeys(), container);
+	public ComposerConfigurationBlock(IStatusChangeListener context,
+			IProject project, IWorkbenchPreferenceContainer container) {
+		super(context, project, getKeys(), container);
 	}
 
 	@Override
@@ -62,13 +62,13 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
         Label header = new Label(parent, SWT.WRAP | SWT.BORDER);
         header.setText("Select the php binary to be used for executing composer phars.");
         header.setLayoutData(data);
-        Composite markersComposite = createMarkersTabContent(parent);
+        Composite markersComposite = createInnerContent(parent);
         validateSettings(null, null, null);
 
         return markersComposite;
 	}
 	
-    private Composite createMarkersTabContent(Composite folder) {
+    private Composite createInnerContent(Composite folder) {
     	
 		Composite inner = new Composite(folder, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -92,7 +92,7 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
 				try {
 					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(e.text));
 				} catch (Exception e1) {
-					e1.printStackTrace();
+					Logger.logException(e1);
 				}
 			};
 		});
@@ -145,7 +145,16 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
     		@Override
     		public void widgetSelected(SelectionEvent e) {
     			try {
-	    			PHPexeItem phPexeItem = phpExes.getItem(exes.getText());
+    				String current = exes.getText();
+    				PHPexeItem phPexeItem = null;
+    				
+    				for(PHPexeItem i : phpExes.getAllItems()) {
+    					if (current.equals(i.getName())) {
+    						phPexeItem = i;
+    						break;
+    					}
+    				}
+	    			
 	    			if (phPexeItem == null) {
 	    				Logger.log(Logger.WARNING, "No executable selected");
 	    				return;
@@ -218,5 +227,16 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock {
 	protected final static Key getComposerCoreKey(String key) {
 		return getKey(ComposerPlugin.ID, key);
 	}
-
+	
+	@Override
+	public boolean performApply() {
+		setValue(PHP_EXECUTABLE, exes.getText());
+		return super.performApply();
+	}
+	
+	@Override
+	public boolean performOk() {
+		setValue(PHP_EXECUTABLE, exes.getText());
+		return super.performOk();
+	}
 }

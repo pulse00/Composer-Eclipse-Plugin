@@ -30,7 +30,7 @@ public class ExecutableTester implements Runnable {
 		
 		try {
 			ComposerExecutor executor = new ComposerExecutor();
-			CommandLine cmd = new CommandLine(phPexeItem.getName());
+			CommandLine cmd = new CommandLine(phPexeItem.getExecutable());
 			cmd.addArgument("testexecutable");
 			
 			Bundle bundle = Platform.getBundle(ComposerUIPlugin.PLUGIN_ID);
