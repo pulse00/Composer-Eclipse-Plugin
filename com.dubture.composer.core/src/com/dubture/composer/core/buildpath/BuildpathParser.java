@@ -146,6 +146,16 @@ public class BuildpathParser {
 			}
 		}
 		
+		Autoload autoload = composer.getAutoload();
+		
+		for (Namespace namespace : autoload.getPsr0()) {
+			for (Object path : namespace.getPaths()) {
+				paths.add("/" + project.getName() + "/" + path);
+			}
+		}
+		
+		
+		paths.add("/" + project.getName() + "/vendor/composer");
 		return paths;
 	}
 	

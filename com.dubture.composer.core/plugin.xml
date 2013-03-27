@@ -12,6 +12,9 @@
                class="com.dubture.composer.core.ComposerNature">
          </run>
       </runtime>
+      <builder
+            id="com.dubture.composer.core.builder.buildPathManagementBuilder">
+      </builder>
    </extension>
    <extension
          id="com.dubture.composer.core.builder.buildPathManagementBuilder"
@@ -19,8 +22,7 @@
          point="org.eclipse.core.resources.builders">
       <builder
             callOnEmptyDelta="false"
-            hasNature="true"
-            isConfigurable="true">
+            hasNature="true">
          <run
                class="com.dubture.composer.core.builder.ComposerBuildPathManagementBuilder">
          </run>
