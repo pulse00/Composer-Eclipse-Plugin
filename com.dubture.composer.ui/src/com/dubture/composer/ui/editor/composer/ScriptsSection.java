@@ -31,6 +31,7 @@ import org.getcomposer.core.collection.JsonArray;
 import org.getcomposer.core.objects.Scripts;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.controller.ScriptsController;
 import com.dubture.composer.ui.dialogs.ScriptDialog;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
@@ -48,101 +49,6 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 	private static final int ADD_INDEX = 0;
 	private static final int EDIT_INDEX = 1;
 	private static final int REMOVE_INDEX = 2;
-
-	class ScriptsController extends StyledCellLabelProvider implements ITreeContentProvider {
-
-		private Scripts scripts;
-		private Image eventImage = ComposerUIPluginImages.EVENT.createImage();
-		private Image scriptImage = ComposerUIPluginImages.SCRIPT.createImage();
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			scripts = (Scripts)newInput;
-		}
-		
-		public String getText(Object element) {
-			return element.toString();
-		}
-		
-		public void update(ViewerCell cell) {
-			Object obj = cell.getElement();
-			String text = getText(obj);
-			
-			StyledString styledString = new StyledString(text);
-			
-			if (Arrays.asList(Scripts.getEvents()).contains(text)) {
-				int count = composerPackage.getScripts().getAsArray(text).size();
-				styledString.append(" (" + count + ")", StyledString.COUNTER_STYLER);
-				
-				cell.setImage(eventImage);
-			} else {
-				cell.setImage(scriptImage); 
-			}
-			
-			cell.setText(styledString.toString());
-			cell.setStyleRanges(styledString.getStyleRanges());
-			
-			super.update(cell);
-		}
-
-		@Override
-		public Object[] getElements(Object inputElement) {
-			return getChildren(inputElement);
-		}
-		
-		@Override
-		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof Scripts) {
-				Scripts scripts = (Scripts) parentElement;
-				List<String> children = new ArrayList<String>();
-				
-				for (String event : Scripts.getEvents()) {
-					if (scripts.has(event)) {
-						children.add(event);
-					}
-				}
-				
-				return children.toArray();
-			} else {
-				String text = parentElement.toString();
-				if (Arrays.asList(Scripts.getEvents()).contains(text)) {
-					return scripts.getAsArray(text).toArray();
-				}
-			}
-			
-			return new Object[]{};
-		}
-
-		@Override
-		public Object getParent(Object element) {
-			TreeItem item = null;
-			for (TreeItem ri : scriptsViewer.getTree().getItems()) {
-				for (TreeItem i : ri.getItems()) {
-					if (i.getData() == element) {
-						item = i;
-						break;
-					}
-				}
-			}
-			
-			if (item != null) {
-				TreeItem parent = item.getParentItem();
-				if (parent == null) {
-					return scripts;
-				}
-				
-				if (parent.getData() != null) {
-					return parent.getData();
-				}
-				
-			}
-			return null;
-		}
-
-		@Override
-		public boolean hasChildren(Object element) {
-			return getChildren(element).length > 0;
-		}
-	}
 	
 	public ScriptsSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION, new String[]{"Add...", "Edit...", "Remove"});

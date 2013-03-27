@@ -61,7 +61,7 @@ public class PackageController extends StyledCellLabelProvider implements IStruc
 	
 	public static Image getPackageImage(Object element) {
 		String name = PackageController.getPackageName(element);
-		if (name == "php") {
+		if (name.startsWith("php") || name.startsWith("ext-")) {
 			return phpImage;
 		}
 		return pkgImage;
@@ -87,9 +87,6 @@ public class PackageController extends StyledCellLabelProvider implements IStruc
 	
 	public void clear() {
 		checked.clear();
-//		for (String name : checked) {
-//			setChecked(name, false);
-//		}
 	}
 	
 	public void setChecked(String name, boolean checked) {

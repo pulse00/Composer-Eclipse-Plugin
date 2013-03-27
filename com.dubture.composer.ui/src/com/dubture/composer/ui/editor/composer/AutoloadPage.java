@@ -1,5 +1,7 @@
-package com.dubture.composer.ui.editor.composer.autoload;
+package com.dubture.composer.ui.editor.composer;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -8,7 +10,7 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
-import com.dubture.composer.ui.editor.composer.ComposerFormEditor;
+import com.dubture.composer.ui.editor.FormLayoutFactory;
 
 public class AutoloadPage extends ComposerFormPage {
 
@@ -38,20 +40,18 @@ public class AutoloadPage extends ComposerFormPage {
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
 
-		TableWrapLayout layout = new TableWrapLayout();
-		layout.makeColumnsEqualWidth = true;
-		layout.numColumns = 2;
-		form.getBody().setLayout(layout);
+		form.getBody().setLayout(FormLayoutFactory.createFormGridLayout(true, 2));
 		
-		left = toolkit.createComposite(form.getBody());
-		left.setLayout(new TableWrapLayout());
-		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		
+		left = toolkit.createComposite(form.getBody(), SWT.NONE);
+		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		left.setLayoutData(new GridData(GridData.FILL_BOTH));
+				
 		new Psr0Section(this, left);
 		
-		right = toolkit.createComposite(form.getBody());
-		right.setLayout(new TableWrapLayout());
-		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		right = toolkit.createComposite(form.getBody(), SWT.NONE);
+		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		right.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
 		
 	}	
 }

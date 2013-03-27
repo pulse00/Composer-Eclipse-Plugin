@@ -1,12 +1,9 @@
-package com.dubture.composer.ui.editor.composer.autoload;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+package com.dubture.composer.ui.controller;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
@@ -16,25 +13,24 @@ import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 
-class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeContentProvider {
+public class Psr0Controller extends StyledCellLabelProvider implements ITreeContentProvider {
 
-	private final Psr0Section psr0Section;
-
-	/**
-	 * @param psr0Section
-	 */
-	Psr0ContentProvider(Psr0Section psr0Section) {
-		this.psr0Section = psr0Section;
-	}
+	
 
 	private Psr0 psr0;
 	private Image namespaceImage = ComposerUIPluginImages.NAMESPACE.createImage();
-	private Image pathsImage = ComposerUIPluginImages.PACKAGE_FOLDER.createImage();
+	private Image pathImage = ComposerUIPluginImages.PACKAGE_FOLDER.createImage();
+	
+	private TreeViewer viewer;
 
+	public Psr0Controller(TreeViewer viewer) {
+		this.viewer = viewer;
+	}
+	
 	public String getText(Object element) {
 		
-		if (element instanceof NamespaceModel && element.toString().length() == 0) {
-			return "[Fallback Namespace]";
+		if (element instanceof Namespace) {
+			return ((Namespace)element).getNamespace();
 		}
 		
 		return element.toString();
@@ -43,7 +39,6 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		psr0 = (Psr0) newInput;
-
 	}
 
 	public void update(ViewerCell cell) {
@@ -52,13 +47,12 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 
 		StyledString styledString = new StyledString(text);
 
-		if (obj instanceof NamespaceModel) {
-			NamespaceModel model = (NamespaceModel) obj;
-			int count = model.namespace.size();
-			styledString.append(" (" + count + ")", StyledString.COUNTER_STYLER);
+		if (obj instanceof Namespace) {
+			Namespace namespace = (Namespace) obj;
+			styledString.append(" (" + namespace.size() + ")", StyledString.COUNTER_STYLER);
 			cell.setImage(namespaceImage);
 		} else {
-			cell.setImage(pathsImage);
+			cell.setImage(pathImage);
 		}
 
 		cell.setText(styledString.toString());
@@ -74,22 +68,11 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-
 		if (parentElement instanceof Psr0) {
 			Psr0 psr0 = (Psr0) parentElement;
-
-			List<NamespaceModel> elements = new ArrayList<NamespaceModel>();
-
-			Iterator<Namespace> iterator = psr0.iterator();
-
-			while (iterator.hasNext()) {
-				Namespace namespace = iterator.next();
-				elements.add(new NamespaceModel(namespace.getNamespace(), namespace));
-			}
-
-			return elements.toArray();
-		} else if (parentElement instanceof NamespaceModel) {
-			NamespaceModel model = (NamespaceModel) parentElement;
+			return psr0.getNamespaces().toArray();
+		} else if (parentElement instanceof Namespace) {
+			Namespace model = (Namespace) parentElement;
 			return model.getPaths().toArray();
 		}
 
@@ -99,7 +82,7 @@ class Psr0ContentProvider extends StyledCellLabelProvider implements ITreeConten
 	@Override
 	public Object getParent(Object element) {
 		TreeItem item = null;
-		for (TreeItem ri : this.psr0Section.psr0Viewer.getTree().getItems()) {
+		for (TreeItem ri : viewer.getTree().getItems()) {
 			for (TreeItem i : ri.getItems()) {
 				if (i.getData() == element) {
 					item = i;

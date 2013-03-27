@@ -1,43 +1,62 @@
 package com.dubture.composer.ui.dialogs;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
+import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.controller.PathController;
+import com.dubture.composer.ui.utils.WidgetHelper;
 
 public class Psr0Dialog extends Dialog {
 
 	private Text namespaceControl;
-	private Text pathsControl;
 	
-	private String namespace;
-	private String paths;
+	private Namespace namespace;
+	private IProject project;
 	
-	private boolean namespaceEnabled = true;
-	private boolean pathsEnabled = true;
-	
-	public Psr0Dialog(Shell parentShell) {
+	private TableViewer pathViewer;
+
+	public Psr0Dialog(Shell parentShell, Namespace namespace, IProject project) {
 		super(parentShell);
+		this.namespace = namespace;
+		this.project = project;
 	}
-	
+
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		
-		getShell().setText("Edit psr-0 entry");
+		getShell().setText("Edit Namespace");
 		getShell().setImage(ComposerUIPluginImages.EVENT.createImage());
 		
 		Composite contents = new Composite(parent, SWT.NONE);
-		contents.setLayout(new GridLayout(2, false));
+		contents.setLayout(new GridLayout(3, false));
+		GridData gd_contents = new GridData();
+		gd_contents.widthHint = 350;
+		contents.setLayoutData(gd_contents);
+		
 		
 		Label lblEvent = new Label(contents, SWT.NONE);
 		GridData gd_lblEvent = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
@@ -46,57 +65,98 @@ public class Psr0Dialog extends Dialog {
 		lblEvent.setText("Namespace");
 		
 		namespaceControl = new Text(contents, SWT.BORDER);
-		namespaceControl.setEnabled(pathsEnabled);
-		GridData gd_eventControl = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		GridData gd_eventControl = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 		gd_eventControl.widthHint = ComposerUIPluginConstants.DIALOG_CONTROL_WIDTH;
 		namespaceControl.setLayoutData(gd_eventControl);
 		
+		if (namespace.getNamespace() != null) {
+			namespaceControl.setText(namespace.getNamespace());
+		}
+		
 		namespaceControl.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				namespace = namespaceControl.getText();
+				namespace.setNamespace(namespaceControl.getText());
 			}
 		});
 		
-		if (namespace != null) {
-			namespaceControl.setText(namespace);
-		}
 		
 		Label lblHandler = new Label(contents, SWT.NONE);
-		lblHandler.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		lblHandler.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		lblHandler.setText("Paths");
 		
-		pathsControl = new Text(contents, SWT.BORDER);
-		pathsControl.setEnabled(namespaceEnabled);
-		pathsControl.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		pathsControl.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent e) {
-				paths = pathsControl.getText();
+		PathController controller = new PathController();
+		pathViewer = new TableViewer(contents, SWT.BORDER | SWT.FULL_SELECTION);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+		gridData.minimumHeight = 100;
+		pathViewer.getTable().setLayoutData(gridData);
+		pathViewer.setContentProvider(controller);
+		pathViewer.setLabelProvider(controller);
+		pathViewer.setInput(namespace.getPaths());
+		
+		Composite buttons = new Composite(contents, SWT.NONE);
+		buttons.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		buttons.setLayout(new GridLayout(1, false));
+		
+		WidgetHelper.trimComposite(buttons, 0);
+		WidgetHelper.setMargin(buttons, -3, -3);
+		WidgetHelper.setSpacing(buttons, -4, 0);
+		
+		Button btnEdit = new Button(buttons, SWT.NONE);
+		btnEdit.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
+		btnEdit.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		btnEdit.setText("Edit...");
+		btnEdit.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				List<IFolder> folders = new ArrayList<IFolder>();
+				for (Object path : namespace.getPaths()) {
+					IResource resource = project.findMember((String)path);
+					if (resource != null && resource instanceof IFolder) {
+						folders.add((IFolder) resource);
+					}
+				}
+				CheckedTreeSelectionDialog dialog = ResourceDialog.createMulti(
+						pathViewer.getTable().getShell(), 
+						"Namespace Paths", 
+						"Select folders:", 
+						new Class[] {IFolder.class}, 
+						project, folders);
+
+				if (dialog.open() == Dialog.OK) {
+					namespace.clear();
+					for (Object result : dialog.getResult()) {
+						if (result instanceof IFolder) {
+							namespace.add(((IFolder)result).getProjectRelativePath().toString());
+						}
+					}
+				}
 			}
 		});
 		
-		if (paths != null) {
-			pathsControl.setText(paths);
-		}
+		Button btnRemove = new Button(buttons, SWT.NONE);
+		btnRemove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
+		btnRemove.setText("Remove");
+		
+		namespace.addPropertyChangeListener(new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent e) {
+				if (e.getPropertyName().contains("#")) {
+					pathViewer.refresh();
+				}
+			}
+		});
 		
 		return contents;		
 	}
 
-	public String getNamespace() {
-		if (namespace == null) {
-			return "";
-		}
+	public Namespace getNamespace() {
 		return namespace;
 	}
 
-	public String getPaths() {
-		return paths;
+	public void setNamespace(Namespace namespace) {
+		this.namespace = namespace;
 	}
 
-	public void setNamespace(String text) {
-		this.namespace = text;
+	public void setProject(IProject project) {
+		this.project = project;
 	}
 
-	public void setPaths(String paths) {
-		this.paths = paths;
-	}
 }

@@ -1,10 +1,12 @@
-package com.dubture.composer.ui.editor.composer.autoload;
+package com.dubture.composer.ui.editor.composer;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -12,20 +14,22 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.part.ResourceTransfer;
-import org.getcomposer.core.collection.JsonArray;
 import org.getcomposer.core.collection.Psr0;
 import org.getcomposer.core.objects.Namespace;
 
+import com.dubture.composer.ui.controller.Psr0Controller;
 import com.dubture.composer.ui.dialogs.Psr0Dialog;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
@@ -43,10 +47,14 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 	private static final int ADD_INDEX = 0;
 	private static final int EDIT_INDEX = 1;
 	private static final int REMOVE_INDEX = 2;
+	
+	private Psr0 psr0;
 
 	public Psr0Section(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION, new String[] { "Add...", "Edit...", "Remove" });
 		createClient(getSection(), page.getManagedForm().getToolkit());
+		
+		psr0 = composerPackage.getAutoload().getPsr0();
 	}
 
 	@Override
@@ -54,77 +62,34 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 
 		section.setText("psr-0");
 		section.setDescription("Manage the psr-0 settings for your package.");
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.grabExcessVerticalSpace = true;
+		section.setLayoutData(gd);
+		
 
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.SINGLE, 2, toolkit);
 		TreePart treePart = getTreePart();
-		Psr0ContentProvider controller = new Psr0ContentProvider(this);
+		Psr0Controller controller = new Psr0Controller(treePart.getTreeViewer());
 		psr0Viewer = treePart.getTreeViewer();
 		psr0Viewer.setContentProvider(controller);
 		psr0Viewer.setLabelProvider(controller);
 
 		Transfer[] transferTypes = new Transfer[] { ResourceTransfer.getInstance() };
 		int types = DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_LINK | DND.DROP_DEFAULT;
-		psr0Viewer.addDropSupport(types, transferTypes, new PathDropAdapter(psr0Viewer, this));
+		psr0Viewer.addDropSupport(types, transferTypes, new PathDropAdapter(psr0Viewer));
 
 		toolkit.paintBordersFor(container);
 		section.setClient(container);
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 
 		psr0Viewer.setInput(composerPackage.getAutoload().getPsr0());
-		composerPackage.addPropertyChangeListener(this);
+		composerPackage.getAutoload().addPropertyChangeListener(this);
 
 		updateButtons();
 		makeActions();
 		updateMenu();
-	}
-
-	private void updateModel(String namespaceName, String paths) {
-
-		Namespace ns = new Namespace();
-		ns.setNamespace(namespaceName);
-
-		for (Object p : getPaths(paths)) {
-			ns.add((String) p);
-		}
-
-		if (composerPackage.getAutoload().getPsr0().has(namespaceName) == false) {
-			composerPackage.getAutoload().getPsr0().add(ns);
-		} else {
-
-			Namespace toBeRemoved = null;
-
-			for (Namespace namespace : composerPackage.getAutoload().getPsr0()) {
-
-				if (namespaceName.equals(namespace.getNamespace())) {
-					toBeRemoved = namespace;
-					break;
-				}
-			}
-
-			if (toBeRemoved != null) {
-				composerPackage.getAutoload().getPsr0().remove(toBeRemoved);
-			}
-
-			composerPackage.getAutoload().getPsr0().add(ns);
-		}
-	}
-
-	private JsonArray getPaths(String paths) {
-
-		JsonArray array = new JsonArray();
-
-		if (paths.contains(",")) {
-			String[] separatedPaths = paths.split(",");
-			for (String path : separatedPaths) {
-				array.add(path);
-			}
-		} else {
-			array.add(paths);
-		}
-
-		return array;
 	}
 
 	private void updateButtons() {
@@ -142,13 +107,7 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 	}
 
 	public void refresh() {
-		
-		Object[] elements = psr0Viewer.getExpandedElements();
-		TreePath[] treePaths = psr0Viewer.getExpandedTreePaths();
 		psr0Viewer.refresh();
-		psr0Viewer.setExpandedElements(elements);
-		psr0Viewer.setExpandedTreePaths(treePaths);
-//		super.refresh();
 	}
 
 	@Override
@@ -194,70 +153,50 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 	}
 
 	private void handleAdd() {
-
-		Psr0Dialog dialog = new Psr0Dialog(psr0Viewer.getTree().getShell());
-
-		if (!psr0Viewer.getSelection().isEmpty()) {
-
-			NamespaceModel element = null;
-			try {
-				element = (NamespaceModel) ((StructuredSelection) psr0Viewer.getSelection()).getFirstElement();
-				// TODO: get parent when user clicks on a path inside the tree
-				// view
-			} catch (ClassCastException e) {
-				return;
-			}
-
-			dialog.setNamespace(element.key);
-			dialog.setPaths(element.getPathsAsString());
-		}
+		Psr0Dialog dialog = new Psr0Dialog(psr0Viewer.getTree().getShell(), 
+				new Namespace(), 
+				getPage().getComposerEditor().getProject());
 
 		if (dialog.open() == Dialog.OK) {
-			updateModel(dialog.getNamespace(), dialog.getPaths());
-			refresh();
+			psr0.add(dialog.getNamespace());
 		}
 	}
 
 	private void handleEdit() {
-
-		Psr0Dialog diag = new Psr0Dialog(psr0Viewer.getTree().getShell());
-		NamespaceModel element = null;
-		try {
-			element = (NamespaceModel) ((StructuredSelection) psr0Viewer.getSelection()).getFirstElement();
-			// TODO: get parent when user clicks on a path inside the tree view
-		} catch (ClassCastException e) {
-			return;
+		
+		Namespace namespace = null;
+		Object element = ((StructuredSelection) psr0Viewer.getSelection()).getFirstElement();
+		
+		// get parent if element is string
+		if (element instanceof String) {
+			element = ((Psr0Controller)psr0Viewer.getContentProvider()).getParent(element);
 		}
-
-		diag.setNamespace(element.key);
-		diag.setPaths(element.getPathsAsString());
-
-		if (diag.open() == Dialog.OK) {
-			updateModel(diag.getNamespace(), diag.getPaths());
-			refresh();
+		
+		if (element instanceof Namespace) {
+			namespace = ((Namespace) element).clone();
+		}
+				 
+		if (namespace != null) {
+			Psr0Dialog diag = new Psr0Dialog(psr0Viewer.getTree().getShell(), 
+					namespace.clone(), 
+					getPage().getComposerEditor().getProject());
+			
+			if (diag.open() == Dialog.OK) {
+				Namespace nmspc = psr0.get(diag.getNamespace().getNamespace());
+				nmspc.clear();
+				nmspc.addPaths(diag.getNamespace().getPaths());
+			}
 		}
 	}
 
 	private void handleRemove() {
-
 		Object element = ((StructuredSelection) psr0Viewer.getSelection()).getFirstElement();
 		
-		if (element instanceof NamespaceModel) {
-			removeNamespace((NamespaceModel) element);
-		} else if (element instanceof NamespacePath) {
-			
-			NamespacePath path = (NamespacePath) element;
-			NamespaceModel namespaceModel = path.getParent();
-			composerPackage.getAutoload().getPsr0().get(namespaceModel.key).remove(path.toString());
-			refresh();
-		}
-	}
-
-	private void removeNamespace(NamespaceModel element) {
-		Psr0 psr0 = composerPackage.getAutoload().getPsr0();
-		if (psr0.has(element.key)) {
-			psr0.remove(element.key);
-			refresh();
+		if (element instanceof Namespace) {
+			psr0.remove((Namespace) element);
+		} else if (element instanceof String) {
+			Namespace namespace = (Namespace)((Psr0Controller)psr0Viewer.getContentProvider()).getParent(element);
+			namespace.remove((String)element);
 		}
 	}
 
@@ -277,16 +216,46 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 			break;
 		}
 	}
+	
+	private class PathDropAdapter extends ViewerDropAdapter {
 
-	public void dropTargetReceived(NamespaceModel target, List<IFolder> folders) {
+		private Namespace target;
 		
-		Psr0 psr0 = composerPackage.getAutoload().getPsr0();
-		Namespace namespace = psr0.get(target.key);
-		
-		for (IFolder folder : folders) {
-			namespace.add(folder.getFullPath().removeFirstSegments(1).toString());
+		public PathDropAdapter(Viewer viewer) {
+			super(viewer);
 		}
 
-		refresh();
+		@Override
+		public boolean performDrop(Object data) {
+			if (data instanceof IResource[]) {
+				IResource[] resources = (IResource[]) data;
+				
+				List<IFolder> folders = new ArrayList<IFolder>();
+
+				for (IResource resource : resources) {
+					if (resource instanceof IFolder) {
+						folders.add((IFolder) resource);
+					}
+				}
+				
+				for (IFolder folder : folders) {
+					target.add(folder.getProjectRelativePath().toString());
+				}
+				return false;
+			}
+			
+			return false;
+		}
+
+		@Override
+		public boolean validateDrop(Object target, int operation, TransferData transferType) {
+			
+			if (target instanceof Namespace) {
+				this.target = (Namespace) target;
+				return true;
+			}
+			
+			return false;
+		}
 	}
 }

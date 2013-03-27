@@ -50,6 +50,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.PreferenceHelper;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.dialogs.ResourceDialog;
 import com.dubture.composer.ui.utils.WidgetHelper;
 
 @SuppressWarnings("restriction")
@@ -290,15 +291,13 @@ public class BuildPathManagementPage extends PropertyPage {
 		}
 		
 		private void handleAdd() {
-			CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(
+			CheckedTreeSelectionDialog dialog = ResourceDialog.createMulti(
 					pathViewer.getTable().getShell(), 
-					new WorkbenchLabelProvider(), new BaseWorkbenchContentProvider());
-			
-			dialog.addFilter(new TypedViewerFilter(new Class[] { IFolder.class }));
-			dialog.setTitle("Tree Selection");
-			dialog.setMessage("Select the elements from the tree:");
-			dialog.setInput(project);
-			dialog.setHelpAvailable(false);
+					"Add Folder", 
+					"Select folders:", 
+					new Class[]{IFolder.class}, 
+					project, 
+					null);
 			
 			if (dialog.open() == Dialog.OK) {
 				for (Object result : dialog.getResult()) {
