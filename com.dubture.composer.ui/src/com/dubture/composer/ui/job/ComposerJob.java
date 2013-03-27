@@ -83,20 +83,21 @@ abstract public class ComposerJob extends Job {
 				@Override
 				public void executionMessage(String message) {
 					if (monitor != null && message != null) {
-						monitor.setTaskName(message);
+						monitor.subTask(message);
+						monitor.worked(1);
 					}
 				}
 			});
 
-			monitor.beginTask(getName(), 3);
+			monitor.beginTask(getName(), IProgressMonitor.UNKNOWN);
 			monitor.worked(1);
 			launch(launcher);
-			monitor.worked(2);
+			monitor.worked(1);
 
 			// refresh project
 			if (project != null) {
 				project.refreshLocal(IProject.DEPTH_INFINITE, null);
-				monitor.worked(3);
+				monitor.worked(1);
 			}
 		} catch (Exception e) {
 			Logger.logException(e);
