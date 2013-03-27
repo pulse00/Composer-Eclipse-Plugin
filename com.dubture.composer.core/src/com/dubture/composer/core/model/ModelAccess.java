@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
 import org.getcomposer.core.collection.Psr0;
 import org.getcomposer.core.objects.Namespace;
+import org.json.simple.parser.ParseException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -48,7 +49,7 @@ public class ModelAccess implements NamespaceResolverInterface
         }
     }
     
-    protected void initNamespaceMap() 
+    protected void initNamespaceMap() throws ParseException 
     {
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
@@ -86,7 +87,11 @@ public class ModelAccess implements NamespaceResolverInterface
         		}
         		String path = (String) object;
         		if (root.toString().startsWith((String) path)) {
-        			return new Path(root.toString().replace(path+"/", ""));
+        			String replacement = path;
+        			if (!replacement.endsWith("/")) {
+        				replacement += "/";
+        			}
+        			return new Path(root.toString().replace(replacement, ""));
         		}
         	}
         }
