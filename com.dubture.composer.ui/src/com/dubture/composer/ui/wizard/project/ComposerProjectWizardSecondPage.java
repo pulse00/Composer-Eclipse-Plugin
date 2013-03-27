@@ -60,7 +60,6 @@ import org.getcomposer.packages.PharDownloader;
 import com.dubture.composer.core.ComposerConstants;
 import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.launch.ExecutableNotFoundException;
-import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
@@ -296,19 +295,13 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			Display.getDefault().asyncExec(new MissingExecutableRunner());
 			return;
 		}
-		launcher.addResponseListener(new ConsoleResponseHandler());
-		launcher.addResponseListener(new ExecutionResponseAdapter() {
-			@Override
-			public void executionError(String message) {
-			}
-			
-			@Override
-			public void executionFailed(String response, Exception exception) {
-			}
-		});
-		
-		launcher.launch("dumpautoload");
-		getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
+		launcher.addResponseListener(new ConsoleResponseHandler());		
+		try {
+			launcher.launch("dumpautoload");
+			getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
+		} catch (Exception e) {
+			Logger.logException(e);
+		}
 	}
 
 	private void installComposer(IProgressMonitor monitor) throws CoreException {

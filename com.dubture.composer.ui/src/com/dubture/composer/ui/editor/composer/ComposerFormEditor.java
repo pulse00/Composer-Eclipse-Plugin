@@ -33,6 +33,8 @@ import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener {
+	
+	public static final String ID = "com.dubture.composer.ui.editor.composer.ComposerEditor";
 	protected boolean dirty = false;
 	protected ComposerPackage composerPackage = null;
 	protected IDocumentProvider documentProvider;

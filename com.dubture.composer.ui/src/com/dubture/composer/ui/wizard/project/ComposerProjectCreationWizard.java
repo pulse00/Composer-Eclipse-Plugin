@@ -2,6 +2,7 @@ package com.dubture.composer.ui.wizard.project;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -16,11 +17,18 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.core.project.ProjectOptions;
 import org.eclipse.php.internal.ui.wizards.WizardModel;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 
 import com.dubture.composer.core.facet.FacetManager;
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.composer.ui.editor.composer.ComposerFormEditor;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectCreationWizard extends NewElementWizard implements INewWizard, IExecutableExtension {
@@ -114,6 +122,19 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 					} catch (InterruptedException e) {
 						return false;
 					}
+				}
+			}
+			
+			IFile json = project.getFile("composer.json");
+			
+			if (json != null) {
+				try {
+					IEditorInput editorInput = new FileEditorInput(json);
+					IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+					IWorkbenchPage page = window.getActivePage();
+					page.openEditor(editorInput, ComposerFormEditor.ID);
+				} catch (Exception e) {
+					Logger.logException(e);
 				}
 			}
 		}

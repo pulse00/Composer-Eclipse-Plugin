@@ -103,6 +103,12 @@
          </facet>
       </static-preset>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.dubture.composer.core.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
    
 
 </plugin>

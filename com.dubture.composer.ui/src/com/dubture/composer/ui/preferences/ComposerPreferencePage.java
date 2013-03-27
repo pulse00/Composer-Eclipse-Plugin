@@ -22,7 +22,7 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 
 	public ComposerPreferencePage() {
 		setTitle("Composer");
-		setDescription("Launch settings");
+		setDescription(null);
 		setPreferenceStore(ComposerPlugin.getDefault().getPreferenceStore());
 
 	}
