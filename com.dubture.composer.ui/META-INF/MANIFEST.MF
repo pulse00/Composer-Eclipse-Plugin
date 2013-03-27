@@ -46,7 +46,6 @@ Export-Package:
  com.dubture.composer.ui.dialogs,
  com.dubture.composer.ui.editor,
  com.dubture.composer.ui.editor.composer,
- com.dubture.composer.ui.editor.composer.autoload,
  com.dubture.composer.ui.explorer,
  com.dubture.composer.ui.handler,
  com.dubture.composer.ui.job,
