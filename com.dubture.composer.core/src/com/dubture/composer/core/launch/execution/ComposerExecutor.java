@@ -1,6 +1,5 @@
 package com.dubture.composer.core.launch.execution;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
@@ -11,6 +10,7 @@ import org.apache.commons.exec.DefaultExecuteResultHandler;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
 
 import com.dubture.composer.core.log.Logger;
@@ -21,8 +21,6 @@ public class ComposerExecutor {
 	private ExecuteWatchdog watchdog;
 	
 	private PumpStreamHandler streamHandler;
-	private ByteArrayOutputStream out;
-	private ByteArrayOutputStream err;
 	
 	private StringBuilder outBuilder;
 	private StringBuilder errBuilder;
@@ -34,12 +32,9 @@ public class ComposerExecutor {
 	private DefaultExecuteResultHandler handler = new DefaultExecuteResultHandler() {
 		
 		public void onProcessComplete(int exitValue) {
-			String response = outBuilder.toString();
-			
 			super.onProcessComplete(exitValue);
-			
 			for (ExecutionResponseListener handler : listeners) {
-				handler.executionFinished(response, exitValue);
+				handler.executionFinished(outBuilder.toString(), exitValue);
 			}
 		}
 
@@ -59,11 +54,31 @@ public class ComposerExecutor {
 			}
 		}
 	};
+	private LogOutputStream outStream;
+	private LogOutputStream errStream;
 
 	public ComposerExecutor() {
-		out = new ByteArrayOutputStream();
-		err = new ByteArrayOutputStream();
-		streamHandler = new PumpStreamHandler(out, err);
+		
+		errStream = new LogOutputStream() {
+			@Override
+			protected void processLine(String line, int level) {
+				if (!line.isEmpty()) {
+					errBuilder.append(line);
+				}
+			}
+		};
+		
+		outStream = new LogOutputStream() {
+			@Override
+			protected void processLine(String line, int level) {
+				if (!line.isEmpty()) {
+					outBuilder.append(line);
+				}
+			}
+		};
+		
+		
+		streamHandler = new PumpStreamHandler(outStream, errStream);
 		
 		executor = new DefaultExecutor();
 		executor.setStreamHandler(streamHandler);
@@ -95,9 +110,6 @@ public class ComposerExecutor {
 
 	public void execute(CommandLine cmd) {
 		
-		Thread outThread = new Thread(new Reader(out));
-		Thread errThread = new Thread(new Reader(err));
-		
 		try {
 			for (ExecutionResponseListener handler : listeners) {
 				handler.executionAboutToStart();
@@ -105,9 +117,6 @@ public class ComposerExecutor {
 			
 			outBuilder = new StringBuilder();
 			errBuilder = new StringBuilder();
-			
-			outThread.start();
-			errThread.start();
 			
 			Logger.debug("executing command using executable: " + cmd.getExecutable());
 			executor.execute(cmd, handler);
@@ -120,13 +129,6 @@ public class ComposerExecutor {
 		} catch (Exception e) {
 			for (ExecutionResponseListener handler : listeners) {
 				handler.executionFailed("", e);
-			}
-		} finally {
-			if (outThread != null) {
-				outThread.interrupt();
-			}
-			if (errThread != null) {
-				errThread.interrupt();
 			}
 		}
 	}
@@ -143,40 +145,5 @@ public class ComposerExecutor {
 	
 	public File getWorkingDirectory() {
 		return executor.getWorkingDirectory();
-	}
-
-	private class Reader implements Runnable {
-		private ByteArrayOutputStream stream;
-		private boolean out = true;
-		
-		public Reader(ByteArrayOutputStream in) {
-			if (in == err) {
-				this.out = false;
-			}
-			stream = in;
-		}
-
-		public void run() {
-			while (!Thread.interrupted()) {
-				String content = stream.toString();
-				stream.reset();
-				if (!content.isEmpty()) {
-					
-					if (this.out) {
-						outBuilder.append(content);
-					} else {
-						errBuilder.append(content);
-					}
-					
-					for (ExecutionResponseListener listener : listeners) {
-						if (this.out) {
-							listener.executionMessage(content);
-						} else {
-							listener.executionError(content);
-						}
-					}
-				}
-			}
-		}
 	}
 }

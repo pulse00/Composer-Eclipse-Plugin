@@ -9,6 +9,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.ui.ComposerUIPlugin;
 
 @SuppressWarnings("restriction")
@@ -22,7 +23,7 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 	public ComposerPreferencePage() {
 		setTitle("Composer");
 		setDescription("Launch settings");
-		setPreferenceStore(ComposerUIPlugin.getDefault().getPreferenceStore());
+		setPreferenceStore(ComposerPlugin.getDefault().getPreferenceStore());
 
 	}
 
@@ -43,7 +44,7 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 
 	@Override
 	public IPreferenceStore getPreferenceStore() {
-		return ComposerUIPlugin.getDefault().getPreferenceStore();
+		return ComposerPlugin.getDefault().getPreferenceStore();
 	}
 	
 	protected void enableProjectSpecificSettings(
@@ -103,5 +104,4 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 		}
 		super.dispose();
 	}
-	
 }
