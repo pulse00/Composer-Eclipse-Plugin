@@ -61,7 +61,7 @@ abstract public class ComposerJob extends Job {
 		try {
 			
 			this.monitor = monitor;
-
+			
 			try {
 				launcher = ComposerLauncher.getLauncher(project);
 			} catch (ExecutableNotFoundException e) {
@@ -78,6 +78,13 @@ abstract public class ComposerJob extends Job {
 			launcher.addResponseListener(new ExecutionResponseAdapter() {
 				public void executionFailed(final String response, final Exception exception) {
 					Display.getDefault().asyncExec(new ComposerFailureMessageRunner(response, monitor));
+				}
+				
+				@Override
+				public void executionMessage(String message) {
+					if (monitor != null && message != null) {
+						monitor.setTaskName(message);
+					}
 				}
 			});
 

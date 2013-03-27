@@ -22,6 +22,9 @@ public class ComposerExecutor {
 	
 	private PumpStreamHandler streamHandler;
 	
+	private LogOutputStream outStream;
+	private LogOutputStream errStream;
+	
 	private StringBuilder outBuilder;
 	private StringBuilder errBuilder;
 
@@ -54,16 +57,20 @@ public class ComposerExecutor {
 			}
 		}
 	};
-	private LogOutputStream outStream;
-	private LogOutputStream errStream;
 
 	public ComposerExecutor() {
+		
+		outBuilder = new StringBuilder();
+		errBuilder = new StringBuilder();
 		
 		errStream = new LogOutputStream() {
 			@Override
 			protected void processLine(String line, int level) {
 				if (!line.isEmpty()) {
-					errBuilder.append(line);
+					errBuilder.append(line + "\n");
+					for (ExecutionResponseListener listener : listeners) {
+						listener.executionMessage(line);
+					}
 				}
 			}
 		};
@@ -72,11 +79,13 @@ public class ComposerExecutor {
 			@Override
 			protected void processLine(String line, int level) {
 				if (!line.isEmpty()) {
-					outBuilder.append(line);
+					outBuilder.append(line + "\n");
+					for (ExecutionResponseListener listener : listeners) {
+						listener.executionMessage(line);
+					}
 				}
 			}
 		};
-		
 		
 		streamHandler = new PumpStreamHandler(outStream, errStream);
 		
@@ -114,9 +123,6 @@ public class ComposerExecutor {
 			for (ExecutionResponseListener handler : listeners) {
 				handler.executionAboutToStart();
 			}
-			
-			outBuilder = new StringBuilder();
-			errBuilder = new StringBuilder();
 			
 			Logger.debug("executing command using executable: " + cmd.getExecutable());
 			executor.execute(cmd, handler);
