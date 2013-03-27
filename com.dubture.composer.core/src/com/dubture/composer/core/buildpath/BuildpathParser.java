@@ -61,7 +61,12 @@ public class BuildpathParser {
 		IResource json = getComposerJson();
 		IPath root = json.getLocation();
 
-		return root.addTrailingSeparator().append(vendor);
+		if (root == null || root.segmentCount() <= 1) {
+			throw new RuntimeException("Error getting composer vendor path");
+		}
+		
+		
+		return root.removeLastSegments(1).addTrailingSeparator().append(vendor);
 	}
 	
 	
@@ -130,7 +135,7 @@ public class BuildpathParser {
 			
 			// classmap
 			for (Object path : a.getClassMap()) {
-				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packageRoot);
+				String cleanedPath = vendor +  getDirectory( p.getName() + "/" + (String) path, packageRoot);
 				addPath(cleanedPath, paths);
 			}
 			

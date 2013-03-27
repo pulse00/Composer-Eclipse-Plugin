@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
 
+import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.log.Logger;
 
 public class ComposerBuildPathManagementBuilder extends IncrementalProjectBuilder {
@@ -24,7 +25,9 @@ public class ComposerBuildPathManagementBuilder extends IncrementalProjectBuilde
 
 		IProject project = getProject();
 		
-	
+        if (project.getProject().hasNature(ComposerNature.NATURE_ID) == false) {
+            return null;
+        }
 		
 		// return when no composer.json present
 		IResource composer = project.findMember(ComposerConstants.COMPOSER_JSON); 
@@ -55,6 +58,8 @@ public class ComposerBuildPathManagementBuilder extends IncrementalProjectBuilde
 			}
 			
 			if (changed) {
+				
+				
 				// run the update
 			}
 		} catch (IOException e) {

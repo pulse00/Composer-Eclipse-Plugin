@@ -25,6 +25,7 @@ import org.getcomposer.packages.PharDownloader;
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.buildpath.BuildpathParser;
 import com.dubture.composer.core.launch.ComposerLauncher;
+import com.dubture.composer.core.launch.environment.SysPhpPrjPhar;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 
 @SuppressWarnings("restriction")
@@ -68,10 +69,13 @@ public class ComposerTest extends ModifyingResourceTests
 			
 			// install dependencies
 			final CountDownLatch counter = new CountDownLatch(1);
-			ComposerLauncher launcher = ComposerLauncher.getLauncher(project);
+			
+			//TODO: do not really launch composer but create the project from the Resources directory,
+			// as the test will not work like this on travis-ci.
+			ComposerLauncher launcher = new ComposerLauncher(new SysPhpPrjPhar("/opt/local/bin/php"), project);
+			
 			launcher.addResponseListener(new ExecutionResponseAdapter() {
 				public void executionFailed(final String response, Exception e) {
-//					Logger.logException(e);
 					e.printStackTrace();
 					fail();
 					counter.countDown();
@@ -81,6 +85,7 @@ public class ComposerTest extends ModifyingResourceTests
 					counter.countDown();
 				}
 			});
+			
 			launcher.launch("install");
 			
 			counter.await(30, TimeUnit.SECONDS);
@@ -91,10 +96,13 @@ public class ComposerTest extends ModifyingResourceTests
 			List<ComposerPackage> pkgs = parser.getInstalledPackages();
 			
 			System.out.println("Installed packages: " + pkgs.size());
+			List<String> paths = parser.getPaths();
+			for (String path : paths) {
+				System.out.println("Found path: " + path);
+			}
 			
-//			for (String path : parser.getPaths()) {
-//				System.out.println("Found path: " + path);
-//			}
+			assertEquals(4, pkgs.size());
+			assertEquals(6, paths.size());
 			
 		} catch (Exception e) {
 			e.printStackTrace();
