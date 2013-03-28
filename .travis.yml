@@ -1,4 +1,2 @@
+before_script: installDependencies.sh
 language: java
-branches:
-  only:
-    - master
