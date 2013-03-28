@@ -1,19 +1,15 @@
 package com.dubture.composer.test;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.php.internal.core.PHPVersion;
@@ -23,20 +19,20 @@ import org.eclipse.php.internal.core.project.ProjectOptions;
 import org.junit.Test;
 
 import com.dubture.composer.core.ComposerNature;
-import com.dubture.composer.core.buildpath.BuildpathParser;
 import com.dubture.composer.core.facet.FacetManager;
+import com.dubture.composer.core.model.ModelAccess;
 
 @SuppressWarnings("restriction")
-public class BuildPathTest extends AbstractModelTests {
+public class NamespaceResolverTest extends AbstractModelTests {
 
-	public BuildPathTest() {
-		super(ComposerCoreTests.PLUGIN_ID, "BuildPath tests");
+	public NamespaceResolverTest() {
+		super(ComposerCoreTests.PLUGIN_ID, "Namespace Resolver tests");
 	}
 
 	@Test
-	public void testBuildpathParser() throws CoreException, IOException, InterruptedException {
+	public void testNamespaceResolver() throws CoreException, IOException {
 
-		IScriptProject scriptProject = setUpScriptProject("testproject");
+		IScriptProject scriptProject = setUpScriptProject("testproject1");
 
 		assertNotNull(scriptProject);
 
@@ -61,13 +57,9 @@ public class BuildPathTest extends AbstractModelTests {
 		assertTrue(scriptProject.getProject().hasNature(PHPNature.ID));
 		assertTrue(scriptProject.getProject().hasNature(ComposerNature.NATURE_ID));
 
-		BuildpathParser parser = new BuildpathParser(scriptProject.getProject());
-		List<String> paths = parser.getPaths();
-		List<String> expected = new ArrayList<String>(Arrays.asList("/vendor/imagine/Imagine/lib/", "/vendor/symfony/yaml/Symfony/Component/Yaml/", "/testproject/src/", "/vendor/composer/"));
-		assertThat(paths, is(expected));
-
-		// let indexing threads shutdown to avoid SWT thread access errors
-		Thread.sleep(2000);
-
+		IResource resource = scriptProject.getProject().getFolder(new Path("src/Foobar/Sub"));
+		IPath path = ModelAccess.getInstance().resolve(resource);
+		assertNotNull(path);
+		assertEquals("Foobar/Sub", path.toString());
 	}
 }

@@ -19,7 +19,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.io,
  org.apache.commons.exec,
  org.eclipse.ui.ide,
- org.getcomposer.core,
  com.googlecode.json-simple,
  org.apache.commons.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -40,5 +39,14 @@ Export-Package:
  com.dubture.composer.core.validation,
  com.dubture.composer.core.visitor
 Bundle-ClassPath: .
+Import-Package: org.getcomposer.core;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.annotation;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.collection;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.entities;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.objects;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.repositories;version="0.0.2.SNAPSHOT",
+ org.getcomposer.core.utils;version="0.0.2.SNAPSHOT",
+ org.getcomposer.httpclient;version="0.0.2.SNAPSHOT",
+ org.getcomposer.packages;version="0.0.2.SNAPSHOT"
 
 
