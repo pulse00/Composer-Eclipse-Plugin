@@ -1,3 +1,4 @@
+language: java
 install:
     - mkdir composer-java-api
     - cd composer-java-api

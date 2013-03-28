@@ -15,6 +15,7 @@
 	<modules>
 		<module>com.googlecode.json-simple</module>
 		<module>com.dubture.composer.core</module>
+		<module>com.dubture.composer.ui</module>
 		<module>com.dubture.composer.test</module>
 		<module>com.dubture.composer.feature</module>
 	</modules>
