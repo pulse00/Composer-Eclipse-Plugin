@@ -119,7 +119,8 @@ public class ModelAccess implements NamespaceResolverInterface
 
     public void updatePsr0(Psr0 psr0, IScriptProject scriptProject)
     {
-        String json = psr0.toJson();
+    	// escape namespace separators to avoid deserialization problems
+        String json = psr0.toJson().replace("\\", "\\\\");
         IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         psr0Map.put(scriptProject.getProject().getName(), psr0);
         instancePreferences.put("namespacemap#"+scriptProject.getProject().getName(), json);

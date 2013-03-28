@@ -13,6 +13,11 @@ public class SysPhpSysPhar implements Environment {
 		phar = EnvironmentFinder.findComposerPhar();
 	}
 	
+	public SysPhpSysPhar(String executable, String composerPhar) {
+		php = executable;
+		phar = composerPhar;
+	}
+
 	public boolean isAvailable() {
 		return php != null && phar != null;
 	}

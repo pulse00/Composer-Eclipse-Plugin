@@ -27,8 +27,18 @@ public class EnvironmentFactory {
 		PreferencesSupport prefSupport = new PreferencesSupport(ComposerPlugin.ID, prefs);
 		String executable = prefSupport.getPreferencesValue(Keys.PHP_EXECUTABLE, null, project);
 		
+		String useProjectPhar = prefSupport.getPreferencesValue(Keys.USE_PROJECT_PHAR, null, project);
+		String systemPhar = prefSupport.getPreferencesValue(Keys.COMPOSER_PHAR, null, project);
+		
 		if (executable != null && executable.length() > 0) {
-			return new SysPhpPrjPhar(executable);
+			
+			System.err.println(useProjectPhar);
+			
+			if (useProjectPhar != null && "true".equals(useProjectPhar) || (systemPhar == null || systemPhar.length() == 0) ) {
+				return new SysPhpPrjPhar(executable);
+			}
+			
+			return new SysPhpSysPhar(executable, systemPhar);
 		}
 		
 		// preference for environment found
