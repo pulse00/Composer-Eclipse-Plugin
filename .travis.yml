@@ -5,4 +5,5 @@ install:
     - git clone https://github.com/pulse00/Composer-Java-Bindings.git .
     - git checkout develop
     - mvn clean install -DskipTests
+    - cd ..
 script: mvn clean install
