@@ -21,11 +21,8 @@ public class ComposerLauncher {
 	private Environment environment;
 	private IProject project;
 	private IResource composerJson;
-	
 	private ComposerExecutor executor;
-	
 	private Set<ExecutionResponseListener> listeners = new HashSet<ExecutionResponseListener>();
-	
 	private static Environment env = null;
 	
 	public ComposerLauncher(Environment environment, IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException {
@@ -90,15 +87,10 @@ public class ComposerLauncher {
 		return env;
 	}
 	
-	public static void reserEnvironment() {
-		/*
+	public static void resetEnvironment() {
 		synchronized (env) {
-			
-			IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
-			prefs.setValue(com.dubture.composer.core.ComposerConstants.PREF_ENVIRONMENT, 0);
 			env = null;
 		}
-		*/
 	}
 	
 	public static ComposerLauncher getLauncher(IProject project) throws ComposerJsonNotFoundException, ComposerPharNotFoundException, ExecutableNotFoundException {

@@ -31,7 +31,7 @@ import org.osgi.framework.BundleContext;
 public class ComposerCoreTests extends Plugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.php.core.tests";
+	public static final String PLUGIN_ID = "com.dubture.composer.test";
 
 	// The shared instance
 	private static ComposerCoreTests plugin;

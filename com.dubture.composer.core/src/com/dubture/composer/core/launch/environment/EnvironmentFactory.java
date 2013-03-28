@@ -27,7 +27,7 @@ public class EnvironmentFactory {
 		PreferencesSupport prefSupport = new PreferencesSupport(ComposerPlugin.ID, prefs);
 		String executable = prefSupport.getPreferencesValue(Keys.PHP_EXECUTABLE, null, project);
 		
-		if (executable != null) {
+		if (executable != null && executable.length() > 0) {
 			return new SysPhpPrjPhar(executable);
 		}
 		

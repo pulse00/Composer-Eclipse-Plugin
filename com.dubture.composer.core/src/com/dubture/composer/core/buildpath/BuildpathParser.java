@@ -2,16 +2,21 @@ package com.dubture.composer.core.buildpath;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.InstalledPackages;
 import org.getcomposer.core.objects.Autoload;
 import org.getcomposer.core.objects.Namespace;
+
+import com.dubture.composer.core.log.Logger;
 
 public class BuildpathParser {
 	
@@ -72,43 +77,31 @@ public class BuildpathParser {
 	
 	public List<ComposerPackage> getInstalledPackages() {
 		
-		ComposerPackage composer = getComposerPackage();
+		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
 		
-		if (composer == null) {
-			return null;
+		IFile installed = project.getFile("vendor/composer/installed.json");
+		if (installed != null && installed.exists()) {
+			packages.addAll(loadInstalled(installed));
 		}
 		
-		String vendor = getVendorDir(composer);
-		
-		
-		// root folder for packages
-		IPath packageRoot = getVendorPath(vendor);
-
-		
-		// find installed composer packages
-		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
-		if (packageRoot.toFile().exists()) {
-			File[] vendors = packageRoot.toFile().listFiles();
-			
-			for (File v : vendors) {
-				if (v.isDirectory()) {
-					for (File p : v.listFiles()) {
-						if (p.isDirectory()) {
-							File composerJson = new File(p, ComposerConstants.COMPOSER_JSON);
-							if (composerJson.exists()) {
-								try {
-									packages.add(new ComposerPackage(composerJson));
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-							}
-						}
-					}
-				}
-			}
+		IFile installedDev = project.getFile("vendor/composer/installed_dev.json");
+		if (installedDev != null && installedDev.exists()) {
+			packages.addAll(loadInstalled(installedDev));
 		}
 		
 		return packages;
+	}
+	
+	protected List<ComposerPackage> loadInstalled(IFile installed) {
+
+		try {
+			InputStreamReader reader = new InputStreamReader(installed.getContents());
+			return new InstalledPackages(reader).toList();
+		} catch (Exception e) {
+			Logger.logException(e);
+		}		
+		
+		return new ArrayList<ComposerPackage>();
 	}
 	
 	public List<String> getPaths() {
@@ -129,7 +122,18 @@ public class BuildpathParser {
 			// psr first
 			for (Namespace namespace : a.getPsr0()) {
 				for (Object path : namespace.getPaths()) {
-					paths.add(vendor + "/" + p.getName() + "/" + path);
+					String target = "";
+					if (p.getTargetDir() != null && p.getTargetDir().length() > 0) {
+						target = p.getTargetDir();
+						String pathAsString = (String) path;
+						if ( ! pathAsString.endsWith("/") && pathAsString.length() > 0  && !target.startsWith("/")) {
+							target = "/" + target;
+						}
+						if (!target.endsWith("/")) {
+							target += "/";
+						}
+					}
+					paths.add("/" + vendor + "/" + p.getName() + "/" + path + target);
 				}
 			}
 			
@@ -155,7 +159,7 @@ public class BuildpathParser {
 		}
 		
 		
-		paths.add("/" + project.getName() + "/vendor/composer");
+		paths.add("/vendor/composer/");
 		return paths;
 	}
 	

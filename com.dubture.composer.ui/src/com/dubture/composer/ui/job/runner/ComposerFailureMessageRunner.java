@@ -24,7 +24,7 @@ public class ComposerFailureMessageRunner implements Runnable {
 			monitor.done();
 		}
 
-		ComposerLauncher.reserEnvironment();
+		ComposerLauncher.resetEnvironment();
 		String message = "Launching composer failed. See the .metadata/.log file in your workspace for details.";
 		if (response != null && response.length() > 0) {
 			message = response.trim();

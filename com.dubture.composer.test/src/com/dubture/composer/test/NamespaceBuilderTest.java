@@ -45,10 +45,6 @@ public class NamespaceBuilderTest extends TestCase {
 			return;
 		}
 
-		if (project.exists()) {
-			return;
-		}
-
 		project.create(null);
 		project.open(null);
 

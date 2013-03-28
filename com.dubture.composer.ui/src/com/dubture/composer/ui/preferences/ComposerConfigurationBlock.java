@@ -42,6 +42,7 @@ import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
@@ -60,7 +61,6 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
 	
 	private SelectionButtonDialogFieldGroup buttonGroup;
 	private StringButtonDialogField pharField;
-
 
 	public ComposerConfigurationBlock(IStatusChangeListener context, IProject project, IWorkbenchPreferenceContainer container) {
 		super(context, project, getKeys(), container);
@@ -362,6 +362,8 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
 		setValue(PHP_EXECUTABLE, executable);
 		setValue(COMPOSER_PHAR, pharField.getText());
 		setValue(USE_PROJECT_PHAR, buttonGroup.isSelected(0));
+		
+		ComposerLauncher.resetEnvironment();
 	}
 
 	@Override
@@ -374,6 +376,7 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
         if (fontMetrics == null) {
 			return 0;
 		}
+        
         return Dialog.convertVerticalDLUsToPixels(fontMetrics, dlus);
     }
     
@@ -382,6 +385,7 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
         if (fontMetrics == null) {
 			return 0;
 		}
+        
         return Dialog.convertHorizontalDLUsToPixels(fontMetrics, dlus);
     }
 }
