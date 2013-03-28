@@ -1,2 +1,8 @@
-before_script: ./installDependencies.sh
 language: java
+before_script:
+	- mkdir composer-java-api
+	- cd composer-java-api
+	- git clone https://github.com/pulse00/Composer-Java-Bindings.git .
+	- git checkout develop
+	- mvn clean install -DskipTests
+script: mvn clean install
