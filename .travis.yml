@@ -1,2 +1,2 @@
-before_script: installDependencies.sh
+before_script: ./installDependencies.sh
 language: java
