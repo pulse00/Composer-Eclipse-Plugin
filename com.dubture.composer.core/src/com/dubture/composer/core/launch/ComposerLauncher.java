@@ -88,8 +88,10 @@ public class ComposerLauncher {
 	}
 	
 	public static void resetEnvironment() {
-		synchronized (env) {
-			env = null;
+		if (env != null) {
+			synchronized (env) {
+				env = null;
+			}	
 		}
 	}
 	
