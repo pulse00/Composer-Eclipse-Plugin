@@ -13,6 +13,36 @@
                style="push">
          </command>
       </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:sourceMenuId?before=sourceBegin">
+         <command
+               commandId="com.dubture.composer.ui.command.injectAutoload"
+               label="Inject autoload statement"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <reference
+                     definitionId="org.eclipse.php.ui.phpContentType.definition">
+               </reference>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            allPopups="false"
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.dubture.composer.ui.toolbar.injectAutoload"
+               label="Inject autoload statement">
+            <command
+                  commandId="com.dubture.composer.ui.command.injectAutoload"
+                  icon="icons/full/obj16/internalize.gif"
+                  label="Inject autoload statement"
+                  style="push"
+                  tooltip="Injects a require_once statement with the path to the composer autoload.php file">
+            </command>
+         </toolbar>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -44,6 +74,11 @@
       <command
             id="com.dubture.composer.ui.command.graph"
             name="Dependency Graph">
+      </command>
+      <command
+            defaultHandler="com.dubture.composer.ui.commands.InjectAutoloadCommand"
+            id="com.dubture.composer.ui.command.injectAutoload"
+            name="Inject autoload statement">
       </command>
    </extension>
    <extension
