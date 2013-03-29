@@ -2,7 +2,7 @@
 <feature
       id="com.dubture.composer.feature"
       label="Composer Feature"
-      version="0.0.7.qualifier"
+      version="0.0.8.qualifier"
       provider-name="https://github.com/pulse00">
 
    <description url="https://github.com/pulse00/Composer-Eclipse-Plugin">
@@ -40,13 +40,6 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
    </requires>
 
    <plugin
-         id="org.getcomposer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.dubture.composer.core"
          download-size="0"
          install-size="0"
@@ -69,6 +62,13 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
 
    <plugin
          id="org.apache.commons.exec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.getcomposer.composer-java-api"
          download-size="0"
          install-size="0"
          version="0.0.0"

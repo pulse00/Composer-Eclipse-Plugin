@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.dubture.composer</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.7-SNAPSHOT</version>
+		<version>0.0.8-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>com.googlecode.json-simple</artifactId>
