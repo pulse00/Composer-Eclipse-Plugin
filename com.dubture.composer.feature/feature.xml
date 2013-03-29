@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.dubture.composer.feature"
-      label="Composer Feature"
+      label="Composer"
       version="0.0.8.qualifier"
       provider-name="https://github.com/pulse00">
 
    <description url="https://github.com/pulse00/Composer-Eclipse-Plugin">
-      Composer eclipse plugin.
+      Add support for the PHP dependency manager Composer.
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -30,13 +30,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
    </url>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="com.dubture.indexing.core"/>
-      <import plugin="org.apache.httpcomponents.httpclient"/>
-      <import plugin="org.apache.httpcomponents.httpcore"/>
-      <import feature="org.eclipse.php" version="3.0.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.php" version="3.2.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -47,14 +41,28 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          unpack="false"/>
 
    <plugin
-         id="com.google.gson"
+         id="org.getcomposer.composer-java-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -68,7 +76,14 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          unpack="false"/>
 
    <plugin
-         id="org.getcomposer.composer-java-api"
+         id="org.apache.commons.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.logging"
          download-size="0"
          install-size="0"
          version="0.0.0"
