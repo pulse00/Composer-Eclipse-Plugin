@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -22,6 +23,7 @@ import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.buildpath.BuildPathManager;
 import com.dubture.composer.core.buildpath.BuildPathParser;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
@@ -48,13 +50,11 @@ public class ComposerBuildPathManagementBuilder extends
 		}
 
 		// return when no composer.json present
-		IResource composer = project
-				.findMember(ComposerConstants.COMPOSER_JSON);
-		if (composer == null) {
+		IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(project);
+		IFile composerJson = composerProject.getComposerJson();
+		if (composerJson == null) {
 			return null;
 		}
-
-		IScriptProject scriptProject = DLTKCore.create(project);
 
 		try {
 			boolean changed = false;
@@ -65,12 +65,7 @@ public class ComposerBuildPathManagementBuilder extends
 				return null;
 			}
 
-			ComposerPackage composerPackage = new ComposerPackage(composer.getLocation().toFile());
-			String vendor = composerPackage.getConfig().getVendorDir();
-
-			if (vendor == null || vendor.trim().isEmpty()) {
-				vendor = ComposerConstants.VENDOR_DIR_DEFAULT;
-			}
+			String vendor = composerProject.getVendorDir();
 
 			for (IResourceDelta affected : delta.getAffectedChildren()) {
 				String path = affected.getProjectRelativePath().toOSString();
@@ -87,42 +82,10 @@ public class ComposerBuildPathManagementBuilder extends
 			if (!changed) {
 				return null;
 			}
-
-			IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(project); 
-			BuildPathParser parser = new BuildPathParser(composerProject);
-			List<String> paths = parser.getPaths();
-			List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
-
-			// add new entries to buildpath
-			for (String path : paths) {
-				IPath entry = new Path(path);
-				IFolder folder = project.getFolder(entry);
-				if (folder != null && BuildPathUtils.isContainedInBuildpath(entry, scriptProject) == false) {
-					Logger.debug("Adding new dependency to buildpath " + folder.getFullPath());
-					newEntries.add(DLTKCore.newSourceEntry(folder.getFullPath()));
-				}
-			}
-
-			if (newEntries.size() > 0) {
-				BuildPathUtils.addNonDupEntriesToBuildPath(scriptProject,
-						newEntries);
-			}
-
-			// remove non existing entries from buildpath
-			IBuildpathEntry[] rawBuildpath = scriptProject
-					.getRawBuildpath();
-			for (IBuildpathEntry entry : rawBuildpath) {
-				if (entry.getEntryKind() != IBuildpathEntry.BPE_SOURCE) {
-					continue;
-				}
-
-				IFolder folder = project.getFolder(entry.getPath().removeFirstSegments(1));
-				if (folder == null || !folder.exists()) {
-					Logger.debug("Removing non existing dependency from buildpath: " + entry.getPath().toString());
-					BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
-				}
-			}
 			
+			
+			BuildPathManager buildPathManager = new BuildPathManager(composerProject);
+			buildPathManager.update();
 		} catch (Exception e) {
 			Logger.logException(e);
 		}
