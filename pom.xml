@@ -27,9 +27,9 @@
 
 	<repositories>
 		<repository>
-			<id>github</id>
+			<id>pex-dev</id>
 			<layout>p2</layout>
-			<url>http://pulse00.github.com/p2/</url>
+			<url>http://p2-dev.pdt-extensions.org/</url>
 		</repository>
 
 		<repository>
