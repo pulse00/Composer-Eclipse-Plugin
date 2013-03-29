@@ -2,7 +2,6 @@ package com.dubture.composer.core.buildpath;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,102 +16,26 @@ import org.getcomposer.core.objects.Autoload;
 import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.resources.IComposerProject;
 
-public class BuildpathParser {
+public class BuildPathParser {
 	
-	private IProject project;
-	private ComposerPackage composer = null;
-	private IResource json = null;
+	private IComposerProject project;
 
-	public BuildpathParser(IProject project) {
+	public BuildPathParser(IComposerProject project) {
 		this.project = project;
 	}
 	
-	private IResource getComposerJson() {
-		if (json == null) {
-			json = project.findMember(ComposerConstants.COMPOSER_JSON);
-		}
-		return json;
-	}
-	
-	private ComposerPackage getComposerPackage() {
-		if (composer == null) {
-			try {
-				IResource json = getComposerJson();
-				if (json == null) {
-					return null;
-				}
-				composer = new ComposerPackage(json.getLocation().toFile());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return composer;
-	}
-	
-	private String getVendorDir(ComposerPackage composer) {
-		// find 'vendor' folder
-		String vendor = composer.getConfig().getVendorDir();
-		
-		if (vendor == null || vendor.trim().isEmpty()) {
-			vendor = ComposerConstants.VENDOR_DIR_DEFAULT; // default
-		}
-		
-		return vendor;
-	}
-	
-	private IPath getVendorPath(String vendor) {
-		IResource json = getComposerJson();
-		IPath root = json.getLocation();
-
-		if (root == null || root.segmentCount() <= 1) {
-			throw new RuntimeException("Error getting composer vendor path");
-		}
-		
-		
-		return root.removeLastSegments(1).addTrailingSeparator().append(vendor);
-	}
-	
-	
-	public List<ComposerPackage> getInstalledPackages() {
-		
-		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
-		
-		IFile installed = project.getFile("vendor/composer/installed.json");
-		if (installed != null && installed.exists()) {
-			packages.addAll(loadInstalled(installed));
-		}
-		
-		IFile installedDev = project.getFile("vendor/composer/installed_dev.json");
-		if (installedDev != null && installedDev.exists()) {
-			packages.addAll(loadInstalled(installedDev));
-		}
-		
-		return packages;
-	}
-	
-	protected List<ComposerPackage> loadInstalled(IFile installed) {
-
-		try {
-			InputStreamReader reader = new InputStreamReader(installed.getContents());
-			return new InstalledPackages(reader).toList();
-		} catch (Exception e) {
-			Logger.logException(e);
-		}		
-		
-		return new ArrayList<ComposerPackage>();
-	}
 	
 	public List<String> getPaths() {
-		List<ComposerPackage> packages = getInstalledPackages();
+		List<ComposerPackage> packages = project.getInstalledPackages();
 		if (packages == null) {
 			return null;
 		}
 		
-		ComposerPackage composer = getComposerPackage();
-		String vendor = getVendorDir(composer);
-		IPath packageRoot = getVendorPath(vendor);
+		ComposerPackage composer = project.getComposerPackage();
+		String vendor = project.getVendorDir();
+		IPath packageRoot = project.getVendorPath();
 		
 		// find paths for found composer packages
 		List<String> paths = new ArrayList<String>();
@@ -150,16 +73,17 @@ public class BuildpathParser {
 			}
 		}
 		
+		// add source paths from this package
 		Autoload autoload = composer.getAutoload();
 		
 		for (Namespace namespace : autoload.getPsr0()) {
 			for (Object path : namespace.getPaths()) {
-				paths.add("/" + project.getName() + "/" + path);
+				paths.add("/" + project.getProject().getName() + "/" + path);
 			}
 		}
 		
-		
-		paths.add("/vendor/composer/");
+		// maybe don't add this one
+		paths.add("/" + vendor + "/composer/");
 		return paths;
 	}
 	
