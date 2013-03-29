@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.php.internal.ui.util.TypedViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,8 +41,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.eclipse.ui.model.BaseWorkbenchContentProvider;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 import org.osgi.service.prefs.BackingStoreException;
 
@@ -53,7 +50,6 @@ import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.dialogs.ResourceDialog;
 import com.dubture.composer.ui.utils.WidgetHelper;
 
-@SuppressWarnings("restriction")
 public class BuildPathManagementPage extends PropertyPage {
 	
 	private PathSection includes;
