@@ -310,7 +310,7 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
 		StatusInfo status = new StatusInfo();
 		
 		if( phpExes.getAllItems().length == 0 ) {
-			status = new StatusInfo(StatusInfo.WARNING, "No PHP executable configured. Composer dependencies cannot be managed properly.");
+			status = new StatusInfo(StatusInfo.WARNING, "No PHP executable configured. Dependencies cannot be managed properly.");
 		}
 		
 		if (buttonGroup.isSelected(1)) {
@@ -334,6 +334,20 @@ public class ComposerConfigurationBlock extends OptionsConfigurationBlock implem
 
 	protected final static Key getComposerCoreKey(String key) {
 		return getKey(ComposerPlugin.ID, key);
+	}
+	
+	@Override
+	public void performDefaults() {
+		
+		pharField.setText("");
+		pharField.setEnabled(false);
+		buttonGroup.setSelection(0, true);
+		buttonGroup.setSelection(1, false);
+		setValue(USE_PROJECT_PHAR, true);
+		setValue(COMPOSER_PHAR, "");
+		setValue(PHP_EXECUTABLE, "");
+		validateSettings(null, null, null);
+		super.performDefaults();
 	}
 	
 	@Override
