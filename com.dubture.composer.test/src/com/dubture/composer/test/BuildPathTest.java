@@ -23,7 +23,7 @@ import org.eclipse.php.internal.core.project.ProjectOptions;
 import org.junit.Test;
 
 import com.dubture.composer.core.ComposerNature;
-import com.dubture.composer.core.buildpath.BuildpathParser;
+import com.dubture.composer.core.buildpath.BuildPathParser;
 import com.dubture.composer.core.facet.FacetManager;
 
 @SuppressWarnings("restriction")
@@ -61,7 +61,7 @@ public class BuildPathTest extends AbstractModelTests {
 		assertTrue(scriptProject.getProject().hasNature(PHPNature.ID));
 		assertTrue(scriptProject.getProject().hasNature(ComposerNature.NATURE_ID));
 
-		BuildpathParser parser = new BuildpathParser(scriptProject.getProject());
+		BuildPathParser parser = new BuildPathParser(scriptProject.getProject());
 		List<String> paths = parser.getPaths();
 		List<String> expected = new ArrayList<String>(Arrays.asList("/vendor/imagine/Imagine/lib/", "/vendor/symfony/yaml/Symfony/Component/Yaml/", "/testproject/src/", "/vendor/composer/"));
 		assertThat(paths, is(expected));

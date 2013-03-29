@@ -21,8 +21,10 @@ import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.ComposerNature;
-import com.dubture.composer.core.buildpath.BuildpathParser;
+import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.buildpath.BuildPathParser;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.resources.IComposerProject;
 
 /**
  * This builder is checking for changes inside the `vendor` directory and
@@ -86,7 +88,8 @@ public class ComposerBuildPathManagementBuilder extends
 				return null;
 			}
 
-			BuildpathParser parser = new BuildpathParser(project);
+			IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(project); 
+			BuildPathParser parser = new BuildPathParser(composerProject);
 			List<String> paths = parser.getPaths();
 			List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
 
