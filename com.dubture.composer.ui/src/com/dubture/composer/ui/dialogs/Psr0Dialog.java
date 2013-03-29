@@ -9,6 +9,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -26,6 +28,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 import org.getcomposer.core.objects.Namespace;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.controller.PathController;
@@ -135,6 +138,28 @@ public class Psr0Dialog extends Dialog {
 		Button btnRemove = new Button(buttons, SWT.NONE);
 		btnRemove.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 		btnRemove.setText("Remove");
+		
+		btnRemove.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ISelection selection = pathViewer.getSelection();
+				if (!(selection instanceof StructuredSelection)) {
+					return;
+				}
+				StructuredSelection s = (StructuredSelection) selection;
+				for (Object o : s.toArray() ) {
+					try {
+						String item = (String) o;
+						pathViewer.remove(item);
+						namespace.remove(item);
+						System.err.println(o.getClass());
+					} catch (Exception e2) {
+						Logger.logException(e2);
+					}
+				}
+			}
+		});
 		
 		namespace.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
