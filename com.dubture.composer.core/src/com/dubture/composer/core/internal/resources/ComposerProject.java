@@ -25,8 +25,13 @@ public class ComposerProject implements IComposerProject {
 	private String vendorDir = null;
 	private IPath vendorPath = null;
 	
-	public ComposerProject(IProject project) {
+	public ComposerProject(IProject project) throws IOException {
 		this.project = project;
+		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
+		
+		if (file != null) {
+			composer = new ComposerPackage(file.getLocation().toFile()); 
+		}
 	}
 	
 	@Override
@@ -130,7 +135,9 @@ public class ComposerProject implements IComposerProject {
 	
 	protected List<ComposerPackage> loadInstalled(IFile installed) {
 		try {
-			return new InstalledPackages(installed).toList();
+			if (installed.getLocation() != null) {
+				return new InstalledPackages(installed.getLocation().toFile()).toList();
+			}
 		} catch (Exception e) {
 			Logger.logException(e);
 		}		

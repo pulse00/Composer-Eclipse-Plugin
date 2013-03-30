@@ -8,6 +8,8 @@
  ******************************************************************************/
 package com.dubture.composer.core;
 
+import java.io.IOException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -104,7 +106,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
 				ComposerConstants.PREF_BUILDPATH_ENABLE);
 	}
 	
-	public IComposerProject getComposerProject(IProject project) {
+	public IComposerProject getComposerProject(IProject project) throws IOException {
 		if (project == null) {
 			return null;
 		}

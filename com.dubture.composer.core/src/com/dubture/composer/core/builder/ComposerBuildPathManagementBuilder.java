@@ -49,14 +49,14 @@ public class ComposerBuildPathManagementBuilder extends
 			return null;
 		}
 
-		// return when no composer.json present
-		IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(project);
-		IFile composerJson = composerProject.getComposerJson();
-		if (composerJson == null) {
-			return null;
-		}
-
 		try {
+			// return when no composer.json present
+			IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(project);
+			IFile composerJson = composerProject.getComposerJson();
+			if (composerJson == null) {
+				return null;
+			}
+
 			boolean changed = false;
 			IResourceDelta delta = getDelta(project);
 
