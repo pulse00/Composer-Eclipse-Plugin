@@ -1,8 +1,6 @@
 package com.dubture.composer.core.internal.resources;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -11,7 +9,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.InstalledPackages;
+import org.getcomposer.core.collection.ComposerPackages;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
@@ -101,9 +99,9 @@ public class ComposerProject implements IComposerProject {
 	}
 
 	@Override
-	public List<ComposerPackage> getInstalledPackages() {
+	public ComposerPackages getInstalledPackages() {
 		String vendor = getVendorDir();
-		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
+		ComposerPackages packages = new ComposerPackages();
 		
 		IFile installed = project.getFile(vendor + "/composer/installed.json");
 		if (installed != null && installed.exists()) {
@@ -114,9 +112,9 @@ public class ComposerProject implements IComposerProject {
 	}
 
 	@Override
-	public List<ComposerPackage> getInstalledDevPackages() {
+	public ComposerPackages getInstalledDevPackages() {
 		String vendor = getVendorDir();
-		List<ComposerPackage> packages = new ArrayList<ComposerPackage>();
+		ComposerPackages packages = new ComposerPackages();
 		
 		IFile installedDev = project.getFile(vendor + "/composer/installed_dev.json");
 		if (installedDev != null && installedDev.exists()) {
@@ -127,22 +125,22 @@ public class ComposerProject implements IComposerProject {
 	}
 
 	@Override
-	public List<ComposerPackage> getAllInstalledPackages() {
-		List<ComposerPackage> packages = getInstalledPackages();
+	public ComposerPackages getAllInstalledPackages() {
+		ComposerPackages packages = getInstalledPackages();
 		packages.addAll(getInstalledDevPackages());
 		return packages;
 	}
 	
-	protected List<ComposerPackage> loadInstalled(IFile installed) {
+	protected ComposerPackages loadInstalled(IFile installed) {
 		try {
 			if (installed.getLocation() != null) {
-				return new InstalledPackages(installed.getLocation().toFile()).toList();
+				return new ComposerPackages(installed.getLocation().toFile());
 			}
 		} catch (Exception e) {
 			Logger.logException(e);
 		}		
 		
-		return new ArrayList<ComposerPackage>();
+		return new ComposerPackages();
 	}
 
 }

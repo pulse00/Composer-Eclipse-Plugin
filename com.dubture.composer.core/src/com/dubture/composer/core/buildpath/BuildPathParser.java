@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.ComposerPackages;
 import org.getcomposer.core.objects.Autoload;
 import org.getcomposer.core.objects.Namespace;
 
@@ -20,7 +21,7 @@ public class BuildPathParser {
 	}
 	
 	public List<String> getPaths() {
-		List<ComposerPackage> packages = project.getInstalledPackages();
+		ComposerPackages packages = project.getInstalledPackages();
 		if (packages == null) {
 			return null;
 		}

@@ -1,12 +1,11 @@
 package com.dubture.composer.core.resources;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IScriptProject;
 import org.getcomposer.core.ComposerPackage;
+import org.getcomposer.core.collection.ComposerPackages;
 
 
 public interface IComposerProject {
@@ -28,9 +27,9 @@ public interface IComposerProject {
 	
 	public IScriptProject getScriptProject();
 	
-	public List<ComposerPackage> getInstalledPackages();
+	public ComposerPackages getInstalledPackages();
 	
-	public List<ComposerPackage> getInstalledDevPackages();
+	public ComposerPackages getInstalledDevPackages();
 	
-	public List<ComposerPackage> getAllInstalledPackages();
+	public ComposerPackages getAllInstalledPackages();
 }

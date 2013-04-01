@@ -5,6 +5,7 @@ package com.dubture.composer.ui.editor.composer;
 
 import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
@@ -20,7 +21,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.editor.ComposerFormPage;
-import com.dubture.composer.ui.view.dependencies.DependencyGraphView;
+import com.dubture.composer.ui.views.DependencyGraphView;
 
 /**
  * @author Thomas Gossmann
@@ -44,7 +45,11 @@ public class OverviewPage extends ComposerFormPage {
 				editor.setActivePage(target);	
 			} else if (type.equals("view")) {
 				try {
-					editor.getSite().getWorkbenchWindow().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(target);
+					IViewPart view = editor.getSite().getWorkbenchWindow().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(target);
+					
+					if (view instanceof DependencyGraphView) {
+						((DependencyGraphView)view).setProject(editor.getProject());
+					}
 				} catch (PartInitException e) {
 					Logger.logException(e);
 				}
@@ -137,7 +142,7 @@ public class OverviewPage extends ComposerFormPage {
 				"</p>\n\n<li style=\"image\" value=\"page\"><a href=\"page:"+
 				DependenciesPage.ID+"\">Dependencies</a>: declares the dependencies " +
 				"this package may have.</li>\n<li style=\"image\" value=\"page\">" +
-				"<a href=\"view:"+DependencyGraphView.VIEW_ID+"\">Dependency Graph</a>: " +
+				"<a href=\"view:"+DependencyGraphView.ID+"\">Dependency Graph</a>: " +
 				"shows the dependencies in a nice graph.</li>\n</form>", true, false);
 		dependencies.setImage("page", ComposerUIPluginImages.PAGE.createImage());
 		dependencies.addHyperlinkListener(linkListener);

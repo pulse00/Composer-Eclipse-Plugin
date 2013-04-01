@@ -53,7 +53,7 @@ Export-Package:
  com.dubture.composer.ui.pex,
  com.dubture.composer.ui.preferences,
  com.dubture.composer.ui.utils,
- com.dubture.composer.ui.view.dependencies,
+ com.dubture.composer.ui.views,
  com.dubture.composer.ui.wizard.project
 Bundle-ClassPath: .
 Import-Package: org.getcomposer.core;version="0.0.2.SNAPSHOT",
