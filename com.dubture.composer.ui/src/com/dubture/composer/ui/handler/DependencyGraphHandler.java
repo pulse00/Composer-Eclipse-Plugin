@@ -10,7 +10,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.core.launch.PharNotFoundException;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.ui.view.dependencies.DependencyGraph;
+import com.dubture.composer.ui.view.dependencies.DependencyGraphView;
 
 public class DependencyGraphHandler extends AbstractHandler {
 
@@ -19,9 +19,9 @@ public class DependencyGraphHandler extends AbstractHandler {
 		try {
 			IViewPart view = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage()
-					.showView(DependencyGraph.VIEW_ID);
+					.showView(DependencyGraphView.VIEW_ID);
 
-			if (view instanceof DependencyGraph) {
+			if (view instanceof DependencyGraphView) {
 
 				// Somehow get the project 
 //				if (composer == null) {

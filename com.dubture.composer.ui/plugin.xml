@@ -86,9 +86,9 @@
       <view
             allowMultiple="false"
             category="org.eclipse.ui"
-            class="com.dubture.composer.ui.view.dependencies.DependencyGraph"
+            class="com.dubture.composer.ui.view.dependencies.DependencyGraphView"
             icon="icons/full/obj16/composer.png"
-            id="com.dubture.composer.ui.dependencyGraph"
+            id="com.dubture.composer.ui.view.dependencyGraph"
             name="Dependency Graph"
             restorable="true">
       </view>

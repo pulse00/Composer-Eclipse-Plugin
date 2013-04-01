@@ -55,19 +55,16 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	protected DependenciesPage dependenciesPage;
 	protected ConfigurationPage configurationPage;
 	protected AutoloadPage autoloadPage;
-	
-	// TODO JsonTextEditor some day...
-	protected JsonTextEditor jsonEditor = new JsonTextEditor();
-	protected ComposerTextEditor textEditor = new ComposerTextEditor();
+	protected JsonTextEditor jsonEditor;
 
 	private String jsonDump;
 	private boolean saving = false;
+	private boolean pageChanging = false;
 
 	public ComposerFormEditor() {
 		super();
-//		JsonTextEditor jsonEditor = new JsonTextEditor();
-//		jsonEditor.getDocumentProvider();
-		documentProvider = textEditor.getDocumentProvider();
+		jsonEditor = new JsonTextEditor();
+		documentProvider = jsonEditor.getDocumentProvider();
 	}
 
 	@Override
@@ -76,19 +73,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		try {
 			documentProvider.connect(input);
 			documentProvider.getDocument(getEditorInput()).addDocumentListener(this);
-			
-			// TODO some sort of listener to get notified when the file changes
-			//
-			// 1) document listener: documentProvider.getDocument(input).addDocumentListener
-			// 2) documentProvider.addElementStateListener()
-			// 3) Resource Listener
-			//
-			// see: https://github.com/pulse00/Composer-Eclipse-Plugin/issues/23
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		
-		
 	}
 	
 	@Override
@@ -98,6 +85,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 
 		if (input instanceof IFileEditorInput) {
 			project = ((IFileEditorInput)input).getFile().getProject();
+			setPartName(project.getName());
 		}
 			
 		// ok, cool way here we go
@@ -110,7 +98,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 				setDirty(true);
 			}
 		});
-		
 	}
 		
 	
@@ -152,6 +139,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		// change page first
 		super.pageChange(newPageIndex);
 		
+		pageChanging = true;
+		
 		// react to it
 		if (getActiveEditor() == jsonEditor) {
 			IDocument document = documentProvider.getDocument(getEditorInput());
@@ -169,6 +158,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		}
 		
 		lastPageIndex = newPageIndex;
+		pageChanging = false;
 	}
 	
 //	protected void addDependencyGraphPage() throws PartInitException {
@@ -292,6 +282,19 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 
 	@Override
 	public void documentChanged(DocumentEvent event) {
+		// changes happen outside eclipse
+		if (!pageChanging && !saving) {
+			String contents = event.getDocument().get();
+			if (getActiveEditor() == jsonEditor) { 
+				IDocument document = documentProvider.getDocument(getEditorInput());
+				document.set(contents);
+			} else {
+				composerPackage.fromJson(contents);
+			}
+			setDirty(false);
+		}
+		
+		// changes in eclipse
 		if (!saving && jsonDump != null && !jsonDump.equals(event.getDocument().get())) {
 			setDirty(true);
 		}

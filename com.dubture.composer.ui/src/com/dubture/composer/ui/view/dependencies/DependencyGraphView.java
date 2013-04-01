@@ -38,9 +38,9 @@ import com.dubture.composer.core.model.InstalledPackage;
 import com.dubture.composer.core.model.ModelAccess;
 
 @SuppressWarnings("restriction")
-public class DependencyGraph extends ViewPart implements IZoomableWorkbenchPart
+public class DependencyGraphView extends ViewPart implements IZoomableWorkbenchPart
 {
-    public static String VIEW_ID = "com.dubture.composer.core.dependencyGraph";
+    public static String VIEW_ID = "com.dubture.composer.ui.view.dependencyGraph";
     private IProject project;
     private IScriptProject scriptProject;
     private GraphViewer viewer;
