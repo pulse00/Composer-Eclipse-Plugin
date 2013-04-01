@@ -21,7 +21,7 @@ public class BuildPathParser {
 	}
 	
 	public List<String> getPaths() {
-		ComposerPackages packages = project.getInstalledPackages();
+		ComposerPackages packages = project.getAllInstalledPackages();
 		if (packages == null) {
 			return null;
 		}
