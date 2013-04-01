@@ -1,0 +1,16 @@
+{
+	"name" : "test/buildpath",
+	"keywords" : [],
+	"require" : {
+		"php" : ">=5.4",
+		"propel/propel1" : "~1"
+	},
+	"autoload" : {
+		"psr-0" : {
+			"test" : "src"
+		}
+	},
+	"config" : {
+		"vendor-dir" : "mordor"
+	}
+}

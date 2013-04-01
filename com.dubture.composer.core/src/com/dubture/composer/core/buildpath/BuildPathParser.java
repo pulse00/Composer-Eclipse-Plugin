@@ -1,21 +1,14 @@
 package com.dubture.composer.core.buildpath;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
-import org.getcomposer.core.ComposerConstants;
 import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.InstalledPackages;
 import org.getcomposer.core.objects.Autoload;
 import org.getcomposer.core.objects.Namespace;
 
-import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
 
 public class BuildPathParser {
@@ -26,7 +19,6 @@ public class BuildPathParser {
 		this.project = project;
 	}
 	
-	
 	public List<String> getPaths() {
 		List<ComposerPackage> packages = project.getInstalledPackages();
 		if (packages == null) {
@@ -35,61 +27,58 @@ public class BuildPathParser {
 		
 		ComposerPackage composer = project.getComposerPackage();
 		String vendor = project.getVendorDir();
-		IPath packageRoot = project.getVendorPath();
 		
-		// find paths for found composer packages
+		// empty list for found package paths
 		List<String> paths = new ArrayList<String>();
-		for (ComposerPackage p : packages) {
-			Autoload a = p.getAutoload();
-			
-			// psr first
-			for (Namespace namespace : a.getPsr0()) {
-				for (Object path : namespace.getPaths()) {
-					String target = "";
-					if (p.getTargetDir() != null && p.getTargetDir().length() > 0) {
-						target = p.getTargetDir();
-						String pathAsString = (String) path;
-						if ( ! pathAsString.endsWith("/") && pathAsString.length() > 0  && !target.startsWith("/")) {
-							target = "/" + target;
-						}
-						if (!target.endsWith("/")) {
-							target += "/";
-						}
-					}
-					paths.add("/" + vendor + "/" + p.getName() + "/" + path + target);
-				}
-			}
-			
-			// classmap
-			for (Object path : a.getClassMap()) {
-				String cleanedPath = vendor +  getDirectory( p.getName() + "/" + (String) path, packageRoot);
-				addPath(cleanedPath, paths);
-			}
-			
-			// files
-			for (Object path : a.getFiles()) {
-				String cleanedPath = getDirectory(p.getName() + "/" + (String) path, packageRoot);
-				addPath(cleanedPath, paths);
-			}
-		}
 		
 		// add source paths from this package
-		Autoload autoload = composer.getAutoload();
+		parsePackage(composer, paths);
 		
-		for (Namespace namespace : autoload.getPsr0()) {
-			for (Object path : namespace.getPaths()) {
-				paths.add("/" + project.getProject().getName() + "/" + path);
-			}
+		// all installed packages
+		for (ComposerPackage p : packages) {
+			parsePackage(p, paths, vendor + "/" + p.getName());
 		}
 		
-		// maybe don't add this one
-		paths.add("/" + vendor + "/composer/");
+		// maybe add this one ?!
+		// those want/need it, can add it via project settings
+//		paths.add(vendor + "/composer/");
 		return paths;
 	}
 	
+	private void parsePackage(ComposerPackage pkg, List<String> paths) {
+		parsePackage(pkg, paths, "");
+	}
 	
-	private String getDirectory(String path, IPath root) {
+	private void parsePackage(ComposerPackage pkg, List<String> paths, String prefix) {
+		if (prefix != null && !prefix.equals("") && !prefix.endsWith("/")) {
+			prefix += "/";
+		}
+
+		Autoload a = pkg.getAutoload();
+		
+		// psr-0
+		for (Namespace namespace : a.getPsr0()) {
+			for (Object path : namespace.getPaths()) {
+				addPath(prefix + path, paths);
+			}
+		}
+		
+		// classmap
+		for (Object path : a.getClassMap()) {
+			String cleanedPath = getDirectory(prefix + (String) path);
+			addPath(cleanedPath, paths);
+		}
+		
+		// files
+		for (Object path : a.getFiles()) {
+			String cleanedPath = getDirectory(prefix + (String) path);
+			addPath(cleanedPath, paths);
+		}
+	}
+	
+	private String getDirectory(String path) {
 		String cleanedPath = null;
+		IPath root = project.getProject().getLocation();
 		File f = new File(root.toFile(), path);
 		if (f.exists()) {
 			if (f.isDirectory()) {
@@ -102,8 +91,37 @@ public class BuildPathParser {
 	}
 	
 	private void addPath(String path, List<String> paths) {
-		if (path != null && !path.trim().isEmpty() && !paths.contains(path)) {
-			paths.add(path);
+		if (path != null && !path.trim().isEmpty()) {
+			// path cleanup
+			if (path.startsWith("/")) {
+				path = path.substring(1);
+			}
+			
+			if (path.endsWith("/.")) {
+				path = path.substring(0, path.length() - 2);
+			}
+			
+			if (path.endsWith("/")) {
+				path = path.substring(0, path.length() - 1);
+			}
+			
+			if (path.equals(".")) {
+				path = "";
+			}
+			
+//			if (!path.isEmpty()) {
+//				path = project.getProject().getFullPath().toString() + "/" + path;
+//			} else {
+//				path = project.getProject().getFullPath().toString();
+//			}
+			
+			if (path.startsWith("/")) {
+				path = path.substring(1);
+			}
+			
+			if (!paths.contains(path)) {
+				paths.add(path);
+			}
 		}
 	}
 }

@@ -38,7 +38,7 @@ public class BuildPathTest extends AbstractModelTests {
 	@Test
 	public void testBuildpathParser() throws CoreException, IOException, InterruptedException {
 
-		IScriptProject scriptProject = setUpScriptProject("testproject");
+		IScriptProject scriptProject = setUpScriptProject("buildpath");
 
 		assertNotNull(scriptProject);
 
@@ -66,9 +66,16 @@ public class BuildPathTest extends AbstractModelTests {
 		IComposerProject composerProject = ComposerPlugin.getDefault().getComposerProject(scriptProject.getProject());
 		BuildPathParser parser = new BuildPathParser(composerProject);
 		List<String> paths = parser.getPaths();
-		List<String> expected = new ArrayList<String>(Arrays.asList("/vendor/imagine/Imagine/lib/", "/vendor/symfony/yaml/Symfony/Component/Yaml/", "/testproject/src/", "/vendor/composer/"));
+		List<String> expected = new ArrayList<String>(Arrays.asList(
+				"src",
+				"test",
+				"mordor/phing/phing/classes/phing",
+				"mordor/propel/propel1/runtime/lib",
+				"mordor/propel/propel1/generator/lib",
+				"mordor/gossi/ldap/src",
+				"mordor/symfony/console"));
 		assertThat(paths, is(expected));
-
+		
 		// let indexing threads shutdown to avoid SWT thread access errors
 		Thread.sleep(2000);
 
