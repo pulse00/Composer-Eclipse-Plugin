@@ -9,6 +9,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
@@ -18,8 +20,11 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IZoomableWorkbenchPart;
 import org.eclipse.zest.core.viewers.ZoomContributionViewItem;
 import org.eclipse.zest.core.widgets.GraphNode;
+import org.eclipse.zest.core.widgets.ZestStyles;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.LayoutStyles;
+import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.HorizontalShift;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.getcomposer.core.ComposerPackage;
 import org.getcomposer.core.collection.ComposerPackages;
@@ -42,8 +47,9 @@ public class DependencyGraphView extends ViewPart implements
 
 	@Override
 	public void createPartControl(Composite parent) {
-		viewer = new GraphViewer(parent, SWT.BORDER);
 		graphController = new GraphController(composerProject);
+		viewer = new GraphViewer(parent, SWT.BORDER);
+		viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		viewer.setContentProvider(graphController);
 		viewer.setLabelProvider(graphController);
 		viewer.setLayoutAlgorithm(setLayout());
@@ -53,6 +59,12 @@ public class DependencyGraphView extends ViewPart implements
 		ViewerFilter[] filters = new ViewerFilter[1];
 		filters[0] = filter;
 		viewer.setFilters(filters);
+		
+		parent.addControlListener(new ControlAdapter() {
+			public void controlResized(ControlEvent e) {
+				viewer.applyLayout();
+			}
+		});
 
 		createActions();
 		fillToolBar();
@@ -91,6 +103,7 @@ public class DependencyGraphView extends ViewPart implements
 //				}
 //			}
 		});
+		
 	}
 
 	protected ComposerPackage getSelectedPackage() {
@@ -128,7 +141,10 @@ public class DependencyGraphView extends ViewPart implements
 
 	private LayoutAlgorithm setLayout() {
 		LayoutAlgorithm layout;
-		layout = new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
+		layout = new CompositeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING, 
+				new	LayoutAlgorithm[] {
+					new TreeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), 
+					new HorizontalShift(LayoutStyles.NO_LAYOUT_NODE_RESIZING) });
 		return layout;
 	}
 

@@ -16,7 +16,8 @@ import org.getcomposer.core.collection.ComposerPackages;
 import com.dubture.composer.core.resources.IComposerProject;
 
 public class GraphController extends LabelProvider implements
-		IStructuredContentProvider, IGraphEntityContentProvider, IEntityStyleProvider {
+		IStructuredContentProvider, IGraphEntityContentProvider,
+		IEntityStyleProvider {
 	
 	private Color LIGHT_BLUE = new Color(Display.getDefault(), 216, 228, 248);
 	private Color DARK_BLUE = new Color(Display.getDefault(), 1, 70, 122);
@@ -40,12 +41,12 @@ public class GraphController extends LabelProvider implements
 		}
 
 		ComposerPackages connections = new ComposerPackages();
-		ComposerPackage target = (ComposerPackage) entity;
+		ComposerPackage pkg = (ComposerPackage) entity;
 		
-		for (ComposerPackage pkg : packages) {
+		for (ComposerPackage target : packages) {
 			if (pkg.getRequire().has(target)
 					|| pkg.getRequireDev().has(target)) {
-				connections.add(pkg);
+				connections.add(target);
 			}
 		}
 
