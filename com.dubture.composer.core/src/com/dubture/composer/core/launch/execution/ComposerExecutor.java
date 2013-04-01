@@ -125,6 +125,7 @@ public class ComposerExecutor {
 			}
 			
 			Logger.debug("executing command using executable: " + cmd.getExecutable());
+			executor.setExitValue(0);
 			executor.execute(cmd, handler);
 			
 			for (ExecutionResponseListener handler : listeners) {
@@ -141,6 +142,7 @@ public class ComposerExecutor {
 	
 	public void abort() {
 		if (watchdog != null) {
+			executor.setExitValues(new int[]{0, 143}); // we abort, so it's ok with 1 as exit value
             watchdog.destroyProcess();
         }
 	}

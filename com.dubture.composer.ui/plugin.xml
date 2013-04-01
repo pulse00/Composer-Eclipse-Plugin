@@ -102,12 +102,14 @@
             name="Composer">
       </page>
    </extension>
+   <!--
    <extension
          point="org.eclipse.php.ui.phpTreeContentProviders">
       <provider labelProvider="com.dubture.composer.ui.explorer.PackageTreeLabelProvider" contentProvider="com.dubture.composer.ui.explorer.PackageTreeContentProvider"
             >
       </provider>
    </extension>
+   -->
    <extension
          point="org.eclipse.ui.editors">
       <editor

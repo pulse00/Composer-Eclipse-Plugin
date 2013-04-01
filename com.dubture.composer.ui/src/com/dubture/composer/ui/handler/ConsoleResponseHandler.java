@@ -38,7 +38,7 @@ public class ConsoleResponseHandler extends ExecutionResponseAdapter {
 	public void executionMessage(String message) {
 		MessageConsole console = findConsole("Composer");
 		MessageConsoleStream out = console.newMessageStream();
-		out.print(message);
+		out.println(message);
 	}
 
 	public void executionFailed(String response, Exception e) {
