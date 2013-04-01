@@ -99,9 +99,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			}
 		});
 	}
-		
-	
-	
+
 	@Override
 	protected void createPages() {
 		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
@@ -121,14 +119,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			addPage(configurationPage);
 			jsonEditorIndex = addPage(jsonEditor, getEditorInput());
 			setPageText(jsonEditorIndex, jsonEditor.getTitle());
-			
-			
-
-//			addDependencyGraph();
-//			setActivePage(DependenciesPage.ID);
-
-			// Aww, can't use jsonedit here :(
-			// addPage(new JsonTextEditor(), getEditorInput());
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
@@ -160,10 +150,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		lastPageIndex = newPageIndex;
 		pageChanging = false;
 	}
-	
-//	protected void addDependencyGraphPage() throws PartInitException {
-//		addPage(new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph"));
-//	}
 
 	@Override
 	protected void createHeaderContents(IManagedForm headerForm) {
