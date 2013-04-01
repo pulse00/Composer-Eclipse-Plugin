@@ -28,18 +28,18 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 @SuppressWarnings("restriction")
-public class ComposerCoreTests extends Plugin {
+public class ComposerCoreTestPlugin extends Plugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.dubture.composer.test";
 
 	// The shared instance
-	private static ComposerCoreTests plugin;
+	private static ComposerCoreTestPlugin plugin;
 
 	/**
 	 * The constructor
 	 */
-	public ComposerCoreTests() {
+	public ComposerCoreTestPlugin() {
 	}
 
 	/*
@@ -71,7 +71,7 @@ public class ComposerCoreTests extends Plugin {
 	 * 
 	 * @return the shared instance
 	 */
-	public static ComposerCoreTests getDefault() {
+	public static ComposerCoreTestPlugin getDefault() {
 		return plugin;
 	}
 

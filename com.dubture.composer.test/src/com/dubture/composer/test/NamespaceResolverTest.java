@@ -26,7 +26,7 @@ import com.dubture.composer.core.model.ModelAccess;
 public class NamespaceResolverTest extends AbstractModelTests {
 
 	public NamespaceResolverTest() {
-		super(ComposerCoreTests.PLUGIN_ID, "Namespace Resolver tests");
+		super(ComposerCoreTestPlugin.PLUGIN_ID, "Namespace Resolver tests");
 	}
 
 	@Test
@@ -48,8 +48,8 @@ public class NamespaceResolverTest extends AbstractModelTests {
 		scriptProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		scriptProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-		ComposerCoreTests.waitForIndexer();
-		ComposerCoreTests.waitForAutoBuild();
+		ComposerCoreTestPlugin.waitForIndexer();
+		ComposerCoreTestPlugin.waitForAutoBuild();
 
 		IFile file = scriptProject.getProject().getFile("composer.json");
 		assertNotNull(file);

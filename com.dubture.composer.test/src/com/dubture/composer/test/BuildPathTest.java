@@ -32,7 +32,7 @@ import com.dubture.composer.core.resources.IComposerProject;
 public class BuildPathTest extends AbstractModelTests {
 
 	public BuildPathTest() {
-		super(ComposerCoreTests.PLUGIN_ID, "BuildPath tests");
+		super(ComposerCoreTestPlugin.PLUGIN_ID, "BuildPath tests");
 	}
 
 	@Test
@@ -54,8 +54,8 @@ public class BuildPathTest extends AbstractModelTests {
 		scriptProject.getProject().refreshLocal(IResource.DEPTH_INFINITE, null);
 		scriptProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
 
-		ComposerCoreTests.waitForIndexer();
-		ComposerCoreTests.waitForAutoBuild();
+		ComposerCoreTestPlugin.waitForIndexer();
+		ComposerCoreTestPlugin.waitForAutoBuild();
 
 		IFile file = scriptProject.getProject().getFile("composer.json");
 		assertNotNull(file);

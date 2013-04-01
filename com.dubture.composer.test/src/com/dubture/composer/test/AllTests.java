@@ -5,7 +5,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ ExecutableTest.class, NamespaceResolverTest.class, ValidationTest.class })
+@SuiteClasses({ ExecutableTest.class, NamespaceResolverTest.class, ValidationTest.class,
+	StringUtilTest.class, BuildPathTest.class})
 public class AllTests {
 
 }
