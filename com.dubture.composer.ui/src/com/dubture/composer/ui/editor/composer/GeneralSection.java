@@ -3,6 +3,12 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.jface.fieldassist.AutoCompleteField;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -23,6 +29,41 @@ import com.dubture.composer.ui.parts.FormEntry;
 import com.dubture.composer.ui.parts.WeblinkFormEntry;
 
 public class GeneralSection extends ComposerSection {
+
+	
+	protected final String[] LICENSES = new String[] { "MIT License",
+			"Microsoft Public License (Ms-PL)",
+			"GNU General Public License v2 (GPL-2)",
+			"GNU General Public License v3 (GPL-3)",
+			"Apache License 2.0 (Apache-2.0)",
+			"Mozilla Public License 2.0 (MPL-2)",
+			"GNU Lesser General Public License v2.1 (LGPL-2.1)",
+			"GNU Lesser General Public License v3 (LGPL-3.0)",
+			"BSD 3-Clause License (Revised)", "BSD 2-Clause License (FreeBSD)",
+			"Zlib-Libpng License (Zlib)",
+			"Common Development and Distribution License (CDDL-1.0)",
+			"Academic Free License 3.0 (AFL)",
+			"Artistic License 2.0 (Artistic)", "PHP License 3.0 (PHP)",
+			"Simple Public License 2.0 (SimPL)",
+			"Eclipse Public License 1.0 (EPL-1.0)", "IPA Font License (IPA)",
+			"IBM Public License 1.0 (IPL)",
+			"Apple Public Source License 2.0 (APSL)",
+			"University of Illinois - NCSA Open Source License (NCSA)",
+			"Sleepycat License (Sleepycat)",
+			"Do WTF You Want To Public License v2 (WTFPL-2.0)",
+			"Free Art License (FAL)", "Boost Software License 1.0",
+			"ISC License", "Beerware License", "Open Font License (OFL)",
+			"Microsoft Reciprocal License (Ms-RL)", "Python License 2.0",
+			"GNU Affero General Public License v3 (AGPL-3.0)",
+			"OpenMRS Public License v1.1 (OMRS-1.1)",
+			"GNU Free Documentation License v1.3 (FDL-1.3)",
+			"Creative Commons Attribution (CC)",
+			"Creative Commons Attribution Share Alike (CC-SA)",
+			"Creative Commons Attribution NoDerivs (CC-ND)",
+			"Creative Commons Attribution NonCommercial (CC-NC)",
+			"Creative Commons Attribution NonCommercial ShareAlike (CC-NC-SA)",
+			"Creative Commons Attribution NonCommercial NoDerivs (CC-NC-ND)" };
+	private AutoCompleteField licenseAutocomplete;
 
 	public GeneralSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
@@ -139,6 +180,17 @@ public class GeneralSection extends ComposerSection {
 	
 	private void createLicenseEntry(Composite client, FormToolkit toolkit) {
 		final FormEntry licenseEntry = new FormEntry(client, toolkit, "License", null, false);
+		
+		ControlDecoration decoration = new ControlDecoration(licenseEntry.getText(), SWT.TOP | SWT.LEFT);
+		
+        FieldDecoration indicator = FieldDecorationRegistry.getDefault().
+                getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+
+        decoration.setImage(indicator.getImage());
+        decoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
+        decoration.setShowOnlyOnFocus(true);
+		
+		licenseAutocomplete = new AutoCompleteField(licenseEntry.getText(), new TextContentAdapter(), LICENSES);
 		
 		final License2StringConverter converter = new License2StringConverter();
 		licenseEntry.setValue(converter.convert(composerPackage.getLicense()), true);
