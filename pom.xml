@@ -13,7 +13,6 @@
 	</prerequisites>
 
 	<modules>
-		<module>com.googlecode.json-simple</module>
 		<module>com.dubture.composer.core</module>
 		<module>com.dubture.composer.ui</module>
 		<module>com.dubture.composer.test</module>
@@ -26,6 +25,13 @@
 	</properties>
 
 	<repositories>
+
+		<repository>
+			<id>dubture-osgi</id>
+			<layout>p2</layout>
+			<url>http://dzwiupza59who.cloudfront.net/repository</url>
+		</repository>
+
 		<repository>
 			<id>pex-dev</id>
 			<layout>p2</layout>
@@ -61,6 +67,7 @@
 			<layout>p2</layout>
 			<url>http://download.eclipse.org/eclipse/updates/4.2/R-4.2-201206081400</url>
 		</repository>
+
 	</repositories>
 
 	<dependencies>
@@ -93,7 +100,7 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<pomDependencies>consider</pomDependencies>				
+					<pomDependencies>consider</pomDependencies>
 					<environments>
 						<environment>
 							<os>linux</os>
