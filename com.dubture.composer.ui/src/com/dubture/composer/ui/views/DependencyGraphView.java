@@ -4,16 +4,25 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.dltk.ui.DLTKPluginImages;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.zest.core.viewers.AbstractZoomableViewer;
 import org.eclipse.zest.core.viewers.GraphViewer;
@@ -35,18 +44,31 @@ import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.composer.ui.controller.GraphController;
 
 public class DependencyGraphView extends ViewPart implements
-		IZoomableWorkbenchPart {
+		IZoomableWorkbenchPart, ISelectionListener, IPartListener {
 	public static String ID = "com.dubture.composer.ui.view.dependencyGraph";
 
 	private IComposerProject composerProject;
+	private IProject project;
+	
 	private GraphViewer viewer;
 	private Action toggleDevAction;
 
 	private boolean showDev = true;
 	private GraphController graphController;
+	
+	public DependencyGraphView() {
+		super();
+	}
 
 	@Override
 	public void createPartControl(Composite parent) {
+		getSite().getPage().addSelectionListener(this);
+		getSite().getPage().addPartListener(this);
+		selectionChanged(null, getSite().getPage().getSelection());
+		if (project == null) {
+			partActivated(getSite().getPage().getActivePart());
+		}
+		
 		graphController = new GraphController(composerProject);
 		viewer = new GraphViewer(parent, SWT.BORDER);
 		viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
@@ -68,42 +90,13 @@ public class DependencyGraphView extends ViewPart implements
 
 		createActions();
 		fillToolBar();
-		setupListeners();
+		update();
 	}
-
-	protected void setupListeners() {
-
-		viewer.getGraphControl().addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseUp(MouseEvent e) {
-//				ComposerPackage installed = getSelectedPackage();
-//			}
-//
-//			@Override
-//			public void mouseDoubleClick(MouseEvent e) {
-//				ComposerPackage installed = getSelectedPackage();
-//				IResource composer = ModelAccess.getInstance()
-//						.getComposer(installed, scriptProject);
-//
-//				if (composer != null && composer instanceof IFile) {
-//					try {
-//						IFile file = (IFile) composer;
-//						IWorkbenchPage page = PHPUiPlugin
-//								.getActivePage();
-//						if (page != null) {
-//							IEditorDescriptor editor = PlatformUI
-//									.getWorkbench().getEditorRegistry()
-//									.getDefaultEditor(file.getName());
-//							page.openEditor(new FileEditorInput(file),
-//									editor.getId());
-//						}
-//					} catch (PartInitException e1) {
-//						Logger.logException(e1);
-//					}
-//				}
-//			}
-		});
-		
+	
+	@Override
+	public void dispose() {
+		getSite().getPage().removeSelectionListener(this);
+		super.dispose();
 	}
 
 	protected ComposerPackage getSelectedPackage() {
@@ -118,7 +111,7 @@ public class DependencyGraphView extends ViewPart implements
 	}
 
 	protected void update() {
-		if (composerProject != null) {
+		if (composerProject != null && viewer != null) {
 			ComposerPackages packages = composerProject.getAllInstalledPackages();
 			packages.add(composerProject.getComposerPackage());
 			viewer.setInput(packages);
@@ -154,6 +147,11 @@ public class DependencyGraphView extends ViewPart implements
 	}
 
 	public void setProject(IProject project) {
+		if (this.project == project) {
+			return;
+		}
+
+		this.project = project;
 		try {
 			composerProject = ComposerPlugin.getDefault().getComposerProject(project);
 			graphController.setComposerProject(composerProject);
@@ -216,4 +214,47 @@ public class DependencyGraphView extends ViewPart implements
 			applyFilter(showDev);
 		}
 	}
+
+	@Override
+	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			Object item = ((IStructuredSelection)selection).getFirstElement();
+
+			IResource res = null;
+			
+			if (item instanceof IResource) {
+				res = (IResource)item;
+			} else if (item instanceof IAdaptable) {
+				IAdaptable adaptable = (IAdaptable)item;
+				res = (IResource)adaptable.getAdapter(IResource.class);
+			}
+			
+			if (res != null) {
+				setProject(res.getProject());
+			}
+		}
+	}
+
+	@Override
+	public void partActivated(IWorkbenchPart part) {
+		if (part instanceof IEditorPart) {
+			IEditorInput input = ((IEditorPart)part).getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				setProject(((IFileEditorInput)input).getFile().getProject());
+			}
+		}
+	}
+
+	@Override
+	public void partBroughtToTop(IWorkbenchPart part) {}
+
+	@Override
+	public void partClosed(IWorkbenchPart part) {}
+
+	@Override
+	public void partDeactivated(IWorkbenchPart part) {}
+
+	@Override
+	public void partOpened(IWorkbenchPart part) {}
+
 }
