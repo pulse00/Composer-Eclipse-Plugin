@@ -154,7 +154,9 @@ public class DependencyGraphView extends ViewPart implements
 		this.project = project;
 		try {
 			composerProject = ComposerPlugin.getDefault().getComposerProject(project);
-			graphController.setComposerProject(composerProject);
+			if (graphController != null) {
+				graphController.setComposerProject(composerProject);
+			}
 		} catch (IOException e) {
 			Logger.logException(e);
 		}
