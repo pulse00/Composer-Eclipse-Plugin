@@ -129,6 +129,18 @@ public class GeneralSection extends ComposerSection {
 		final FormEntry typeEntry = new FormEntry(client, toolkit, "Type", null, false);
 		typeEntry.setValue(composerPackage.getType(), true);
 		
+		ControlDecoration decoration = new ControlDecoration(typeEntry.getText(), SWT.TOP | SWT.LEFT);
+		
+        FieldDecoration indicator = FieldDecorationRegistry.getDefault().
+                getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+
+        decoration.setImage(indicator.getImage());
+        decoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
+        decoration.setShowOnlyOnFocus(true);
+		
+		new AutoCompleteField(typeEntry.getText(), new TextContentAdapter(), ComposerConstants.TYPES);
+		
+		
 		typeEntry.addFormEntryListener(new FormEntryAdapter() {
 			public void textValueChanged(FormEntry entry) {
 				composerPackage.set("type", entry.getValue());

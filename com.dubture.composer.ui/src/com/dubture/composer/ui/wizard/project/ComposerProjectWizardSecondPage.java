@@ -57,7 +57,7 @@ import org.getcomposer.core.VersionedPackage;
 import org.getcomposer.core.objects.Namespace;
 import org.getcomposer.packages.PharDownloader;
 
-import com.dubture.composer.core.ComposerConstants;
+import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.launch.ExecutableNotFoundException;
 import com.dubture.composer.core.log.Logger;
@@ -177,7 +177,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			IBuildpathEntry[] buildpathEntries = null;
 			
 			//TODO: see https://github.com/pulse00/Composer-Eclipse-Plugin/issues/37
-			IPath srcPath = new Path(ComposerConstants.DEFAULT_SRC_FOLDER);
+			IPath srcPath = new Path(ComposerPluginConstants.DEFAULT_SRC_FOLDER);
 
 			if (srcPath.segmentCount() > 0) {
 				IFolder folder = getProject().getFolder(srcPath);
@@ -320,7 +320,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		if (ns != null) {
 			if (ns.getNamespace().contains("\\")) {
 				String[] split = ns.getNamespace().split("\\\\");
-				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER);
+				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER);
 				for (String segment : split) {
 					path = path.append(segment);
 					IFolder folder = getProject().getFolder(path);
@@ -329,7 +329,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 					}
 				}
 			} else {
-				IPath path = new Path(com.dubture.composer.core.ComposerConstants.DEFAULT_SRC_FOLDER).append(ns.getNamespace());
+				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER).append(ns.getNamespace());
 				IFolder folder = getProject().getFolder(path);
 				if (!folder.exists()) {
 					folder.create(false, true, monitor);
@@ -377,7 +377,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 
 		Namespace ns = new Namespace();
 		ns.setNamespace(namespace);
-		ns.add(ComposerConstants.DEFAULT_SRC_FOLDER);
+		ns.add(ComposerPluginConstants.DEFAULT_SRC_FOLDER);
 		
 		firstPage.composerPackage.getAutoload().getPsr0().clear();
 		firstPage.composerPackage.getAutoload().getPsr0().add(ns);

@@ -3,7 +3,7 @@ package com.dubture.composer.core.launch.environment;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import com.dubture.composer.core.ComposerConstants;
+import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
 import com.dubture.composer.core.preferences.PreferencesSupport;
@@ -20,7 +20,7 @@ public class EnvironmentFactory {
 	public static Environment getEnvironment(IProject project) {
 		
 		IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
-		int env = prefs.getInt(ComposerConstants.PREF_ENVIRONMENT);
+		int env = prefs.getInt(ComposerPluginConstants.PREF_ENVIRONMENT);
 		
 		Environment e;
 		
@@ -55,7 +55,7 @@ public class EnvironmentFactory {
 			String composer = EnvironmentFinder.findComposer();
 			
 			if (composer != null) {
-				prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_SYS_COMPOSER);
+				prefs.setValue(ComposerPluginConstants.PREF_ENVIRONMENT, ENV_SYS_COMPOSER);
 				return create(ENV_SYS_COMPOSER);
 			}
 			
@@ -67,13 +67,13 @@ public class EnvironmentFactory {
 				
 				php = EnvironmentFinder.findPhp();
 				if (php != null && php.length() > 0) {
-					prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_SYS_PHAR);
+					prefs.setValue(ComposerPluginConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_SYS_PHAR);
 					return create(ENV_SYS_PHP_SYS_PHAR);
 				}
 				
 				pdt = EnvironmentFinder.findPdtPhp();
 				if (pdt != null && pdt.length() > 0) {
-					prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_SYS_PHAR);
+					prefs.setValue(ComposerPluginConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_SYS_PHAR);
 					return create(ENV_PDT_PHP_SYS_PHAR);	
 				}
 			}
@@ -83,7 +83,7 @@ public class EnvironmentFactory {
 			}
 			
 			if (php != null && php.length() > 0) {
-				prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_PRJ_PHAR);
+				prefs.setValue(ComposerPluginConstants.PREF_ENVIRONMENT, ENV_SYS_PHP_PRJ_PHAR);
 				return create(ENV_SYS_PHP_PRJ_PHAR);
 			}
 			
@@ -92,7 +92,7 @@ public class EnvironmentFactory {
 			}
 			
 			if (pdt != null && pdt.length() > 0) {
-				prefs.setValue(ComposerConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_PRJ_PHAR);
+				prefs.setValue(ComposerPluginConstants.PREF_ENVIRONMENT, ENV_PDT_PHP_PRJ_PHAR);
 				return create(ENV_PDT_PHP_PRJ_PHAR);	
 			}
 		}
