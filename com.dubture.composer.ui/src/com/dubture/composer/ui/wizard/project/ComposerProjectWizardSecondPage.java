@@ -32,6 +32,7 @@ import org.eclipse.dltk.internal.ui.wizards.BuildpathDetector;
 import org.eclipse.dltk.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.dltk.ui.util.ExceptionHandler;
 import org.eclipse.dltk.ui.wizards.CapabilityConfigurationPage;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -60,9 +61,10 @@ import org.getcomposer.core.objects.Namespace;
 import org.getcomposer.packages.PharDownloader;
 import org.pdtextensions.core.exception.ExecutableNotFoundException;
 import org.pdtextensions.core.launch.ScriptLauncher;
-import org.pdtextensions.core.launch.ScriptLauncherInterface;
+import org.pdtextensions.core.launch.ScriptLauncherManager;
+import org.pdtextensions.core.ui.PEXUIPlugin;
 
-import com.dubture.composer.core.ComposerConstants;
+import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
@@ -82,7 +84,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	private ScriptLauncher launcher;
 	
 	@Inject
-	private ScriptLauncherInterface launchManager;
+	private ScriptLauncherManager launchManager;
 
 	public ComposerProjectWizardSecondPage(ComposerProjectWizardFirstPage mainPage) {
 		super("Dependencies");
@@ -92,6 +94,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		firstPage = mainPage;
 		currentProjectLocation = null;
 		fIsAutobuild = null;
+		ContextInjectionFactory.inject(this, PEXUIPlugin.getDefault().getEclipseContext());
 	}
 
 	@Override

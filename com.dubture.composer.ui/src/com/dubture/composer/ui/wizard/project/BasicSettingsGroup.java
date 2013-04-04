@@ -6,11 +6,19 @@ import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.StringDialogField;
+import org.eclipse.jface.fieldassist.AutoCompleteField;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.getcomposer.core.ComposerConstants;
+
+import com.dubture.composer.ui.editor.composer.LicenseContentAdapter;
 
 @SuppressWarnings("restriction")
 public class BasicSettingsGroup extends Observable implements IDialogFieldListener {
@@ -46,6 +54,18 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 		typeField.doFillIntoGrid(nameComposite, 2);
 		LayoutUtil.setHorizontalGrabbing(typeField.getTextControl(null));
 		
+		ControlDecoration decoration = new ControlDecoration(typeField.getTextControl(), SWT.TOP | SWT.LEFT);
+		
+        FieldDecoration indicator = FieldDecorationRegistry.getDefault().
+                getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+
+        decoration.setImage(indicator.getImage());
+        decoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
+        decoration.setShowOnlyOnFocus(true);
+		
+		new AutoCompleteField(typeField.getTextControl(), new TextContentAdapter(), ComposerConstants.TYPES);
+		
+		
 		// text field for project description
 		descriptionField = new StringDialogField();
 		descriptionField.setLabelText("Description");
@@ -67,6 +87,15 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 		licenseField.setDialogFieldListener(this);
 		licenseField.doFillIntoGrid(nameComposite, 2);
 		LayoutUtil.setHorizontalGrabbing(licenseField.getTextControl(null));
+		
+		ControlDecoration licenseDecoration = new ControlDecoration(licenseField.getTextControl(), SWT.TOP | SWT.LEFT);
+		
+		licenseDecoration.setImage(indicator.getImage());
+		licenseDecoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
+		licenseDecoration.setShowOnlyOnFocus(true);
+		
+		new AutoCompleteField(licenseField.getTextControl(), new LicenseContentAdapter(), ComposerConstants.LICENSES);
+		
 		
 	}
 	

@@ -17,12 +17,24 @@ package com.dubture.composer.ui.parts;
 import java.util.ArrayList;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IFormColors;
-import org.eclipse.ui.forms.widgets.*;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 
@@ -260,8 +272,9 @@ public class FormEntry {
 	 * 
 	 */
 	public String getValue() {
-		if (text != null)
+		if (text != null && !text.isDisposed()) {
 			return text.getText().trim();
+		}
 		
 		return null;
 	}
@@ -272,11 +285,13 @@ public class FormEntry {
 	 * @param value
 	 */
 	public void setValue(String value) {
-		if (value == null)
+		if (value == null) {
 			value = "";
+		}
 
-		if (text != null && value != null && !value.equalsIgnoreCase(getValue()))
+		if (text != null && !text.isDisposed() && value != null && !value.equalsIgnoreCase(getValue())) {
 			text.setText(value);
+		}
 	}
 
 	/**
