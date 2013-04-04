@@ -104,7 +104,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
 
 	public boolean isBuildpathContainerEnabled() {
 		return getPreferenceStore().getBoolean(
-				ComposerConstants.PREF_BUILDPATH_ENABLE);
+				ComposerPluginConstants.PREF_BUILDPATH_ENABLE);
 	}
 	
 	public IComposerProject getComposerProject(IProject project) throws IOException {

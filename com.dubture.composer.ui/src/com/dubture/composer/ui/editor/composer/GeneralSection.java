@@ -3,6 +3,7 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -10,6 +11,8 @@ import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
@@ -31,7 +34,8 @@ import com.dubture.composer.ui.parts.WeblinkFormEntry;
 public class GeneralSection extends ComposerSection {
 
 	
-	protected final String[] LICENSES = new String[] { "MIT License",
+	protected final String[] LICENSES = new String[] { 
+			"MIT License",
 			"Microsoft Public License (Ms-PL)",
 			"GNU General Public License v2 (GPL-2)",
 			"GNU General Public License v3 (GPL-3)",
@@ -43,7 +47,8 @@ public class GeneralSection extends ComposerSection {
 			"Zlib-Libpng License (Zlib)",
 			"Common Development and Distribution License (CDDL-1.0)",
 			"Academic Free License 3.0 (AFL)",
-			"Artistic License 2.0 (Artistic)", "PHP License 3.0 (PHP)",
+			"Artistic License 2.0 (Artistic)", 
+			"PHP License 3.0 (PHP)",
 			"Simple Public License 2.0 (SimPL)",
 			"Eclipse Public License 1.0 (EPL-1.0)", "IPA Font License (IPA)",
 			"IBM Public License 1.0 (IPL)",
@@ -63,7 +68,6 @@ public class GeneralSection extends ComposerSection {
 			"Creative Commons Attribution NonCommercial (CC-NC)",
 			"Creative Commons Attribution NonCommercial ShareAlike (CC-NC-SA)",
 			"Creative Commons Attribution NonCommercial NoDerivs (CC-NC-ND)" };
-	private AutoCompleteField licenseAutocomplete;
 
 	public GeneralSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
@@ -124,6 +128,18 @@ public class GeneralSection extends ComposerSection {
 	private void createTypeEntry(Composite client, FormToolkit toolkit) {
 		final FormEntry typeEntry = new FormEntry(client, toolkit, "Type", null, false);
 		typeEntry.setValue(composerPackage.getType(), true);
+		
+		ControlDecoration decoration = new ControlDecoration(typeEntry.getText(), SWT.TOP | SWT.LEFT);
+		
+        FieldDecoration indicator = FieldDecorationRegistry.getDefault().
+                getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL);
+
+        decoration.setImage(indicator.getImage());
+        decoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
+        decoration.setShowOnlyOnFocus(true);
+		
+		new AutoCompleteField(typeEntry.getText(), new TextContentAdapter(), ComposerConstants.TYPES);
+		
 		
 		typeEntry.addFormEntryListener(new FormEntryAdapter() {
 			public void textValueChanged(FormEntry entry) {
@@ -190,7 +206,7 @@ public class GeneralSection extends ComposerSection {
         decoration.setDescriptionText(indicator.getDescription() + "(Ctrl+Space)");
         decoration.setShowOnlyOnFocus(true);
 		
-		licenseAutocomplete = new AutoCompleteField(licenseEntry.getText(), new TextContentAdapter(), LICENSES);
+		new AutoCompleteField(licenseEntry.getText(), new LicenseContentAdapter(), ComposerConstants.LICENSES);
 		
 		final License2StringConverter converter = new License2StringConverter();
 		licenseEntry.setValue(converter.convert(composerPackage.getLicense()), true);
@@ -229,5 +245,30 @@ public class GeneralSection extends ComposerSection {
 				minimumStabilityEntry.setValue(composerPackage.getMinimumStability(), true);
 			}
 		});
+	}
+	
+	private class LicenseContentAdapter extends TextContentAdapter {
+		@Override
+		public String getControlContents(Control control) {
+			String text = ((Text)control).getText();
+			String[] chunks = text.split(",");
+			return chunks[chunks.length - 1].trim();
+		}
+		
+		@Override
+		public void setControlContents(Control control, String text,
+				int cursorPosition) {
+
+			String id = text.replaceAll(".+\\((.+)\\)$", "$1");
+
+			String val = ((Text)control).getText();
+			String[] chunks = val.split(",");
+			chunks[chunks.length - 1] = id;
+			val = StringUtils.join(chunks, ", ");
+			cursorPosition = val.length();
+			
+			((Text) control).setText(val);
+			((Text) control).setSelection(cursorPosition, cursorPosition);
+		}
 	}
 }
