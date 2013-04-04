@@ -67,7 +67,12 @@ public class ComposerConfigurationBlock extends LauncherConfigurationBlock {
 	@Override
 	protected boolean validateScript(String text) {
 		File file = new File(text);
-		return file.exists() && file.canExecute();
+		
+		System.err.println("validate");
+		System.err.println(file.exists());;
+		System.err.println(file.canExecute());
+		
+		return file.exists() /*&& file.canExecute()*/;
 	}
 
 }

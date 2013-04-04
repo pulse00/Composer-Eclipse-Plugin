@@ -1,36 +1,43 @@
 package com.dubture.composer.core.launch.environment;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.pdtextensions.core.launch.environment.Environment;
-import org.pdtextensions.core.launch.environment.EnvironmentFactory;
+import org.pdtextensions.core.launch.environment.AbstractEnvironmentFactory;
+import org.pdtextensions.core.launch.environment.PrjPharEnvironment;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
-import com.dubture.composer.core.preferences.PreferencesSupport;
 
-public class ComposerEnvironmentFactory implements EnvironmentFactory {
+public class ComposerEnvironmentFactory extends AbstractEnvironmentFactory {
 
 	public static final String FACTORY_ID = "com.dubture.composer.core.launcherfactory";
 	
-	public Environment getEnvironment(IProject project) {
-		
-		IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
-		
-		PreferencesSupport prefSupport = new PreferencesSupport(ComposerPlugin.ID, prefs);
-		String executable = prefSupport.getPreferencesValue(Keys.PHP_EXECUTABLE, null, project);
-		
-		String useProjectPhar = prefSupport.getPreferencesValue(Keys.USE_PROJECT_PHAR, null, project);
-		String systemPhar = prefSupport.getPreferencesValue(Keys.COMPOSER_PHAR, null, project);
-		
-		if (executable != null && executable.length() > 0) {
-			if (useProjectPhar != null && "true".equals(useProjectPhar) || (systemPhar == null || systemPhar.length() == 0) ) {
-				return new SysPhpPrjPhar(executable);
-			}
-			
-			return new SysPhpSysPhar(executable, systemPhar);
-		}
-		
-		return null;
+	@Override
+	protected IPreferenceStore getPreferenceStore() {
+		return ComposerPlugin.getDefault().getPreferenceStore();
+	}
+
+	@Override
+	protected String getPluginId() {
+		return ComposerPlugin.ID;
+	}
+
+	@Override
+	protected PrjPharEnvironment getProjectEnvironment(String executable) {
+		return new SysPhpPrjPhar(executable);
+	}
+
+	@Override
+	protected String getExecutableKey() {
+		return Keys.PHP_EXECUTABLE;
+	}
+
+	@Override
+	protected String getUseProjectKey() {
+		return Keys.USE_PROJECT_PHAR;
+	}
+
+	@Override
+	protected String getScriptKey() {
+		return Keys.COMPOSER_PHAR;
 	}
 }

@@ -3,6 +3,7 @@ package com.dubture.composer.core.launch.environment;
 import org.apache.commons.exec.CommandLine;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.pdtextensions.core.launch.environment.PrjPharEnvironment;
 
 public class SysPhpPrjPhar extends PrjPharEnvironment {
 
