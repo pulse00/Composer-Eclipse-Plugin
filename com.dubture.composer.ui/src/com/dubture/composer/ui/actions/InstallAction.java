@@ -3,6 +3,7 @@ package com.dubture.composer.ui.actions;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPartSite;
+
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.job.InstallJob;
 

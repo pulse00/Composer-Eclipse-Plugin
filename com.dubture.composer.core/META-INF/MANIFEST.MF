@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.exec,
  org.apache.commons.logging,
  org.json.simple,
- org.getcomposer.core
+ org.getcomposer.core,
+ org.pdtextensions.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: 
@@ -28,9 +29,7 @@ Export-Package:
  com.dubture.composer.core.builder,
  com.dubture.composer.core.buildpath,
  com.dubture.composer.core.facet,
- com.dubture.composer.core.launch,
  com.dubture.composer.core.launch.environment,
- com.dubture.composer.core.launch.execution,
  com.dubture.composer.core.log,
  com.dubture.composer.core.model,
  com.dubture.composer.core.preferences,

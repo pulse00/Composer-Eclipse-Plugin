@@ -8,6 +8,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
+import org.pdtextensions.core.ui.preferences.launcher.LauncherConfigurationBlock;
+import org.pdtextensions.core.ui.preferences.launcher.LauncherKeyBag;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.ui.ComposerUIPlugin;
@@ -18,7 +20,7 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 	public static final String PREF_ID = "com.dubture.composer.ui.preferences.ComposerPreferencePage";
 	public static final String PROP_ID = "com.dubture.composer.ui.propertyPages.ComposerPreferencePage";
 
-	private ComposerConfigurationBlock configurationBlock;
+	private LauncherConfigurationBlock configurationBlock;
 
 	public ComposerPreferencePage() {
 		setTitle("Composer");
@@ -31,7 +33,9 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 	public void createControl(Composite parent) {
 
 		IWorkbenchPreferenceContainer container = (IWorkbenchPreferenceContainer) getContainer();
-		configurationBlock = new ComposerConfigurationBlock(getNewStatusChangedListener(), getProject(), container);
+		
+		LauncherKeyBag bag = new ComposerLauncherBag();
+		configurationBlock = new ComposerConfigurationBlock(getNewStatusChangedListener(), getProject(), container, bag);
 
 		super.createControl(parent);
 

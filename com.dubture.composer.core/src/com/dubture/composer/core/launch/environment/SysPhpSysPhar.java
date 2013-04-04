@@ -2,16 +2,12 @@ package com.dubture.composer.core.launch.environment;
 
 import org.apache.commons.exec.CommandLine;
 import org.eclipse.core.resources.IProject;
+import org.pdtextensions.core.launch.environment.Environment;
 
 public class SysPhpSysPhar implements Environment {
 
 	private String php;
 	private String phar;
-	
-	public SysPhpSysPhar() {
-		php = EnvironmentFinder.findPhp();
-		phar = EnvironmentFinder.findComposerPhar();
-	}
 	
 	public SysPhpSysPhar(String executable, String composerPhar) {
 		php = executable;

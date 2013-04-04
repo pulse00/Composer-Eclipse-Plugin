@@ -1,5 +1,7 @@
 package com.dubture.composer.ui;
 
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -19,6 +21,13 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 	 */
 	public ComposerUIPlugin() {
 	}
+	
+	@Execute
+	public void aha(IEclipseContext context) {
+		
+		System.err.println("FUCK YOU");
+		
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -27,6 +36,7 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		
 	}
 
 	/*

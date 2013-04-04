@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import org.apache.commons.exec.ExecuteException;
 import org.eclipse.core.resources.IProject;
-
-import com.dubture.composer.core.launch.ComposerLauncher;
+import org.pdtextensions.core.launch.ScriptLauncher;
 
 public class SelfUpdateJob extends ComposerJob {
 
@@ -14,7 +13,7 @@ public class SelfUpdateJob extends ComposerJob {
 	}
 
 	@Override
-	protected void launch(ComposerLauncher launcher) throws ExecuteException,
+	protected void launch(ScriptLauncher launcher) throws ExecuteException,
 			IOException, InterruptedException {
 		launcher.launch("selfupdate");
 	}

@@ -58,6 +58,7 @@ public class ComposerPlugin extends AbstractUIPlugin {
 			}
 		};
 		workspace.addResourceChangeListener(listener);
+		
 
 	}
 

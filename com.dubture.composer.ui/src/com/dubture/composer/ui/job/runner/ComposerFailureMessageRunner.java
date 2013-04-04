@@ -3,7 +3,6 @@ package com.dubture.composer.ui.job.runner;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
 
-import com.dubture.composer.core.launch.ComposerLauncher;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.dialogs.ComposerJobFailureDialog;
@@ -24,7 +23,7 @@ public class ComposerFailureMessageRunner implements Runnable {
 			monitor.done();
 		}
 
-		ComposerLauncher.resetEnvironment();
+//		ScriptLauncher.resetEnvironment();
 		String message = "Launching composer failed. See the .metadata/.log file in your workspace for details.";
 		if (response != null && response.length() > 0) {
 			message = response.trim();

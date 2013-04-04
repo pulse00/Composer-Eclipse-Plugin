@@ -5,8 +5,8 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
+import org.pdtextensions.core.launch.execution.ExecutionResponseAdapter;
 
-import com.dubture.composer.core.launch.execution.ExecutionResponseAdapter;
 import com.dubture.composer.core.log.Logger;
 
 public class ConsoleResponseHandler extends ExecutionResponseAdapter {

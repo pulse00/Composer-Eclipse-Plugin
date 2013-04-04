@@ -8,9 +8,9 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.php.internal.debug.core.preferences.PHPexeItem;
 import org.osgi.framework.Bundle;
+import org.pdtextensions.core.launch.execution.ExecutionResponseListener;
+import org.pdtextensions.core.launch.execution.ScriptExecutor;
 
-import com.dubture.composer.core.launch.execution.ComposerExecutor;
-import com.dubture.composer.core.launch.execution.ExecutionResponseListener;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 
@@ -29,7 +29,7 @@ public class ExecutableTester implements Runnable {
 	public void run() {
 		
 		try {
-			ComposerExecutor executor = new ComposerExecutor();
+			ScriptExecutor executor = new ScriptExecutor();
 			CommandLine cmd = new CommandLine(phPexeItem.getExecutable());
 			cmd.addArgument("testexecutable");
 			

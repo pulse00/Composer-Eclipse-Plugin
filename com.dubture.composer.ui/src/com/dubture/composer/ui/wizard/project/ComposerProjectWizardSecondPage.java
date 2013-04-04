@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.inject.Inject;
+
 import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -56,10 +58,12 @@ import org.getcomposer.core.ComposerPackage;
 import org.getcomposer.core.VersionedPackage;
 import org.getcomposer.core.objects.Namespace;
 import org.getcomposer.packages.PharDownloader;
+import org.pdtextensions.core.exception.ExecutableNotFoundException;
+import org.pdtextensions.core.launch.ScriptLauncher;
+import org.pdtextensions.core.launch.ScriptLauncherInterface;
 
 import com.dubture.composer.core.ComposerConstants;
-import com.dubture.composer.core.launch.ComposerLauncher;
-import com.dubture.composer.core.launch.ExecutableNotFoundException;
+import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
@@ -75,7 +79,10 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	private Boolean fIsAutobuild;
 	private AutoloadValidator validator;
 	private PharDownloader downloader;
-	private ComposerLauncher launcher;
+	private ScriptLauncher launcher;
+	
+	@Inject
+	private ScriptLauncherInterface launchManager;
 
 	public ComposerProjectWizardSecondPage(ComposerProjectWizardFirstPage mainPage) {
 		super("Dependencies");
@@ -290,7 +297,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	private void dumpAutoload(final IProgressMonitor monitor) throws Exception {
 
 		try {
-			launcher = ComposerLauncher.getLauncher(getProject());
+			launcher = launchManager.getLauncher(ComposerEnvironmentFactory.FACTORY_ID, getProject());
 		} catch (ExecutableNotFoundException e) {
 			Display.getDefault().asyncExec(new MissingExecutableRunner());
 			return;

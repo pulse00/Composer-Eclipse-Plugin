@@ -109,6 +109,13 @@
             class="com.dubture.composer.core.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.pdtextensions.core.executableLauncher">
+      <environmentFactory
+            class="com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory"
+            id="com.dubture.composer.core.launcherfactory">
+      </environmentFactory>
+   </extension>
    
 
 </plugin>
