@@ -18,39 +18,59 @@
             locationURI="menu:sourceMenuId?before=sourceBegin">
          <command
                commandId="com.dubture.composer.ui.command.injectAutoload"
-               label="Inject autoload statement"
+               label="Inject composer autoloader"
                style="push">
-            <visibleWhen
-                  checkEnabled="false">
+            <visibleWhen checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+		                  <test
+		                        forcePluginActivation="true"
+		                        property="org.pdtextensions.parentProjectNature"
+		                        value="com.dubture.composer.core.composerNature">
+		                  </test>
+                  </iterate>
+               </with>
+                  
+                  <!--
                <and>
                  <reference
                         definitionId="org.eclipse.php.ui.phpContentType.definition">
                   </reference>
-                 <iterate
-                       operator="or">
-                    <test
-                          property="org.eclipse.core.resources.projectNature"
-                          value="com.dubture.composer.core.composerNature">
-                    </test>
-                 </iterate>
+                 <test
+                       forcePluginActivation="true"
+                       property="com.dubture.composer.ui.expressions.containingProjectHasNature"
+                       value="com.dubture.composer.core.composerNature">
+                 </test>
                </and>
+                 -->
             </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution
             allPopups="false"
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-         <toolbar
-               id="com.dubture.composer.ui.toolbar.injectAutoload"
-               label="Inject autoload statement">
-            <command
-                  commandId="com.dubture.composer.ui.command.injectAutoload"
-                  icon="icons/full/obj16/internalize.gif"
-                  label="Inject autoload statement"
-                  style="push"
-                  tooltip="Injects a require_once statement with the path to the composer autoload.php file">
-            </command>
-         </toolbar>
+            locationURI="popup:sourcePopupMenuId?after=sourceBegin">
+         <command
+               commandId="com.dubture.composer.ui.command.injectAutoload"
+               label="Inject composer autoloader"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        operator="and">
+                     <test
+                           forcePluginActivation="true"
+                           property="org.pdtextensions.parentProjectNature"
+                           value="com.dubture.composer.core.composerNature">
+                     </test>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
       </menuContribution>
    </extension>
    <extension
