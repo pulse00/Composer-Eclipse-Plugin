@@ -18,7 +18,7 @@
             locationURI="menu:sourceMenuId?before=sourceBegin">
          <command
                commandId="com.dubture.composer.ui.command.injectAutoload"
-               label="Inject composer autoloader"
+               label="Inject Composer Autoload-Statement"
                style="push">
             <visibleWhen checkEnabled="false">
                <with
@@ -42,7 +42,7 @@
             locationURI="popup:sourcePopupMenuId?after=sourceBegin">
          <command
                commandId="com.dubture.composer.ui.command.injectAutoload"
-               label="Inject composer autoloader"
+               label="Inject Composer Autoload-Statement"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -60,7 +60,7 @@
             </visibleWhen>
          </command>
       </menuContribution>
-      <!--<menuContribution
+      <menuContribution
             allPopups="false"
             locationURI="menu:org.eclipse.ui.projectConfigure">
          <command
@@ -77,13 +77,13 @@
 							<test
 								forcePluginActivation="true"
 								property="org.pdtextensions.parentProjectNature"
-								value="com.dubture.composer.core.composerNature">
+								value="org.eclipse.php.core.PHPNature">
 							</test>
                   </iterate>
                </with>
             </visibleWhen>
          </command>
-      </menuContribution>-->
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -119,7 +119,7 @@
       <command
             defaultHandler="com.dubture.composer.ui.commands.InjectAutoloadCommand"
             id="com.dubture.composer.ui.command.injectAutoload"
-            name="Inject autoload statement">
+            name="Inject Composer Autoload-Statement">
       </command>
       <command
             id="com.dubture.composer.ui.command.addComposerSupport"

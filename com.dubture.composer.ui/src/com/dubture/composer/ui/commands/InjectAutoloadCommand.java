@@ -27,6 +27,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.getcomposer.core.ComposerConstants;
 
 /**
  * Injects the statement "require_once __DIR__ '../../<vendor-dir>/autoload.php'" into
@@ -55,7 +56,7 @@ public class InjectAutoloadCommand extends AbstractHandler {
 		IProject project = file.getProject();
 		IComposerProject composerProject = getComposerProject(project);
 		String vendorDir = composerProject.getVendorDir();
-		String vendor = vendorDir != null ? vendorDir : "vendor";
+		String vendor = vendorDir != null ? vendorDir : ComposerConstants.VENDOR_DIR_DEFAULT;
 		
 		IFile autoload = project.getFile(vendor + "/autoload.php");
 		if (autoload == null || autoload.exists() == false) {
