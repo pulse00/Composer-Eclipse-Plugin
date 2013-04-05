@@ -1,13 +1,16 @@
 package com.dubture.composer.ui;
 
-import org.eclipse.e4.core.contexts.IEclipseContext;
-import org.eclipse.e4.core.di.annotations.Execute;
+import org.eclipse.php.internal.debug.core.PHPDebugPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.preferences.PHPExecutableChangeListener;
 
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("restriction")
 public class ComposerUIPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
@@ -20,12 +23,6 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 	 * The constructor
 	 */
 	public ComposerUIPlugin() {
-	}
-	
-	@Execute
-	public void aha(IEclipseContext context) {
-		
-		System.err.println("FUCK YOU");
 		
 	}
 
@@ -33,10 +30,16 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
+	@SuppressWarnings("deprecation")
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
 		
+		try {
+			PHPDebugPlugin.getDefault().getPluginPreferences().addPropertyChangeListener(new PHPExecutableChangeListener());
+		} catch (Exception e) {
+			Logger.logException(e);
+		}
 	}
 
 	/*

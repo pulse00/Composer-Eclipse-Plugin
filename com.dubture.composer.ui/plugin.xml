@@ -33,19 +33,6 @@
 		                  </test>
                   </iterate>
                </with>
-                  
-                  <!--
-               <and>
-                 <reference
-                        definitionId="org.eclipse.php.ui.phpContentType.definition">
-                  </reference>
-                 <test
-                       forcePluginActivation="true"
-                       property="com.dubture.composer.ui.expressions.containingProjectHasNature"
-                       value="com.dubture.composer.core.composerNature">
-                 </test>
-               </and>
-                 -->
             </visibleWhen>
          </command>
       </menuContribution>

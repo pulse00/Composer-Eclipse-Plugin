@@ -3,6 +3,7 @@ package com.dubture.composer.ui.dialogs;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.php.internal.debug.ui.preferences.phps.PHPsPreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -13,16 +14,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.PreferencesUtil;
-import org.eclipse.ui.internal.WorkbenchMessages;
 
 import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
 public class MissingExecutableDialog extends ErrorDialog {
 
-	public MissingExecutableDialog(Shell parentShell, String dialogTitle, String message, IStatus status,
-			int displayMask) {
-		super(parentShell, dialogTitle, message, status, displayMask);
+	private final Shell shell;
+
+	public MissingExecutableDialog(Shell parentShell, IStatus info) {
+		super(parentShell, "Problem running composer", "Unable to run composer.", info,
+				IStatus.CANCEL | IStatus.ERROR | IStatus.OK | IStatus.WARNING);
+		shell = parentShell;
 	}
 
 	@Override
@@ -45,14 +48,16 @@ public class MissingExecutableDialog extends ErrorDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					PreferencesUtil.createPreferenceDialogOn(getShell(), PHPsPreferencePage.ID, new String[] {}, null);
+					PreferenceDialog preferenceDialog = PreferencesUtil.createPreferenceDialogOn(shell, PHPsPreferencePage.ID, new String[] {}, null);
+					preferenceDialog.open();
+					MissingExecutableDialog.this.close();
 				} catch (Exception e2) {
 					Logger.logException(e2);
 				}
 			}
 		});
-		link.setText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogHyperlink);
-		link.setToolTipText(WorkbenchMessages.ErrorLogUtil_ShowErrorLogTooltip);
+		link.setText("You need to <a>configure a PHP executable</a> in your preferences in order \nfor the Composer plugin to be able to run composer.");
+		link.setToolTipText("Open the PHP preference page to configure the available PHP executables");
 		Dialog.applyDialogFont(link);
 
 		return link;

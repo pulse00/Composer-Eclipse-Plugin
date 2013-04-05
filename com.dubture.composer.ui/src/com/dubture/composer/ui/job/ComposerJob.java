@@ -16,6 +16,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.pdtextensions.core.exception.ExecutableNotFoundException;
 import org.pdtextensions.core.launch.ScriptLauncher;
 import org.pdtextensions.core.launch.ScriptLauncherManager;
 import org.pdtextensions.core.launch.ScriptNotFoundException;
@@ -27,6 +28,7 @@ import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 import com.dubture.composer.ui.job.runner.ComposerFailureMessageRunner;
+import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
 
 abstract public class ComposerJob extends Job {
 	
@@ -73,12 +75,10 @@ abstract public class ComposerJob extends Job {
 			
 			try {
 				launcher = manager.getLauncher(ComposerEnvironmentFactory.FACTORY_ID, getProject());
-				/*
 			} catch (ExecutableNotFoundException e) {
 				// inform the user of the missing executable
 				Display.getDefault().asyncExec(new MissingExecutableRunner());
 				return Status.OK_STATUS;
-				*/
 			} catch (ScriptNotFoundException e) {
 				// run the downloader
 				Display.getDefault().asyncExec(new DownloadRunner());
