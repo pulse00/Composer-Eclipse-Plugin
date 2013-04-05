@@ -76,6 +76,14 @@
                class="com.dubture.composer.core.facet.InstallActionDelegate">
          </delegate>
       </action>
+      <action
+            facet="php.composer.component"
+            id="php.composer.component.uninstall"
+            type="uninstall">
+         <delegate
+               class="com.dubture.composer.core.facet.UninstallActionDelegate">
+         </delegate>
+      </action>
    </extension>
    <extension
          point="org.eclipse.wst.common.project.facet.ui.wizardPages">

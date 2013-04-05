@@ -33,6 +33,7 @@
 		                  </test>
                   </iterate>
                </with>
+
             </visibleWhen>
          </command>
       </menuContribution>
@@ -59,6 +60,30 @@
             </visibleWhen>
          </command>
       </menuContribution>
+      <!--<menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.projectConfigure">
+         <command
+               commandId="com.dubture.composer.ui.command.addComposerSupport"
+               label="Add Composer Support"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+							<test
+								forcePluginActivation="true"
+								property="org.pdtextensions.parentProjectNature"
+								value="com.dubture.composer.core.composerNature">
+							</test>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>-->
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -95,6 +120,14 @@
             defaultHandler="com.dubture.composer.ui.commands.InjectAutoloadCommand"
             id="com.dubture.composer.ui.command.injectAutoload"
             name="Inject autoload statement">
+      </command>
+      <command
+            id="com.dubture.composer.ui.command.addComposerSupport"
+            name="Add Composer Support">
+      </command>
+      <command
+            id="com.dubture.composer.ui.command.removeComposerSupport"
+            name="Remove Composer Support">
       </command>
    </extension>
    <extension

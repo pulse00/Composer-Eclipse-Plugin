@@ -51,7 +51,7 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 		
 		firstPage = new ComposerProjectWizardFirstPage();
 		addPage(firstPage);
-		
+
 		secondPage = new ComposerProjectWizardSecondPage(firstPage);
 		addPage(secondPage);
 		

@@ -1,8 +1,5 @@
 package com.dubture.composer.core.facet;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,16 +24,17 @@ public class FacetManager {
 			}
 			
 			final IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
-			final Set<IProjectFacet> fixedFacets = new HashSet<IProjectFacet>();
+			
+//			final Set<IProjectFacet> fixedFacets = new HashSet<IProjectFacet>();
 			IProjectFacet coreFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_CORE_COMPONENT);
-			fixedFacets.add(coreFacet);
-			
+//			fixedFacets.add(coreFacet);
+//			
 			IProjectFacet composerFacet = ProjectFacetsManager.getProjectFacet(ComposerFacetConstants.COMPOSER_COMPONENT);
-			fixedFacets.add(composerFacet);
-			
-			IProjectFacet phpFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_COMPONENT);
-			fixedFacets.add(phpFacet);
-			facetedProject.setFixedProjectFacets(fixedFacets);
+//			fixedFacets.add(composerFacet);
+//			
+//			IProjectFacet phpFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_COMPONENT);
+//			fixedFacets.add(phpFacet);
+//			facetedProject.setFixedProjectFacets(fixedFacets);
 
 			// install the fixed facets
 			facetedProject.installProjectFacet(coreFacet.getDefaultVersion(), null, monitor);

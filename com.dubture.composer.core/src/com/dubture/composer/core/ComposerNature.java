@@ -20,7 +20,7 @@ public class ComposerNature implements IProjectNature {
 
 	@Override
 	public void configure() throws CoreException {
-		
+
 		if (hasBuilder()) {
 			return;
 		}
@@ -43,46 +43,52 @@ public class ComposerNature implements IProjectNature {
 	public void deconfigure() throws CoreException {
 
 		// uninstall builder
-		final IProjectDescription description = project.getDescription();
-		final List<ICommand> commands = new ArrayList<ICommand>();
-		commands.addAll(Arrays.asList(description.getBuildSpec()));
+		int index = getBuilderIndex();
+		if (index != -1) {
+			final IProjectDescription description = project.getDescription();
+			final List<ICommand> commands = new ArrayList<ICommand>();
+			commands.addAll(Arrays.asList(description.getBuildSpec()));
+			commands.remove(index);
 
-		for (final ICommand buildSpec : description.getBuildSpec()) {
-			if (ComposerBuildPathManagementBuilder.ID.equals(buildSpec.getBuilderName())) {
-				// remove builder
-				commands.remove(buildSpec);
-			}
+			description.setBuildSpec(commands.toArray(new ICommand[commands
+					.size()]));
+			project.setDescription(description, null);
 		}
-
-		description
-				.setBuildSpec(commands.toArray(new ICommand[commands.size()]));
-		project.setDescription(description, null);
 	}
-	
+
 	private boolean hasBuilder() {
+		return getBuilderIndex() != -1;
+	}
+
+	private int getBuilderIndex() {
 		try {
+			int i = 0;
 			for (ICommand cmd : project.getDescription().getBuildSpec()) {
 				// activated builder
-				if (ComposerBuildPathManagementBuilder.ID.equals(cmd.getBuilderName())) {
-					return true;
+				if (ComposerBuildPathManagementBuilder.ID.equals(cmd
+						.getBuilderName())) {
+					return i;
 				}
-				
+
 				// deactivated builder
-				if ("org.eclipse.ui.externaltools.ExternalToolBuilder".equals(cmd.getBuilderName())) {
+				if ("org.eclipse.ui.externaltools.ExternalToolBuilder"
+						.equals(cmd.getBuilderName())) {
 					Map<String, String> args = cmd.getArguments();
 					if (args.containsKey("LaunchConfigHandle")) {
 						String launch = args.get("LaunchConfigHandle");
-						if (launch.contains(ComposerBuildPathManagementBuilder.ID)) {
-							return true;
+						if (launch
+								.contains(ComposerBuildPathManagementBuilder.ID)) {
+							return i;
 						}
 					}
 				}
+				i++;
 			}
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
-		
-		return false;
+
+		return -1;
 	}
 
 	@Override
