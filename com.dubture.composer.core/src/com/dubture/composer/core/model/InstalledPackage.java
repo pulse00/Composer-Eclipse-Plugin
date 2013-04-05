@@ -16,10 +16,10 @@ import org.eclipse.dltk.core.IBuildpathAttribute;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.environment.EnvironmentManager;
 import org.eclipse.dltk.core.environment.EnvironmentPathUtils;
-import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.getcomposer.core.ComposerPackage;
 
 /**
  * Represents a package inside installed(_dev).json. This class is used to handle

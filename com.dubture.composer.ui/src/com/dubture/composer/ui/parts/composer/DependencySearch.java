@@ -15,9 +15,10 @@ import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.VersionedPackage;
-import org.getcomposer.core.collection.Dependencies;
+
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.VersionedPackage;
+import com.dubture.getcomposer.core.collection.Dependencies;
 
 public class DependencySearch extends PackageSearch {
 

@@ -12,9 +12,9 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeItem;
-import org.getcomposer.core.objects.Scripts;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.objects.Scripts;
 
 public class ScriptsController  extends StyledCellLabelProvider implements ITreeContentProvider {
 

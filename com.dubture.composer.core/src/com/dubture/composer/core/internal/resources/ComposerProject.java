@@ -7,12 +7,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.core.ComposerConstants;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.ComposerPackages;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.getcomposer.core.ComposerConstants;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
 
 public class ComposerProject implements IComposerProject {
 

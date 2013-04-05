@@ -55,10 +55,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.VersionedPackage;
-import org.getcomposer.core.objects.Namespace;
-import org.getcomposer.packages.PharDownloader;
 import org.pdtextensions.core.exception.ExecutableNotFoundException;
 import org.pdtextensions.core.launch.ScriptLauncher;
 import org.pdtextensions.core.launch.ScriptLauncherManager;
@@ -70,6 +66,10 @@ import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.VersionedPackage;
+import com.dubture.getcomposer.core.objects.Namespace;
+import com.dubture.getcomposer.packages.PharDownloader;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage implements IPHPProjectCreateWizardPage, Observer {
@@ -324,7 +324,7 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 	
 	private void addComposerJson(IProgressMonitor monitor) throws CoreException {
 		
-		IFile file = getProject().getFile(org.getcomposer.core.ComposerConstants.COMPOSER_JSON);
+		IFile file = getProject().getFile(com.dubture.getcomposer.core.ComposerConstants.COMPOSER_JSON);
 		Namespace ns = firstPage.getPackage().getAutoload().getPsr0().getFirst();
 		
 		if (ns != null) {

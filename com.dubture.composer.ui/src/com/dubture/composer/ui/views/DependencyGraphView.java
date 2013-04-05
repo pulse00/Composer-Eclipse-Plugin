@@ -35,13 +35,13 @@ import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.HorizontalShift;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.ComposerPackages;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.composer.ui.controller.GraphController;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
 
 public class DependencyGraphView extends ViewPart implements
 		IZoomableWorkbenchPart, ISelectionListener, IPartListener {

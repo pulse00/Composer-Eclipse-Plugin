@@ -12,9 +12,9 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
-import org.getcomposer.core.MinimalPackage;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.MinimalPackage;
 
 public class PackageController extends StyledCellLabelProvider implements IStructuredContentProvider, ICheckStateProvider, ICheckStateListener {
 

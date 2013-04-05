@@ -15,10 +15,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.core.objects.Scripts;
 
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.objects.Scripts;
 
 public class ScriptDialog extends Dialog {
 	

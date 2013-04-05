@@ -30,17 +30,17 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.getcomposer.core.ComposerConstants;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.RepositoryPackage;
-import org.getcomposer.core.collection.Versions;
-import org.getcomposer.core.entities.Version;
-import org.getcomposer.packages.AsyncPackageDownloader;
-import org.getcomposer.packages.AsyncPackagistDownloader;
-import org.getcomposer.packages.PackageListenerInterface;
 
 import com.dubture.composer.ui.utils.WidgetFactory;
 import com.dubture.composer.ui.utils.WidgetHelper;
+import com.dubture.getcomposer.core.ComposerConstants;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.RepositoryPackage;
+import com.dubture.getcomposer.core.collection.Versions;
+import com.dubture.getcomposer.core.entities.Version;
+import com.dubture.getcomposer.packages.AsyncPackageDownloader;
+import com.dubture.getcomposer.packages.AsyncPackagistDownloader;
+import com.dubture.getcomposer.packages.PackageListenerInterface;
 
 public class VersionSuggestion {
 

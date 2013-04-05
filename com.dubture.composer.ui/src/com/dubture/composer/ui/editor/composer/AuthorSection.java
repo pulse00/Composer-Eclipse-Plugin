@@ -27,8 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.core.collection.Persons;
-import org.getcomposer.core.objects.Person;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.dialogs.PersonDialog;
@@ -36,6 +34,8 @@ import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TableSection;
 import com.dubture.composer.ui.parts.TablePart;
+import com.dubture.getcomposer.core.collection.Persons;
+import com.dubture.getcomposer.core.objects.Person;
 
 public class AuthorSection extends TableSection implements PropertyChangeListener {
 

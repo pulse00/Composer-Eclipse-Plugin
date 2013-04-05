@@ -27,14 +27,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.core.collection.Repositories;
-import org.getcomposer.core.repositories.ComposerRepository;
-import org.getcomposer.core.repositories.GitRepository;
-import org.getcomposer.core.repositories.MercurialRepository;
-import org.getcomposer.core.repositories.PackageRepository;
-import org.getcomposer.core.repositories.PearRepository;
-import org.getcomposer.core.repositories.Repository;
-import org.getcomposer.core.repositories.SubversionRepository;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.controller.IController;
@@ -43,6 +35,14 @@ import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TableSection;
 import com.dubture.composer.ui.parts.TablePart;
+import com.dubture.getcomposer.core.collection.Repositories;
+import com.dubture.getcomposer.core.repositories.ComposerRepository;
+import com.dubture.getcomposer.core.repositories.GitRepository;
+import com.dubture.getcomposer.core.repositories.MercurialRepository;
+import com.dubture.getcomposer.core.repositories.PackageRepository;
+import com.dubture.getcomposer.core.repositories.PearRepository;
+import com.dubture.getcomposer.core.repositories.Repository;
+import com.dubture.getcomposer.core.repositories.SubversionRepository;
 
 public class RepositoriesSection extends TableSection implements PropertyChangeListener {
 

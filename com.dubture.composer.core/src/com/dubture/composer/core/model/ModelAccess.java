@@ -19,13 +19,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.core.collection.Psr0;
-import org.getcomposer.core.objects.Namespace;
 import org.json.simple.parser.ParseException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 /**
  * 

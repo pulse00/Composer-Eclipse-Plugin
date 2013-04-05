@@ -22,7 +22,6 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.getcomposer.core.ComposerPackage;
 import org.sourceforge.jsonedit.core.editors.JsonTextEditor;
 
 import com.dubture.composer.core.log.Logger;
@@ -31,6 +30,7 @@ import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
+import com.dubture.getcomposer.core.ComposerPackage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener {
 	

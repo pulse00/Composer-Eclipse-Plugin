@@ -26,9 +26,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
-import org.getcomposer.core.ComposerPackage;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
+import com.dubture.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
 public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPProjectCreateWizardPage, Observer {

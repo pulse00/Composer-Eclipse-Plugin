@@ -15,11 +15,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.core.repositories.Repository;
-import org.getcomposer.core.repositories.RepositoryFactory;
 
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.repositories.Repository;
+import com.dubture.getcomposer.core.repositories.RepositoryFactory;
 
 public class RepositoryDialog extends Dialog {
 

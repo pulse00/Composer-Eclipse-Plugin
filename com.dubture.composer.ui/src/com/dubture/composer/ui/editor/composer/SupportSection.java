@@ -7,7 +7,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.core.objects.Support;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.ComposerSection;
@@ -15,6 +14,7 @@ import com.dubture.composer.ui.editor.FormEntryAdapter;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.parts.FormEntry;
 import com.dubture.composer.ui.parts.WeblinkFormEntry;
+import com.dubture.getcomposer.core.objects.Support;
 
 public class SupportSection extends ComposerSection {
 

@@ -13,12 +13,12 @@ import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.Dependencies;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.parts.composer.DependencySelectionFinishedListener;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.Dependencies;
 
 /**
  * @author Thomas Gossmann

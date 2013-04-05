@@ -1,7 +1,7 @@
 package com.dubture.composer.ui.converter;
 
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.JsonArray;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.JsonArray;
 
 public class String2KeywordsConverter extends String2ListConverter {
 

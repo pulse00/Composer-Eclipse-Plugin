@@ -12,11 +12,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.core.VersionedPackage;
 
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.parts.composer.VersionSuggestion;
 import com.dubture.composer.ui.utils.WidgetFactory;
+import com.dubture.getcomposer.core.VersionedPackage;
 
 public class DependencyDialog extends Dialog {
 

@@ -5,7 +5,8 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.getcomposer.core.ComposerPackage;
+
+import com.dubture.getcomposer.core.ComposerPackage;
 
 
 public abstract class ComposerSection extends SectionPart {

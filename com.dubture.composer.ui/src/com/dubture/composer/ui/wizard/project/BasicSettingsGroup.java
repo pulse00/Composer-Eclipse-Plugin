@@ -16,9 +16,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.getcomposer.core.ComposerConstants;
 
 import com.dubture.composer.ui.editor.composer.LicenseContentAdapter;
+import com.dubture.getcomposer.core.ComposerConstants;
 
 @SuppressWarnings("restriction")
 public class BasicSettingsGroup extends Observable implements IDialogFieldListener {

@@ -2,9 +2,10 @@ package com.dubture.composer.ui.controller;
 
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
-import org.getcomposer.core.MinimalPackage;
-import org.getcomposer.core.VersionedPackage;
-import org.getcomposer.core.collection.Dependencies;
+
+import com.dubture.getcomposer.core.MinimalPackage;
+import com.dubture.getcomposer.core.VersionedPackage;
+import com.dubture.getcomposer.core.collection.Dependencies;
 
 public class DependencyController extends PackageController {
 

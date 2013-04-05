@@ -7,10 +7,10 @@ import org.eclipse.php.internal.core.compiler.ast.nodes.ArrayElement;
 import org.eclipse.php.internal.core.compiler.ast.nodes.InfixExpression;
 import org.eclipse.php.internal.core.compiler.ast.nodes.Scalar;
 import org.eclipse.php.internal.core.compiler.ast.visitor.PHPASTVisitor;
-import org.getcomposer.core.collection.Psr0;
-import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.core.model.ModelAccess;
+import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 @SuppressWarnings("restriction")
 public class AutoloadVisitor extends PHPASTVisitor

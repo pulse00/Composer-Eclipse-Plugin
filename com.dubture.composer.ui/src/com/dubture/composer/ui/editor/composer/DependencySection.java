@@ -21,8 +21,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.getcomposer.core.VersionedPackage;
-import org.getcomposer.core.collection.Dependencies;
 
 import com.dubture.composer.ui.controller.DependencyController;
 import com.dubture.composer.ui.dialogs.DependencyDialog;
@@ -30,6 +28,8 @@ import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TableSection;
 import com.dubture.composer.ui.parts.TablePart;
+import com.dubture.getcomposer.core.VersionedPackage;
+import com.dubture.getcomposer.core.collection.Dependencies;
 
 public class DependencySection extends TableSection implements PropertyChangeListener {
 

@@ -12,10 +12,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.getcomposer.core.objects.Person;
 
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.objects.Person;
 
 public class PersonDialog extends Dialog {
 

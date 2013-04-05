@@ -8,10 +8,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeItem;
-import org.getcomposer.core.collection.Psr0;
-import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 public class Psr0Controller extends StyledCellLabelProvider implements ITreeContentProvider {
 

@@ -10,10 +10,10 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.zest.core.viewers.EntityConnectionData;
 import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.ComposerPackages;
 
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
 
 public class GraphController extends LabelProvider implements
 		IStructuredContentProvider, IGraphEntityContentProvider,

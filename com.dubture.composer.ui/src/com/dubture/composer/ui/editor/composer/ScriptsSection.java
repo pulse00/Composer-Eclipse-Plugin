@@ -18,8 +18,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.getcomposer.core.collection.JsonArray;
-import org.getcomposer.core.objects.Scripts;
 
 import com.dubture.composer.ui.controller.ScriptsController;
 import com.dubture.composer.ui.dialogs.ScriptDialog;
@@ -27,6 +25,8 @@ import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TreeSection;
 import com.dubture.composer.ui.parts.TreePart;
+import com.dubture.getcomposer.core.collection.JsonArray;
+import com.dubture.getcomposer.core.objects.Scripts;
 
 public class ScriptsSection extends TreeSection implements PropertyChangeListener {
 

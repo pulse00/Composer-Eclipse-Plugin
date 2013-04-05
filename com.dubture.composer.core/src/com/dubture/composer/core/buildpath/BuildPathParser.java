@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.ComposerPackages;
-import org.getcomposer.core.objects.Autoload;
-import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
+import com.dubture.getcomposer.core.objects.Autoload;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 public class BuildPathParser {
 	

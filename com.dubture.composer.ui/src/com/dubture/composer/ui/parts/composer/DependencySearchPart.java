@@ -8,11 +8,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Twistie;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.VersionedPackage;
 
 import com.dubture.composer.ui.utils.WidgetFactory;
 import com.dubture.composer.ui.utils.WidgetHelper;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.VersionedPackage;
 
 public class DependencySearchPart extends PackageSearchPart {
 

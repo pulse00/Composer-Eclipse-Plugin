@@ -26,13 +26,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
-import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginConstants;
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.controller.PathController;
 import com.dubture.composer.ui.utils.WidgetHelper;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 public class Psr0Dialog extends Dialog {
 

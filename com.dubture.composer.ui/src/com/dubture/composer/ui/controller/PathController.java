@@ -4,9 +4,9 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
-import org.getcomposer.core.collection.UniqueJsonArray;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
+import com.dubture.getcomposer.core.collection.UniqueJsonArray;
 
 public class PathController extends LabelProvider implements IStructuredContentProvider {
 

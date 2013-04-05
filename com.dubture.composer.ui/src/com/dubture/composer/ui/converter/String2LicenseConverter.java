@@ -1,7 +1,7 @@
 package com.dubture.composer.ui.converter;
 
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.License;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.License;
 
 public class String2LicenseConverter extends String2ListConverter {
 	

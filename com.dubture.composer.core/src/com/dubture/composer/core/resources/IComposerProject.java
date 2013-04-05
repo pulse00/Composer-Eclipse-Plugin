@@ -4,8 +4,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.dltk.core.IScriptProject;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.collection.ComposerPackages;
+
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
 
 
 public interface IComposerProject {

@@ -2,7 +2,8 @@ package com.dubture.composer.ui.converter;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.conversion.Converter;
-import org.getcomposer.core.collection.JsonArray;
+
+import com.dubture.getcomposer.core.collection.JsonArray;
 
 public class Keywords2StringConverter extends Converter {
 

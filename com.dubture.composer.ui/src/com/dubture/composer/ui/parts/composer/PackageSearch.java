@@ -21,18 +21,18 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.MinimalPackage;
-import org.getcomposer.packages.AsyncPackageSearch;
-import org.getcomposer.packages.AsyncPackagistSearch;
-import org.getcomposer.packages.PackageSearchListenerInterface;
-import org.getcomposer.packages.SearchResult;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.controller.IPackageCheckStateChangedListener;
 import com.dubture.composer.ui.controller.PackageController;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.utils.WidgetFactory;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.MinimalPackage;
+import com.dubture.getcomposer.packages.AsyncPackageSearch;
+import com.dubture.getcomposer.packages.AsyncPackagistSearch;
+import com.dubture.getcomposer.packages.PackageSearchListenerInterface;
+import com.dubture.getcomposer.packages.SearchResult;
 
 public class PackageSearch implements PackageSearchListenerInterface, IPackageCheckStateChangedListener {
 	

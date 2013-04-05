@@ -4,10 +4,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.getcomposer.core.ComposerPackage;
-import org.getcomposer.core.objects.Autoload;
 
 import com.dubture.composer.core.log.Logger;
+import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.objects.Autoload;
 
 public class EclipsePHPPackage implements
         NamespaceResolverInterface, InstallableItem

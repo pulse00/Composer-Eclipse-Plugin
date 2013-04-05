@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.ResourceTransfer;
-import org.getcomposer.core.collection.Psr0;
-import org.getcomposer.core.objects.Namespace;
 
 import com.dubture.composer.ui.controller.Psr0Controller;
 import com.dubture.composer.ui.dialogs.Psr0Dialog;
@@ -35,6 +33,8 @@ import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TreeSection;
 import com.dubture.composer.ui.parts.TreePart;
+import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 public class Psr0Section extends TreeSection implements PropertyChangeListener {
 

@@ -2,7 +2,8 @@ package com.dubture.composer.ui.converter;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.databinding.conversion.Converter;
-import org.getcomposer.core.collection.License;
+
+import com.dubture.getcomposer.core.collection.License;
 
 public class License2StringConverter extends Converter {
 
