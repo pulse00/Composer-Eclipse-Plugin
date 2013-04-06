@@ -61,11 +61,47 @@
          </command>
       </menuContribution>
       <menuContribution
-            allPopups="false"
-            locationURI="menu:org.eclipse.ui.projectConfigure">
+            allPopups="true"
+            locationURI="popup:org.eclipse.ui.projectConfigure?after=additions">
          <command
                commandId="com.dubture.composer.ui.command.addComposerSupport"
                label="Add Composer Support"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+                  <and>
+	               <with
+	                     variable="selection">
+	                  <iterate
+	                        ifEmpty="false"
+	                        operator="and">
+	                        	<test
+									forcePluginActivation="true"
+									property="org.pdtextensions.parentProjectNature"
+									value="org.eclipse.php.core.PHPNature">
+								</test>
+	                  </iterate>
+	               </with>
+	               <not>
+		               <with
+		                     variable="selection">
+		                  <iterate
+		                        ifEmpty="false"
+		                        operator="and">
+	       						<test
+									forcePluginActivation="true"
+									property="org.pdtextensions.parentProjectNature"
+									value="com.dubture.composer.core.composerNature">
+								</test>
+		                  </iterate>
+		               </with>
+	               </not>
+               </and>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="com.dubture.composer.ui.command.removeComposerSupport"
+               label="Remove Composer Support"
                style="push">
             <visibleWhen
                   checkEnabled="false">
@@ -77,7 +113,7 @@
 							<test
 								forcePluginActivation="true"
 								property="org.pdtextensions.parentProjectNature"
-								value="org.eclipse.php.core.PHPNature">
+								value="com.dubture.composer.core.composerNature">
 							</test>
                   </iterate>
                </with>
@@ -122,10 +158,12 @@
             name="Inject Composer Autoload-Statement">
       </command>
       <command
+            defaultHandler="com.dubture.composer.ui.handler.AddComposerSupportHandler"
             id="com.dubture.composer.ui.command.addComposerSupport"
             name="Add Composer Support">
       </command>
       <command
+            defaultHandler="com.dubture.composer.ui.handler.RemoveComposerSupportHandler"
             id="com.dubture.composer.ui.command.removeComposerSupport"
             name="Remove Composer Support">
       </command>

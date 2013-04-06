@@ -46,4 +46,20 @@ public class FacetManager {
 		}
 	}
 	
+	public static void uninstallFacets(IProject project, IProgressMonitor monitor) {
+		try {
+			if (monitor == null) {
+				monitor = new NullProgressMonitor();
+			}
+			
+			final IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
+			
+			IProjectFacet composerFacet = ProjectFacetsManager.getProjectFacet(ComposerFacetConstants.COMPOSER_COMPONENT);
+			
+			facetedProject.uninstallProjectFacet(composerFacet.getVersion(ComposerFacetConstants.COMPOSER_COMPONENT_VERSION_1), composerFacet, monitor);
+		} catch (CoreException ex) {
+			Logger.logException(ex.getMessage(), ex);
+		}
+	}
+	
 }
