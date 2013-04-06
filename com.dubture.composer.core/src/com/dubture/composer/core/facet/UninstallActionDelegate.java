@@ -2,27 +2,16 @@ package com.dubture.composer.core.facet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.dltk.core.DLTKCore;
-import org.eclipse.dltk.core.IBuildpathContainer;
-import org.eclipse.dltk.core.IBuildpathEntry;
-import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 import org.eclipse.php.internal.core.project.PHPNature;
 import org.eclipse.wst.common.project.facet.core.IDelegate;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 
-import com.dubture.composer.core.ComposerBuildpathContainerInitializer;
 import com.dubture.composer.core.ComposerNature;
-import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.model.ComposerBuildpathContainer;
-import com.dubture.composer.core.util.BuildpathUtil;
 
 /**
  * Facet installation action delegate to add the composer nature to a PHP
@@ -41,8 +30,6 @@ public class UninstallActionDelegate implements IDelegate {
 		}
 
 		progress.subTask("Uninstalling composer nature");
-		IScriptProject scriptProject = DLTKCore.create(project);
-
 		// remove the composer nature
 		IProjectDescription desc = project.getDescription();
 		ArrayList<String> natures =  new ArrayList<String>(Arrays.asList(desc.getNatureIds()));
@@ -53,11 +40,13 @@ public class UninstallActionDelegate implements IDelegate {
 		desc.setNatureIds(natures.toArray(new String[]{}));
 		project.setDescription(desc, progress);
 
-		progress.subTask("Uninstalling composer buildpath");
+		
+		//progress.subTask("Uninstalling composer buildpath");
 
 		// maybe comment out this one:
 		// remove composer buildpath entry
 
+		/*
 		if (ComposerPlugin.getDefault().isBuildpathContainerEnabled()) {
 			IBuildpathContainer composerContainer = new ComposerBuildpathContainer(
 					new Path(ComposerBuildpathContainerInitializer.CONTAINER),
@@ -69,7 +58,7 @@ public class UninstallActionDelegate implements IDelegate {
 			BuildPathUtils.addEntriesToBuildPath(scriptProject, entries);
 
 			BuildpathUtil.setupVendorBuildpath(scriptProject, progress);
-
 		}
+		*/
 	}
 }

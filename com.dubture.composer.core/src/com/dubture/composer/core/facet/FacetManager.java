@@ -16,7 +16,7 @@ import com.dubture.composer.core.log.Logger;
 @SuppressWarnings("restriction")
 public class FacetManager {
 
-	public static void installFacets(IProject project, PHPVersion version, IProgressMonitor monitor) {
+	public static IFacetedProject installFacets(IProject project, PHPVersion version, IProgressMonitor monitor) {
 		try {
 			
 			if (monitor == null) {
@@ -25,25 +25,26 @@ public class FacetManager {
 			
 			final IFacetedProject facetedProject = ProjectFacetsManager.create(project, true, monitor);
 			
-//			final Set<IProjectFacet> fixedFacets = new HashSet<IProjectFacet>();
+			if (facetedProject == null) {
+				Logger.log(Logger.ERROR, "Unable to create faceted composer project.");
+				return null;
+			}
+			
 			IProjectFacet coreFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_CORE_COMPONENT);
-//			fixedFacets.add(coreFacet);
-//			
 			IProjectFacet composerFacet = ProjectFacetsManager.getProjectFacet(ComposerFacetConstants.COMPOSER_COMPONENT);
-//			fixedFacets.add(composerFacet);
-//			
-//			IProjectFacet phpFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_COMPONENT);
-//			fixedFacets.add(phpFacet);
-//			facetedProject.setFixedProjectFacets(fixedFacets);
 
 			// install the fixed facets
 			facetedProject.installProjectFacet(coreFacet.getDefaultVersion(), null, monitor);
 			facetedProject.installProjectFacet(PHPFacets.convertToFacetVersion(version), null, monitor);
 			facetedProject.installProjectFacet(composerFacet.getVersion(ComposerFacetConstants.COMPOSER_COMPONENT_VERSION_1), composerFacet, monitor);
 			
+			return facetedProject;
+			
 		} catch (CoreException ex) {
 			Logger.logException(ex.getMessage(), ex);
 		}
+		
+		return null;
 	}
 	
 	public static void uninstallFacets(IProject project, IProgressMonitor monitor) {

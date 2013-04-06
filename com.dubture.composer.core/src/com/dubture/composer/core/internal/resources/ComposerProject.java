@@ -27,14 +27,14 @@ public class ComposerProject implements IComposerProject {
 		this.project = project;
 		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
 		
-		if (file != null) {
+		if (file != null && file.exists()) {
 			composer = new ComposerPackage(file.getLocation().toFile()); 
 		}
 	}
 	
 	@Override
 	public String getVendorDir() {
-		if (vendorDir == null) {
+		if (vendorDir == null && composer != null && composer.getConfig() == null) {
 			vendorDir = composer.getConfig().getVendorDir();
 			
 			if (vendorDir == null || vendorDir.trim().isEmpty()) {

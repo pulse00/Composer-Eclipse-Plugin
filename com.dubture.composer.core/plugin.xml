@@ -50,7 +50,7 @@
       <project-facet
             id="php.composer.component">
          <label>
-            Composer facet
+            Composer
          </label>
          <description>
             Adds composer support to your PHP project.
