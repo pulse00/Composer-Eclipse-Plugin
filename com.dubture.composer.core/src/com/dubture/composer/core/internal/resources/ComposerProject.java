@@ -34,7 +34,12 @@ public class ComposerProject implements IComposerProject {
 	
 	@Override
 	public String getVendorDir() {
-		if (vendorDir == null && composer != null && composer.getConfig() == null) {
+		if (vendorDir == null) {
+			
+			if (composer == null || composer.getConfig() == null) {
+				return vendorDir = ComposerConstants.VENDOR_DIR_DEFAULT;
+			}
+			
 			vendorDir = composer.getConfig().getVendorDir();
 			
 			if (vendorDir == null || vendorDir.trim().isEmpty()) {

@@ -42,7 +42,7 @@ public class BuildPathParser {
 		
 		// maybe add this one ?!
 		// those want/need it, can add it via project settings
-//		paths.add(vendor + "/composer/");
+		paths.add(vendor + "/composer");
 		return paths;
 	}
 	
