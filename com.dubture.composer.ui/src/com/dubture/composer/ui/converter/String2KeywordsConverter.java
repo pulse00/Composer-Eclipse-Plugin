@@ -23,6 +23,10 @@ public class String2KeywordsConverter extends String2ListConverter {
 
 	@Override
 	protected String[] start() {
+		if (keywords == null) {
+			return new String[]{};
+		}
+		
 		return keywords.toArray(new String[]{});
 	}
 
@@ -33,17 +37,24 @@ public class String2KeywordsConverter extends String2ListConverter {
 
 	@Override
 	protected boolean has(String value) {
+		if (keywords == null) {
+			return false;
+		}
+		
 		return keywords.has(value);
 	}
 
 	@Override
 	protected void add(String value) {
-		keywords.add(value);
+		if (keywords !=  null && !keywords.has(value)) {
+			keywords.add(value);
+		}
 	}
 
 	@Override
 	protected void remove(String value) {
-		keywords.remove(value);
+		if (keywords != null && keywords.has(value)) {
+			keywords.remove(value);
+		}
 	}
-
 }

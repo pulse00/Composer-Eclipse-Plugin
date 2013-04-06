@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
+import com.dubture.composer.ui.converter.String2KeywordsConverter;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
@@ -41,6 +42,7 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	protected String fInitialName;
 	protected WizardFragment fragment;
 	protected ComposerPackage composerPackage;
+	protected String2KeywordsConverter keywordConverter;
 	
 	private DetectGroup detectGroup;
 	private Validator pdtValidator;
@@ -98,6 +100,7 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		
 		setControl(composite);
 		composerPackage = new ComposerPackage();
+		keywordConverter = new String2KeywordsConverter(composerPackage);
 		
 	}
 
@@ -205,14 +208,8 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 			}
 			
 			if (settingsGroup.getKeywords().length() > 0) {
-				if (settingsGroup.getKeywords().contains(",")) {
-					String[] strings = settingsGroup.getKeywords().split(",");
-					for (String keyword : strings) {
-						composerPackage.getKeywords().add(keyword.trim());
-					}
-				} else {
-					composerPackage.getKeywords().add(settingsGroup.getKeywords());
-				}
+				keywordConverter.convert(settingsGroup.getKeywords());
+				System.err.println(composerPackage.toJson());
 			}
 		}
 	}

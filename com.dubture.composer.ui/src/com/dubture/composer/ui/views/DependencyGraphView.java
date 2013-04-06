@@ -111,7 +111,7 @@ public class DependencyGraphView extends ViewPart implements
 	}
 
 	protected void update() {
-		if (composerProject != null && viewer != null) {
+		if (composerProject != null && viewer != null && viewer != null && !viewer.getControl().isDisposed()) {
 			ComposerPackages packages = composerProject.getAllInstalledPackages();
 			packages.add(composerProject.getComposerPackage());
 			viewer.setInput(packages);
