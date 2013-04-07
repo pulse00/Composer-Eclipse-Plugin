@@ -187,7 +187,7 @@ public class AuthorSection extends TableSection implements PropertyChangeListene
 		PersonDialog diag = new PersonDialog(authorViewer.getTable().getShell(), new Person());
 		if (diag.open() == Dialog.OK) {
 			composerPackage.getAuthors().add(diag.getPerson());
-//			refresh();
+			refresh();
 		}
 	}
 	
