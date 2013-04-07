@@ -47,7 +47,11 @@ public class ComposerBuildPathManagementBuilder extends
 			IResourceDelta delta = getDelta(project);
 
 			if (delta == null) {
-				Logger.debug("Composer builder executed but did get no delta");
+				if (project.hasNature(ComposerNature.NATURE_ID)) {
+					BuildPathManager buildPathManager = new BuildPathManager(composerProject);
+					buildPathManager.update();
+				}
+				
 				return null;
 			}
 

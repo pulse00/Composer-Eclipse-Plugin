@@ -121,4 +121,15 @@ public class BuildPathManager {
 			entries.add(DLTKCore.newSourceEntry(path));			
 		}
 	}
+	
+	public static void setExclusionPattern(IScriptProject project, IBuildpathEntry entry) {
+
+		try {
+			String encoded = project.encodeBuildpathEntry(entry);
+			IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project.getProject());
+			prefs.put(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, encoded);
+		} catch (Exception e) {
+			Logger.logException(e);
+		}
+	}
 }
