@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Composer Eclipse UI Plugin
 Bundle-SymbolicName: com.dubture.composer.ui;singleton:=true
-Bundle-Version: 0.0.8.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: com.dubture.composer.ui.ComposerUIPlugin
 Bundle-Vendor: https://github.com/pulse00
 Require-Bundle: org.eclipse.ui,

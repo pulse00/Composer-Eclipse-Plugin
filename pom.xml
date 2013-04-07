@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dubture.composer</groupId>
 	<artifactId>composer-eclipse-plugin-parent</artifactId>
-	<version>0.0.8-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<prerequisites>
@@ -41,7 +41,7 @@
 		<repository>
 			<id>orbit</id>
 			<layout>p2</layout>
-			<url>http://build.eclipse.org/orbit/committers/orbit-I/20130321031113/I20130321031113/repository/</url>
+			<url>http://download.eclipse.org/tools/orbit/downloads/drops/I20130403140131/repository/</url>
 		</repository>
 
 		<repository>
@@ -56,11 +56,11 @@
 			<url>http://download.eclipse.org/tools/pdt/updates/3.2-nightly/</url>
 		</repository>
 
-		<repository>
-			<id>indigo</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/indigo</url>
-		</repository>
+        <repository>
+            <id>kepler</id>
+            <layout>p2</layout>
+            <url>http://download.eclipse.org/releases/kepler</url>
+        </repository>
 
 		<repository>
 			<id>eclipse-tests</id>
@@ -72,9 +72,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.getcomposer</groupId>
+			<groupId>com.dubture</groupId>
 			<artifactId>composer-java-api</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

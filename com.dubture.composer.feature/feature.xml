@@ -2,7 +2,7 @@
 <feature
       id="com.dubture.composer.feature"
       label="Composer"
-      version="0.0.8.qualifier"
+      version="1.0.1.qualifier"
       provider-name="https://github.com/pulse00">
 
    <description url="https://github.com/pulse00/Composer-Eclipse-Plugin">
@@ -44,6 +44,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
    <requires>
       <import feature="org.eclipse.php" version="3.2.0" match="greaterOrEqual"/>
       <import feature="org.sourceforge.jsonedit.feature" version="0.0.0"/>
+      <import feature="org.pdtextensions.feature" version="0.16.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -96,7 +97,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          unpack="false"/>
 
    <plugin
-         id="org.getcomposer.core"
+         id="com.dubture.getcomposer.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
