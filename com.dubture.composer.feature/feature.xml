@@ -43,7 +43,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
 
    <requires>
       <import feature="org.eclipse.php" version="3.2.0" match="greaterOrEqual"/>
-      <import feature="org.sourceforge.jsonedit.feature" version="0.0.0"/>
+      <import feature="org.sourceforge.jsonedit.feature" version="0.9.54" match="greaterOrEqual"/>
       <import feature="org.pdtextensions.feature" version="0.16.0" match="greaterOrEqual"/>
    </requires>
 
