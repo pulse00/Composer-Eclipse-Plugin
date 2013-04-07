@@ -1,6 +1,7 @@
 package com.dubture.composer.core;
 
 public class ComposerPluginConstants {
+	
 	public static final String searchURL = "http://packagist.org/search.json?q=%s";
 	public static final String PREF_BUILDPATH_ENABLE = "prefs.composer.buildpath.enable";
 
@@ -11,4 +12,6 @@ public class ComposerPluginConstants {
 	public static final String DEFAULT_SRC_FOLDER = "src";
 
 	public static final String AUTOLOAD_NAMESPACES = "autoload_namespaces.php";
+	
+	public static final String BUILDPATH_INCLUDES_EXCLUDES = ComposerPlugin.ID + "buildpath.includes.excludes";
 }

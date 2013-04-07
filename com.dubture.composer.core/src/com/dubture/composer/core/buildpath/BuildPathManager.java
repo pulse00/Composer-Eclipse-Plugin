@@ -16,7 +16,7 @@ import org.eclipse.dltk.core.ModelException;
 import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.PreferenceHelper;
+import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
 
@@ -24,9 +24,14 @@ import com.dubture.composer.core.resources.IComposerProject;
 public class BuildPathManager {
 
 	private IComposerProject composerProject;
+	private IPath[] exclusions;
+	private IPath vendorPath;
+	private IPath composerPath;
 	
 	public BuildPathManager(IComposerProject composerProject) {
 		this.composerProject = composerProject;
+		vendorPath = composerProject.getProject().getFullPath().append(composerProject.getVendorDir());
+		composerPath = vendorPath.append("composer");
 	}
 	
 	public void update() {
@@ -38,21 +43,25 @@ public class BuildPathManager {
 			
 			// project prefs
 			IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project);
+
+			try {
+				String encoded = prefs.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
+				exclusions = scriptProject.decodeBuildpathEntry(encoded).getExclusionPatterns();
+			} catch (Exception e) {
+				exclusions = new IPath[]{};
+			}
 			
 			// add includes
-			paths.addAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.include", ""))));
+//			paths.addAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.include", ""))));
 			
 			// remove excludes
-			paths.removeAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.exclude", ""))));
-			
+//			paths.removeAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.exclude", ""))));
 			
 			// Debug:
 			Logger.debug("Paths to add:");
 			for (String path : paths) {
 				Logger.debug("> " + path);
 			}
-			
-			
 			
 			// clean build path
 			IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
@@ -105,6 +114,11 @@ public class BuildPathManager {
 		}
 		
 		// add own entry
-		entries.add(DLTKCore.newSourceEntry(path));
+		// add exclusions only to vendor folders, but not to vendor/composer
+		if (vendorPath.isPrefixOf(path) && composerPath.isPrefixOf(path) == false) {
+			entries.add(DLTKCore.newSourceEntry(path, exclusions));
+		} else {
+			entries.add(DLTKCore.newSourceEntry(path));			
+		}
 	}
 }

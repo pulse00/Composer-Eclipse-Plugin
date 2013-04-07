@@ -29,6 +29,7 @@ Export-Package:
  com.dubture.composer.core.builder,
  com.dubture.composer.core.buildpath,
  com.dubture.composer.core.facet,
+ com.dubture.composer.core.internal.resources,
  com.dubture.composer.core.launch.environment,
  com.dubture.composer.core.log,
  com.dubture.composer.core.model,
