@@ -289,6 +289,20 @@
             file="Resources/help/help_contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.ui.intro">
+      <introProductBinding
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.eclipse.platform.ide">
+      </introProductBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            configId="org.eclipse.ui.intro.universalConfig"
+            content="Resources/intro/composer.xml">
+      </configExtension>
+   </extension>
    
 
 </plugin>
