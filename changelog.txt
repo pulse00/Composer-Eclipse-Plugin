@@ -1,3 +1,7 @@
+0.1.0
+
+* Major release, adds composer.json editor, buildpath managment and new composer project wizard
+
 0.0.7
 
 * couple of bugfixed (#14, #19, #20)
