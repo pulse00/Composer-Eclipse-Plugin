@@ -60,12 +60,33 @@ div.updatesite-alert {
 	margin-top: 25px;
 }
 
-.carousel-inner img {
 
+#forkongithub {
+	z-index: 9999;
+}
+
+div.social {
 
 }
 
-.carousel-inner .wrapper {
+div.social li {
+	cursor: pointer;
+	list-style: none;
+	font-size: 15px;
+	padding-top: 10px;
+	margin-left: 10px;
+}
 
-	
+div.social li:hover {
+	font-size: 18px;
+}
+
+
+div.social li a {
+
+	color: #333;	
+}
+
+div.social li a:hover {
+	text-decoration: none;
 }

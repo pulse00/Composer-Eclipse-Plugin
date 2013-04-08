@@ -1,6 +1,4 @@
 navigation:
-- text: Home
-  url: /index.html
 - text: Installation
   url: /installation.html
 - text: Features

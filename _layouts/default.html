@@ -7,7 +7,9 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
+
         <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
         <link rel="stylesheet" href="css/main.css">
         <style>
             body {
@@ -19,6 +21,7 @@
         <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
+<style>#forkongithub a{background:#000;color:#fff;text-decoration:none;font-family:arial, sans-serif;text-align:center;font-weight:bold;padding:5px 40px;font-size:1rem;line-height:2rem;position:relative;transition:0.5s;}#forkongithub a:hover{background:#09d;color:#fff;}#forkongithub a::before,#forkongithub a::after{content:"";width:100%;display:block;position:absolute;top:1px;left:0;height:1px;background:#fff;}#forkongithub a::after{bottom:1px;top:auto;}@media screen and (min-width:800px){#forkongithub{position:absolute;display:block;top:0;right:0;width:200px;overflow:hidden;height:200px;}#forkongithub a{width:200px;position:absolute;top:60px;right:-60px;transform:rotate(45deg);-webkit-transform:rotate(45deg);box-shadow:4px 4px 10px rgba(0,0,0,0.8);}}</style><span id="forkongithub"><a href="https://github.com/pulse00/Composer-Eclipse-Plugin">Fork me on GitHub</a></span>        
         <div class="navbar  navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
@@ -28,7 +31,7 @@
                         <span class="icon-bar"></span>
                     </a>
 
-                    <a class="brand" href="#">Composer Eclipse Plugin</a>
+                    <a class="brand" href="/">Composer Eclipse Plugin</a>
 
                     <div class="nav-collapse collapse">
                     {% unless page.layout == 'front' %}
@@ -46,6 +49,14 @@
                     {% endunless %}
                     </div>
 
+                    <div class="social pull-right">           
+                        <ul class="the-icons">
+                            <li class="pull-left"> <a target="_blank" href="http://github.com/pulse00"><i class="icon-github"></i>pulse00</a></li>
+                            <li class="pull-left"> <a target="_blank" href="http://github.com/gossi"><i class="icon-github"></i>gossi</a></li>
+                        </ul>
+                        
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -59,7 +70,7 @@
         <script src="js/vendor/bootstrap.min.js"></script>
         <script src="js/main.js"></script>
         <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            var _gaq=[['_setAccount','UA-39964367-1'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
