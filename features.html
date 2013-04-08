@@ -13,8 +13,81 @@ description: Features: Install dependencies, create new composer project, manag
     </div>
 </header>
 
+
 <div class="row">                
     <div class="span12">
-        Installation
+
+    	<div id="carousel" class="carousel slide">
+    	
+    		<ol class="carousel-indicators">
+    			<li data-target="#carousel" data-slide-to="0" class="active"></li>
+    			<li data-target="#carousel" data-slide-to="1"></li>
+    			<li data-target="#carousel" data-slide-to="1"></li>
+    		</ol>
+
+    		<div class="carousel-inner">    			
+    			<div class="active item">    				
+					<img src="/img/screenshots/editor_general.png" alt="Composer Eclipse Editor, General page">    		
+					<div class="carousel-caption">						
+						<h4>Composer Editor</h4>
+						<p>Edit your composer.json with a dedicated editor, including autocomplete and drag &amp; drop features</p>
+					</div>		    				
+    			</div>
+    			<div class="item">
+					<img src="/img/screenshots/editor_install.png" alt="Composer Eclipse Editor, General page">    				    				
+					<div class="carousel-caption">						
+						<h4>Search, install, update and remove dependencies</h4>
+						<p>Manage your dependencies right from within eclipse, including search on packagist.org</p>
+					</div>		    									
+    			</div>
+    			<div class="item">
+					<img src="/img/screenshots/editor_json.png" alt="Composer Eclipse Editor, General page">    				    				
+					<div class="carousel-caption">						
+						<h4>Json Editor</h4>
+						<p>Check the resulting composer.json any time on the composer.json tab</p>
+					</div>		    									
+    			</div>
+    			<div class="item">
+					<img src="/img/screenshots/project_wizard.png" alt="Composer Eclipse Editor, New Project wizard">    				    				
+					<div class="carousel-caption">						
+						<h4>New Composer Project Wizard</h4>
+						<p>Create and initialize new composer projects with a dedicated wizard. Will automaticall download composer.phar and initialize your composer.json with the correct settings</p>
+					</div>		    									
+    			</div>    			
+    			<div class="item">
+					<img src="/img/screenshots/inject_autoload.png" alt="Composer Eclipse Editor, inject autoloader">    				    				
+					<div class="carousel-caption">						
+						<h4>Inject psr-0 autoloader</h4>
+						<p>Inject the <b>require_once</b> statement for the composer autoloader script in any file with the correct relative path to the vendor directory</p>
+					</div>		    									
+    			</div>    			
+    			<div class="item">
+					<img src="/img/screenshots/inject_namespace.png" alt="Composer Eclipse Editor, inject namespace">    				    				
+					<div class="carousel-caption">						
+						<h4>Inject psr-0 namespace into new classes</h4>
+						<p>Tired of copying namespace and use statments all over your project? Let the Composer inject the correct psr-0 namespace into new classes and interfaces</p>
+					</div>		    									
+    			</div>    			    			
+    			<div class="item">
+					<img src="/img/screenshots/composer_executable.png" alt="Composer Eclipse Editor, choose php executable and composer.phar binary">    				    				
+					<div class="carousel-caption">						
+						<h4>Choose how to execute composer commands</h4>
+						<p>Either let the plugin download a composer.phar automatically into your project or use a global one, just select the corresponding option in the preferences</p>
+					</div>		    									
+    			</div>    			    			
+    			<div class="item">
+					<img src="/img/screenshots/manage_buildpath.png" alt="Composer Eclipse Editor, build path management">    				    				
+					<div class="carousel-caption">						
+						<h4>Automatically manage your buildpath</h4>
+						<p>A composer enabled PHP project will automatically configure your buildpath according to your installed dependencies. This can improve the PDT indexing and build performance, as not the complete vendor directory is indexed. You can also set global inclusion/exclusion patterns which can come in handy to exclude Test folders from the buildpath.</p>
+					</div>		    									
+    			</div>    			    			    			
+
+    		</div>
+
+    		<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+    		<a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+    	</div>
+        
     </div>
 </div>
