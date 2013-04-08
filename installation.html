@@ -1,0 +1,68 @@
+---
+layout: default
+title: Composer Eclipse Plugin | Installation
+description: Installation using stable or development eclipse p2 repository (updatesite)
+---
+
+<header class="jumbotron subhead">
+    <div class="row">
+        <div class="span6">
+            <h1>Composer Eclipse Plugin</h1>
+            <p class="lead">Installation</p>
+        </div>
+    </div>
+</header>
+
+<div class="row">                
+    <div class="span12">
+        <div class="connection span6 offset2">
+            <div class="inner">
+                <div class="span siteheader">                    
+                    <h2 class="">Updatesites</h2>
+                </div>
+                <div class="updatesite">
+                    <a class="span5 btn btn-info btn-large site" data-trigger="hover" data-placement="top" data-toggle="popover" data-content="This is an Eclipse Updatesite URL which you need to paste into the Updatesite manager in Eclipse." title data-original-title="Right-Click and copy the Link" href="http://p2.dubture.com/">Latest Release</a>
+                </div>
+                <div class="updatesite">
+                    <a class="span5 btn btn-info btn-large site" data-trigger="hover" data-placement="top" href="http://p2-dev.pdt-extensions.org/" data-toggle="popover" data-content="This is an Eclipse Updatesite URL which you need to paste into the Updatesite manager in Eclipse."  title data-original-title="Right-Click and copy the Link">Latest Milestone</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="row">
+    <div class="span12">
+        <h3>Installation Instructions</h3>
+        <p>
+            <ol>
+                <li>Choose <b>Help -> Install New Software...</b> from the menu bar and <b>Add...</b> one of the above links.</li>
+                <li>Select the <b>Composer</b> feature from the <b>Toolchains</b> Category of the updatesite.</li>
+                <li>Eclipse will download and install the plugin, and after a restart it's ready to use.</li>
+            </ol>
+        </p>
+    </div>
+</div>
+
+<div class="row updatesite-alert">
+    <div class="span12">
+        <div class="alert alert-block">
+          <a class="close">×</a>
+          <h4 class="alert-heading">Important Notice!</h4>
+          <p>If you are using the <b>Latest Milestone</b> updatesite, be sure to also add the following 2 updatesites, so eclipse can resolve the latest dependencies:</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+
+    <div class="span12">
+          <ul>
+              <li> <a href="http://download.eclipse.org/tools/pdt/updates/3.2-nightly">PDT Latest Milestone</a> </li>
+              <li> <a href="https://hudson.eclipse.org/hudson/job/dltk-nightly/lastSuccessfulBuild/artifact/org.eclipse.dltk.releng/build/update.site/target/site">DLTK Latest Milestone</a> </li>
+          </ul>
+        
+    </div>
+</div>
