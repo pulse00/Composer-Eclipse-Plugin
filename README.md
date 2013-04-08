@@ -40,6 +40,8 @@ The development build is provided by the [PDT Extension group](https://github.co
 
 [http://p2-dev.pdt-extensions.org/](http://p2-dev.pdt-extensions.org/)
 
+You'll find the plugin under the `Toolchains` category.
+
 
 Usage
 =====
