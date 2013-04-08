@@ -55,6 +55,7 @@ The documentation is describing the plugins latest features, only available in t
 To see the plugin in action, checkout this [screencast](https://vimeo.com/49147387)
 
 
-### Contributors
+Contributors
+============
 
 - [Thomas Gossmann](https://github.com/gossi)
