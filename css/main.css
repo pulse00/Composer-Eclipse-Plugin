@@ -3,6 +3,7 @@
     padding-bottom: 56.25%; /* 16/9 ratio */
     height: 0;
     overflow: hidden;
+    margin-top: 30px;
 }
 
 .embed-container iframe,
