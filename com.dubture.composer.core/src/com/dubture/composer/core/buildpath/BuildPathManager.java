@@ -6,13 +6,16 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.ModelException;
+import org.eclipse.dltk.internal.core.builder.SubTaskProgressMonitor;
 import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -34,61 +37,68 @@ public class BuildPathManager {
 		composerPath = vendorPath.append("composer");
 	}
 	
-	public void update() {
+	public void update(IProgressMonitor monitor) throws CoreException {
+		
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		
+		IProject project = composerProject.getProject();
+		IScriptProject scriptProject = composerProject.getScriptProject();
+		BuildPathParser parser = new BuildPathParser(composerProject);
+		List<String> paths = parser.getPaths();
+		
+		// project prefs
+		IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project);
+
 		try {
-			IProject project = composerProject.getProject();
-			IScriptProject scriptProject = composerProject.getScriptProject();
-			BuildPathParser parser = new BuildPathParser(composerProject);
-			List<String> paths = parser.getPaths();
-			
-			// project prefs
-			IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project);
-
-			try {
-				String encoded = prefs.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
-				exclusions = scriptProject.decodeBuildpathEntry(encoded).getExclusionPatterns();
-			} catch (Exception e) {
-				exclusions = new IPath[]{};
-			}
-			
-			// add includes
+			String encoded = prefs.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
+			exclusions = scriptProject.decodeBuildpathEntry(encoded).getExclusionPatterns();
+		} catch (Exception e) {
+			exclusions = new IPath[]{};
+		}
+		
+		// add includes
 //			paths.addAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.include", ""))));
-			
-			// remove excludes
+		
+		// remove excludes
 //			paths.removeAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.exclude", ""))));
-			
-			// Debug:
-			Logger.debug("Paths to add:");
-			for (String path : paths) {
-				Logger.debug("> " + path);
+		
+		// Debug:
+		Logger.debug("Paths to add:");
+		for (String path : paths) {
+			Logger.debug("> " + path);
+		}
+		
+		// clean build path
+		IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
+		for (IBuildpathEntry entry : rawBuildpath) {
+			if (entry.getEntryKind() != IBuildpathEntry.BPE_SOURCE) {
+				continue;
 			}
-			
-			// clean build path
-			IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
-			for (IBuildpathEntry entry : rawBuildpath) {
-				if (entry.getEntryKind() != IBuildpathEntry.BPE_SOURCE) {
-					continue;
-				}
 
-				BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
+			BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
+		}
+
+		// add new entries to buildpath
+		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
+		for (String path : paths) {
+			IPath entry = new Path(path);
+			IFolder folder = project.getFolder(entry);
+			if (folder != null) {
+				addPath(folder.getFullPath(), newEntries);
 			}
-	
-			// add new entries to buildpath
-			List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
-			for (String path : paths) {
-				IPath entry = new Path(path);
-				IFolder folder = project.getFolder(entry);
-				if (folder != null) {
-					addPath(folder.getFullPath(), newEntries);
-				}
-			}
-	
-			if (newEntries.size() > 0) {
-				BuildPathUtils.addNonDupEntriesToBuildPath(scriptProject, newEntries);
-			}
-		} catch (ModelException e) {
-			Logger.logException(e);
-		} 
+		}
+
+		if (newEntries.size() > 0) {
+			BuildPathUtils.addNonDupEntriesToBuildPath(scriptProject, newEntries);
+		}
+		
+		IFolder folder = project.getFolder(new Path(composerProject.getVendorDir()));
+		
+		if (folder != null && folder.exists() && !folder.isDerived()) {
+			folder.setDerived(true, monitor);
+		}
 	}
 	
 	private void addPath(IPath path, List<IBuildpathEntry> entries) {

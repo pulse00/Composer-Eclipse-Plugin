@@ -49,7 +49,7 @@ public class ComposerBuildPathManagementBuilder extends
 			if (delta == null) {
 				if (project.hasNature(ComposerNature.NATURE_ID)) {
 					BuildPathManager buildPathManager = new BuildPathManager(composerProject);
-					buildPathManager.update();
+					buildPathManager.update(monitor);
 				}
 				
 				return null;
@@ -76,7 +76,7 @@ public class ComposerBuildPathManagementBuilder extends
 			
 			
 			BuildPathManager buildPathManager = new BuildPathManager(composerProject);
-			buildPathManager.update();
+			buildPathManager.update(monitor);
 		} catch (Exception e) {
 			Logger.logException(e);
 		}
