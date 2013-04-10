@@ -65,11 +65,13 @@ public class InjectAutoloadCommand extends AbstractHandler {
 
 		IPath autoloadPath = autoload.getFullPath();
 		IPath relativeTo = autoloadPath.makeRelativeTo(filePath);
-
-		if (relativeTo != null) {
-			insertText("require_once __DIR__ . '" + relativeTo.toString()
-					+ "';");
+		
+		if (relativeTo == null || relativeTo.segmentCount() <= 1) {
+			return null;
 		}
+		
+		relativeTo = relativeTo.removeFirstSegments(1);
+		insertText("require_once __DIR__ . '/" + relativeTo.toString() + "';");
 
 		return null;
 	}
