@@ -3,9 +3,11 @@ package com.dubture.composer.ui.preferences;
 import java.io.IOException;
 import java.util.List;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.core.BuildpathEntry;
@@ -56,6 +58,12 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 	@Override
 	public void setElement(IAdaptable element) {
 		super.setElement(element);
+		
+		if(element instanceof IProject) {
+			scriptProject = DLTKCore.create((IProject)element);
+			return;
+		}
+		
 		scriptProject = (IScriptProject) element;
 	}
 	
