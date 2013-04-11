@@ -97,13 +97,6 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          unpack="false"/>
 
    <plugin
-         id="com.dubture.getcomposer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.4.qualifier"
-         unpack="false"/>
-
-   <plugin
          id="com.dubture.composer.ui"
          download-size="0"
          install-size="0"
@@ -130,5 +123,11 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.dubture.getcomposer.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.4.qualifier"/>
 
 </feature>
