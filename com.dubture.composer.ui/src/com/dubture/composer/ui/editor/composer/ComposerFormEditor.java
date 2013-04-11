@@ -273,7 +273,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			String contents = event.getDocument().get();
 			if (getActiveEditor() == jsonEditor) { 
 				IDocument document = documentProvider.getDocument(getEditorInput());
-				document.set(contents);
+				if (document.get() != null && document.get().equals(contents) == false) {
+					document.set(contents);
+				}
 			} else {
 				composerPackage.fromJson(contents);
 			}
