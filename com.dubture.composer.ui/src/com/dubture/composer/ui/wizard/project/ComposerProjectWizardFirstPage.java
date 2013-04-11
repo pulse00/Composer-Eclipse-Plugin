@@ -29,6 +29,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
+import com.dubture.composer.ui.job.CreateProjectJob;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
@@ -46,6 +47,7 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	
 	private DetectGroup detectGroup;
 	private Validator pdtValidator;
+	private ProjectTemplateGroup projectTemplateGroup;
 
 	protected ComposerProjectWizardFirstPage() {
 		super("Basic Composer Configuration");
@@ -71,6 +73,8 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		settingsGroup.addObserver(this);
 		
 		PHPLocationGroup = new LocationGroup(composite, nameGroup, getShell());
+		
+		projectTemplateGroup = new ProjectTemplateGroup(composite, getShell());
 
 		CompositeData data = new CompositeData();
 		data.setParetnt(composite);
@@ -122,7 +126,17 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	}
 
 	public void performFinish(IProgressMonitor monitor) {
-
+		
+		if (installFromTemplate()) {
+			try {
+				CreateProjectJob projectJob = new CreateProjectJob(nameGroup.getName(), projectTemplateGroup.projectName.getText());
+				projectJob.schedule();
+				// we need to wait a moment otherwise composer screams the project directory is not empty
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public IProject getProjectHandle() {
@@ -216,5 +230,9 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	
 	public ComposerPackage getPackage() {
 		return composerPackage;
+	}
+	
+	public boolean installFromTemplate() {
+		return projectTemplateGroup.installFromTemplate();
 	}
 }
