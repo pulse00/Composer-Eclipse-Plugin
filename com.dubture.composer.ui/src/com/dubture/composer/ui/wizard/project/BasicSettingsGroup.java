@@ -2,6 +2,7 @@ package com.dubture.composer.ui.wizard.project;
 
 import java.util.Observable;
 
+
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil;
@@ -23,19 +24,23 @@ import com.dubture.getcomposer.core.ComposerConstants;
 @SuppressWarnings("restriction")
 public class BasicSettingsGroup extends Observable implements IDialogFieldListener {
 
-	protected final StringDialogField vendorField;
-	protected final StringDialogField typeField;
-	protected final StringDialogField descriptionField;
-	protected final StringDialogField keywordField;
-	protected final StringDialogField licenseField;
+	protected StringDialogField vendorField;
+	protected StringDialogField typeField;
+	protected StringDialogField descriptionField;
+	protected StringDialogField keywordField;
+	protected StringDialogField licenseField;
 	
-	private Shell shell;
+	protected Shell shell;
+	protected Composite nameComposite;
 	
 	public BasicSettingsGroup(Composite composite, Shell shell) {
-		
+		createControl(composite, shell);
+	}
+	
+	public void createControl(Composite composite, Shell shell) {
 		this.shell = shell;
 		
-		final Composite nameComposite = new Composite(composite, SWT.NONE);
+		nameComposite = new Composite(composite, SWT.NONE);
 		nameComposite.setFont(composite.getFont());
 		nameComposite.setLayout(new GridLayout(2, false));
 		nameComposite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -95,8 +100,6 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 		licenseDecoration.setShowOnlyOnFocus(true);
 		
 		new AutoCompleteField(licenseField.getTextControl(), new LicenseContentAdapter(), ComposerConstants.LICENSES);
-		
-		
 	}
 	
 	protected void fireEvent() {
@@ -135,5 +138,13 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 	@Override
 	public void dialogFieldChanged(DialogField field) {
 		fireEvent();
+	}
+	
+	public void hide() {
+		nameComposite.setVisible(false);
+	}
+	
+	public void show() {
+		nameComposite.setVisible(true);
 	}
 }

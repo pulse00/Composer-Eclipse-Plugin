@@ -24,7 +24,7 @@ public final class Validator implements Observer {
 	/**
 	 * @param composerProjectWizardFirstPage
 	 */
-	Validator(ComposerProjectWizardFirstPage composerProjectWizardFirstPage) {
+	public Validator(ComposerProjectWizardFirstPage composerProjectWizardFirstPage) {
 		this.composerProjectWizardFirstPage = composerProjectWizardFirstPage;
 	}
 

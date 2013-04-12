@@ -35,10 +35,10 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 
 	public static final String SELECTED_PROJECT = "SelectedProject";
 	
-	private ComposerProjectWizardFirstPage firstPage;
-	private ComposerProjectWizardSecondPage secondPage;
-	private ComposerProjectWizardSecondPage lastPage;
-	private IConfigurationElement config;
+	protected ComposerProjectWizardFirstPage firstPage;
+	protected ComposerProjectWizardSecondPage secondPage;
+	protected ComposerProjectWizardSecondPage lastPage;
+	protected IConfigurationElement config;
 
 	public ComposerProjectCreationWizard() {
 		setDefaultPageImageDescriptor(ComposerUIPluginImages.CREATE_PROJECT);

@@ -29,7 +29,6 @@ import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
-import com.dubture.composer.ui.job.CreateProjectJob;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
@@ -45,16 +44,17 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	protected ComposerPackage composerPackage;
 	protected String2KeywordsConverter keywordConverter;
 	
-	private DetectGroup detectGroup;
-	private Validator pdtValidator;
-	private ProjectTemplateGroup projectTemplateGroup;
+	protected DetectGroup detectGroup;
+	protected Validator pdtValidator;
 
-	protected ComposerProjectWizardFirstPage() {
+	public ComposerProjectWizardFirstPage() {
 		super("Basic Composer Configuration");
 		setPageComplete(false);
 		setTitle("Basic Composer Configuration");
 		setDescription("Setup your new composer project");
 	}
+	
+	
 
 	@Override
 	public void createControl(Composite parent) {
@@ -74,8 +74,6 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 		
 		PHPLocationGroup = new LocationGroup(composite, nameGroup, getShell());
 		
-		projectTemplateGroup = new ProjectTemplateGroup(composite, getShell());
-
 		CompositeData data = new CompositeData();
 		data.setParetnt(composite);
 		data.setSettings(getDialogSettings());
@@ -127,16 +125,6 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 
 	public void performFinish(IProgressMonitor monitor) {
 		
-		if (installFromTemplate()) {
-			try {
-				CreateProjectJob projectJob = new CreateProjectJob(nameGroup.getName(), projectTemplateGroup.projectName.getText());
-				projectJob.schedule();
-				// we need to wait a moment otherwise composer screams the project directory is not empty
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public IProject getProjectHandle() {
@@ -230,9 +218,5 @@ public class ComposerProjectWizardFirstPage extends WizardPage implements IPHPPr
 	
 	public ComposerPackage getPackage() {
 		return composerPackage;
-	}
-	
-	public boolean installFromTemplate() {
-		return projectTemplateGroup.installFromTemplate();
 	}
 }
