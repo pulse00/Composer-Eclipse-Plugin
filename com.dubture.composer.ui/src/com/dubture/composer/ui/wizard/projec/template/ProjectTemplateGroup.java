@@ -97,7 +97,6 @@ public class ProjectTemplateGroup extends BasicSettingsGroup  {
 			
 			@Override
 			public void packagesFound(List<MinimalPackage> packages, String query, SearchResult result) {
-				System.err.println("PACKAGES FOUND " + result.total);
 				List<String> searchResult = new ArrayList<String>();
 				for (MinimalPackage pkg : packages) {
 					searchResult.add(pkg.getName());
@@ -154,7 +153,6 @@ public class ProjectTemplateGroup extends BasicSettingsGroup  {
 	@Override
 	public void dialogFieldChanged(DialogField field) {
 		if(field == projectName && projectName.getText() != null && projectName.getText().length() > 2) {
-			System.err.println("#### download");
 			downloader.search(projectName.getText());
 		}
 	}

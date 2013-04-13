@@ -58,7 +58,6 @@ public class ComposerProjectWizardFirstPage extends AbstractWizardFirstPage {
 
 			if (settingsGroup.getKeywords().length() > 0) {
 				keywordConverter.convert(settingsGroup.getKeywords());
-				System.err.println(composerPackage.toJson());
 			}
 		}
 	}

@@ -27,9 +27,9 @@ public class CreateProjectJob extends ComposerJob {
 	private IWorkspace workspace;
 	private IPath composerPath;
 	private IPath path;
-	private InitListener sync;
+	private JobListener initListener;
 	private String packageVersion;
-	private boolean notified = false;
+	private boolean startNotified = false;
 	
 	public CreateProjectJob(String projectName, String packageName, String packageVersion) {
 		super("Install composer project");
@@ -72,9 +72,8 @@ public class CreateProjectJob extends ComposerJob {
 			@Override
 			public void executionMessage(String message) {
 				try {
-					if(message != null && message.equals("Loading composer repositories with package information")) {
-						System.err.println("################# NOW I DO IT #################");
-						notifyWizard();
+					if(composerExists() /*message != null && message.equals("Loading composer repositories with package information")*/) {
+						notifyOnStart();
 					}
 				} catch (Exception e) {
 					Logger.logException(e);
@@ -83,26 +82,21 @@ public class CreateProjectJob extends ComposerJob {
 			
 			@Override
 			public void executionFinished(String response, int exitValue) {
-				notifyWizard();
+				notifyOnFinish();				
 			}
 			
 			@Override
 			public void executionFailed(String response, Exception exception) {
-				
-				System.err.println("######################### IT FAILED ########################");
-				exception.printStackTrace();
-				
-				notifyWizard();				
+				notifyOnFail();				
 			}
 			
 			@Override
 			public void executionError(String message) {
-				notifyWizard();
+				notifyOnFail();
 			}
 			
 			@Override
 			public void executionAboutToStart() {
-				// TODO Auto-generated method stub
 			}
 		});
 		
@@ -134,7 +128,6 @@ public class CreateProjectJob extends ComposerJob {
 	
 	private boolean composerExists() {
 		IPath projectPath = path.append(projectName).append("composer.json");
-		System.err.println("exists? " + projectPath.toFile().exists());
 		return projectPath.toFile().exists();
 	}
 	
@@ -149,28 +142,50 @@ public class CreateProjectJob extends ComposerJob {
 		}
 	}
 
-	public void setSync(InitListener latch) {
-		this.sync = latch;
+	public void setJobListener(JobListener latch) {
+		this.initListener = latch;
 	}
 	
-	private void notifyWizard() {
+	private void notifyOnStart() {
 		try {
-			if (notified) {
+			if (startNotified || initListener == null) {
 				return;
 			}
-
-			synchronized (sync) {
-				sync.jobStarted();
-				notified = true;
-			}
+			initListener.jobStarted();
+			startNotified = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public interface InitListener {
+	private void notifyOnFinish() {
+		try {
+			if (initListener == null) {
+				return;
+			}
+			initListener.jobFinished(projectName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void notifyOnFail() {
+		
+		try {
+			if (initListener == null) {
+				return;
+			}
+			initListener.jobFailed();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public interface JobListener {
 
 		void jobStarted();
+		void jobFinished(String projectName);
+		void jobFailed();
 		
 	}
 }

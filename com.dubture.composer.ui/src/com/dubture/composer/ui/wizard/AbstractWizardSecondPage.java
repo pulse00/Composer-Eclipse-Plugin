@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -16,9 +18,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.dltk.core.DLTKCore;
+import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IDLTKLanguageToolkit;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.dltk.internal.ui.util.CoreUtility;
@@ -30,6 +35,7 @@ import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.core.includepath.IncludePath;
+import org.eclipse.php.internal.core.language.LanguageModelInitializer;
 import org.eclipse.php.internal.core.project.PHPNature;
 import org.eclipse.php.internal.core.project.ProjectOptions;
 import org.eclipse.php.internal.ui.wizards.IPHPProjectCreateWizardPage;
@@ -42,6 +48,7 @@ import org.pdtextensions.core.launch.ScriptLauncher;
 import org.pdtextensions.core.launch.ScriptLauncherManager;
 import org.pdtextensions.core.ui.PEXUIPlugin;
 
+import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
@@ -58,6 +65,7 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	protected Boolean fIsAutobuild;
 	protected ScriptLauncher launcher;
 	protected PharDownloader downloader;
+	protected URI currentProjectLocation; // null if location is platform locatio
 
 	@Inject
 	protected ScriptLauncherManager launchManager;
@@ -68,6 +76,8 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 		setTitle(getPageTitle());
 		setDescription(getPageDescription());
 		firstPage = mainPage;
+		fIsAutobuild = null;
+		currentProjectLocation = null;
 		ContextInjectionFactory.inject(this, PEXUIPlugin.getDefault().getEclipseContext());
 	}
 
@@ -226,10 +236,84 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 		}
 	}
 	
-	abstract protected void updateProject(IProgressMonitor monitor) throws CoreException, InterruptedException;
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	protected void updateProject(IProgressMonitor monitor) throws CoreException, InterruptedException {
+
+		IProject projectHandle = firstPage.getProjectHandle();
+		IScriptProject create = DLTKCore.create(projectHandle);
+		super.init(create, null, false);
+		currentProjectLocation = getProjectLocationURI();
+
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		try {
+			monitor.beginTask("Initializing project", 70);
+			if (monitor.isCanceled()) {
+				throw new OperationCanceledException();
+			}
+
+			createProject(getProject(), currentProjectLocation, new SubProgressMonitor(monitor, 20));
+
+			IBuildpathEntry[] buildpathEntries = null;
+			
+			//TODO: see https://github.com/pulse00/Composer-Eclipse-Plugin/issues/37
+			IPath srcPath = new Path(ComposerPluginConstants.DEFAULT_SRC_FOLDER);
+
+			if (srcPath.segmentCount() > 0) {
+				IFolder folder = getProject().getFolder(srcPath);
+				CoreUtility.createFolder(folder, true, true, new SubProgressMonitor(monitor, 10));
+			} else {
+				monitor.worked(10);
+			}
+
+			final IPath projectPath = getProject().getFullPath();
+
+			// configure the buildpath entries, including the default
+			// InterpreterEnvironment library.
+			List cpEntries = new ArrayList();
+			cpEntries.add(DLTKCore.newSourceEntry(projectPath.append(srcPath)));
+			cpEntries.add(DLTKCore.newContainerEntry(LanguageModelInitializer.LANGUAGE_CONTAINER_PATH));
+			cpEntries.add(DLTKCore.newSourceEntry(projectPath.append("vendor").append("composer")));
+
+			buildpathEntries = (IBuildpathEntry[]) cpEntries.toArray(new IBuildpathEntry[cpEntries.size()]);
+			if (monitor.isCanceled()) {
+				throw new OperationCanceledException();
+			}
+
+			init(DLTKCore.create(getProject()), buildpathEntries, false);
+			setPhpLangOptions();
+			configureScriptProject(new SubProgressMonitor(monitor, 30));
+
+			// adding build paths, and language-Container:
+			getScriptProject().setRawBuildpath(buildpathEntries, new NullProgressMonitor());
+			LanguageModelInitializer.enableLanguageModelFor(getScriptProject());
+		} finally {
+			monitor.done();
+		}
+	}
+	
+	public void performFinish(IProgressMonitor monitor) throws CoreException, InterruptedException {
+		try {
+			monitor.beginTask("Initializing buildpaths", 10);
+			if (getProject() == null || !getProject().exists()) {
+				updateProject(new SubProgressMonitor(monitor, 3));
+			}
+			finishPage(monitor);
+		} catch(Exception e) { 
+			Logger.logException(e);
+		} finally {
+			monitor.done();
+			if (fIsAutobuild != null) {
+				CoreUtility.enableAutoBuild(fIsAutobuild.booleanValue());
+				fIsAutobuild = null;
+			}
+		}
+	}
+
 	abstract public void update(Observable o, Object arg);
 	abstract protected String getPageTitle();
 	abstract protected String getPageDescription();
-	public abstract void performFinish(IProgressMonitor monitor) throws CoreException, InterruptedException;
+	protected abstract void finishPage(IProgressMonitor monitor) throws Exception;
 	
 }
