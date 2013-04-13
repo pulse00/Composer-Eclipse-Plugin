@@ -1,22 +1,17 @@
 package com.dubture.composer.ui.wizard.project;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IModelElement;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 import org.eclipse.dltk.ui.wizards.NewElementWizard;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.core.project.ProjectOptions;
-import org.eclipse.php.internal.ui.wizards.WizardModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbenchPage;
@@ -96,35 +91,6 @@ public class ComposerProjectCreationWizard extends NewElementWizard implements I
 			}
 			
 			FacetManager.installFacets(project, version, null);
-			WizardModel model = firstPage.getWizardData();
-
-			Object eanblement = null;
-			if (model != null) {
-				eanblement = model
-						.getObject("REMOTE_GROUP_REMOTE_PROJECT_ENABLED");
-			}
-
-			if (model != null && eanblement != null && (Boolean) eanblement) {
-
-				model.putObject(SELECTED_PROJECT, lastPage.getScriptProject()
-						.getProject());
-
-				IRunnableWithProgress run = (IRunnableWithProgress) Platform
-						.getAdapterManager().getAdapter(model,
-								IRunnableWithProgress.class);
-
-				if (run != null) {
-					try {
-						getContainer().run(true, false, run);
-					} catch (InvocationTargetException e) {
-						handleFinishException(getShell(), e);
-						return false;
-					} catch (InterruptedException e) {
-						return false;
-					}
-				}
-			}
-			
 			IFile json = project.getFile("composer.json");
 			
 			if (json != null) {

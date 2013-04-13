@@ -275,16 +275,18 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 			}
 			
 			monitor.setTaskName("Creating project structure");
-			addComposerJson(monitor);
+//			addComposerJson(monitor);
 			monitor.worked(4);
 			
 			monitor.setTaskName("Installing composer.phar");
-			installComposer(monitor);
+//			installComposer(monitor);
 			monitor.worked(4);
 			
 			monitor.setTaskName("Dumping autoloader");
-			dumpAutoload(monitor);
+//			dumpAutoload(monitor);
 			monitor.worked(2);
+			
+			System.err.println("################## THE SECOND ONE FINISHED");
 		
 		} catch(Exception e) { 
 			Logger.logException(e);
@@ -389,8 +391,8 @@ public class ComposerProjectWizardSecondPage extends CapabilityConfigurationPage
 		ns.setNamespace(namespace);
 		ns.add(ComposerPluginConstants.DEFAULT_SRC_FOLDER);
 		
-		firstPage.composerPackage.getAutoload().getPsr0().clear();
-		firstPage.composerPackage.getAutoload().getPsr0().add(ns);
+		firstPage.getPackage().getAutoload().getPsr0().clear();
+		firstPage.getPackage().getAutoload().getPsr0().add(ns);
 	}
 
 	public void cancel() {

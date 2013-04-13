@@ -1,13 +1,10 @@
 package com.dubture.composer.ui.wizard.projec.template;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.php.internal.ui.wizards.CompositeData;
-import org.eclipse.php.internal.ui.wizards.DetectGroup;
 import org.eclipse.php.internal.ui.wizards.LocationGroup;
 import org.eclipse.php.internal.ui.wizards.NameGroup;
-import org.eclipse.php.internal.ui.wizards.WizardFragment;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -17,14 +14,16 @@ import org.eclipse.ui.PlatformUI;
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
 import com.dubture.composer.ui.job.CreateProjectJob;
+import com.dubture.composer.ui.job.CreateProjectJob.InitListener;
 import com.dubture.composer.ui.wizard.project.ComposerProjectWizardFirstPage;
-import com.dubture.composer.ui.wizard.project.Validator;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 @SuppressWarnings("restriction")
 public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPage {
 
+	private Validator projectTemplateValidator;
+	
 	public PackageProjectWizardFirstPage() {
 		super();
 		setPageComplete(false);
@@ -55,23 +54,20 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		data.setSettings(getDialogSettings());
 		data.setObserver(PHPLocationGroup);
 
-		fragment = (WizardFragment) Platform.getAdapterManager().loadAdapter(data,
-				ComposerProjectWizardFirstPage.class.getName());
-
 		versionGroup = new VersionGroup(this, composite);
-		detectGroup = new DetectGroup(composite, PHPLocationGroup, nameGroup);
+		//detectGroup = new DetectGroup(composite, PHPLocationGroup, nameGroup);
 
 		nameGroup.addObserver(PHPLocationGroup);
 
-		PHPLocationGroup.addObserver(detectGroup);
+		//PHPLocationGroup.addObserver(detectGroup);
 		// initialize all elements
 		nameGroup.notifyObservers();
 		// create and connect validator
-		pdtValidator = new Validator(this);
+		projectTemplateValidator = new Validator(this);
 
-		nameGroup.addObserver(pdtValidator);
-		settingsGroup.addObserver(pdtValidator);
-		PHPLocationGroup.addObserver(pdtValidator);
+		nameGroup.addObserver(projectTemplateValidator);
+		settingsGroup.addObserver(projectTemplateValidator);
+		PHPLocationGroup.addObserver(projectTemplateValidator);
 
 		Dialog.applyDialogFont(composite);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
@@ -87,17 +83,30 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 	}
 	
 	@Override
-	public void performFinish(IProgressMonitor monitor) {
+	public void performFinish(final IProgressMonitor monitor) {
 		
 		if (installFromTemplate()) {
 			try {
-				CreateProjectJob projectJob = new CreateProjectJob(nameGroup.getName(), ((ProjectTemplateGroup)settingsGroup).projectName.getText());
+				
+				CreateProjectJob projectJob = null;
+				
+				projectJob = new CreateProjectJob(nameGroup.getName(), ((ProjectTemplateGroup)settingsGroup).projectName.getText(), ((ProjectTemplateGroup)settingsGroup).getVersion());
+				projectJob.setSync(new InitListener() {
+					@Override
+					public void jobStarted() {
+						synchronized (monitor) {
+							monitor.notify();
+						}
+					}
+				});
+				
 				projectJob.schedule();
-				// we need to wait a moment otherwise composer screams the project directory is not empty
-				Thread.sleep(1000);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			System.err.println("aha");
 		}
 	}
 }

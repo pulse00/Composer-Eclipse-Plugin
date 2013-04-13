@@ -115,6 +115,7 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 		return descriptionField.getText().trim();
 	}
 	
+	
 	public String getLicense() {
 		return licenseField.getText().trim();
 	}

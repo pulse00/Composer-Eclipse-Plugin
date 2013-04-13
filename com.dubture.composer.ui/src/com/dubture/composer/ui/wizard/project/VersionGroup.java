@@ -25,16 +25,18 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.IWorkbenchPreferenceContainer;
 
+import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
+
 @SuppressWarnings("restriction")
 public class VersionGroup extends Observable implements Observer, IStringButtonAdapter, IDialogFieldListener,
 		SelectionListener {
 	
 	public PHPVersionConfigurationBlock fConfigurationBlock;
 	
-	private final ComposerProjectWizardFirstPage composerProjectWizardFirstPage;
+	private final AbstractWizardFirstPage composerProjectWizardFirstPage;
 	private static final String DIALOGSTORE_LAST_EXTERNAL_LOC = DLTKUIPlugin.PLUGIN_ID + ".last.external.project"; //$NON-NLS-1$
 	
-	public VersionGroup(ComposerProjectWizardFirstPage composerProjectWizardFirstPage, Composite composite) {
+	public VersionGroup(AbstractWizardFirstPage composerProjectWizardFirstPage, Composite composite) {
 		this.composerProjectWizardFirstPage = composerProjectWizardFirstPage;
 		final int numColumns = 3;
 		final Group group = new Group(composite, SWT.NONE);

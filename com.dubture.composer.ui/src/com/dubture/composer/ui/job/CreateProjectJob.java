@@ -14,9 +14,9 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.pdtextensions.core.launch.ScriptLauncher;
-import org.pdtextensions.core.launch.execution.ExecutionResponseAdapter;
 import org.pdtextensions.core.launch.execution.ExecutionResponseListener;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.getcomposer.packages.PharDownloader;
 
 @SuppressWarnings("restriction")
@@ -27,11 +27,15 @@ public class CreateProjectJob extends ComposerJob {
 	private IWorkspace workspace;
 	private IPath composerPath;
 	private IPath path;
+	private InitListener sync;
+	private String packageVersion;
+	private boolean notified = false;
 	
-	public CreateProjectJob(String projectName, String packageName) {
-		super("create-project");
+	public CreateProjectJob(String projectName, String packageName, String packageVersion) {
+		super("Install composer project");
 		this.projectName = projectName;
 		this.packageName = packageName;
+		this.packageVersion = packageVersion;
 		
 		workspace = ResourcesPlugin.getWorkspace();
 		path = workspace.getRoot().getLocation();
@@ -62,40 +66,47 @@ public class CreateProjectJob extends ComposerJob {
 			
 			@Override
 			public void executionStarted() {
-				// TODO Auto-generated method stub
 				
 			}
 			
 			@Override
 			public void executionMessage(String message) {
-				System.err.println(message);
+				try {
+					if(message != null && message.equals("Loading composer repositories with package information")) {
+						System.err.println("################# NOW I DO IT #################");
+						notifyWizard();
+					}
+				} catch (Exception e) {
+					Logger.logException(e);
+				}
 			}
 			
 			@Override
 			public void executionFinished(String response, int exitValue) {
-				System.err.println(response);
-				
+				notifyWizard();
 			}
 			
 			@Override
 			public void executionFailed(String response, Exception exception) {
-				System.err.println(response);
 				
+				System.err.println("######################### IT FAILED ########################");
+				exception.printStackTrace();
+				
+				notifyWizard();				
 			}
 			
 			@Override
 			public void executionError(String message) {
-				System.err.println(message);
+				notifyWizard();
 			}
 			
 			@Override
 			public void executionAboutToStart() {
 				// TODO Auto-generated method stub
-				
 			}
 		});
 		
-		launcher.launch("create-project", new String[]{packageName, projectName, "2.2.1"});
+		launcher.launch("create-project", new String[]{"--verbose", packageName, projectName, packageVersion});
 		
 		// TODO: remove composer.phar
 	}
@@ -121,6 +132,12 @@ public class CreateProjectJob extends ComposerJob {
 		}
 	}
 	
+	private boolean composerExists() {
+		IPath projectPath = path.append(projectName).append("composer.json");
+		System.err.println("exists? " + projectPath.toFile().exists());
+		return projectPath.toFile().exists();
+	}
+	
 	public class DummyResource extends org.eclipse.core.internal.resources.File {
 
 		protected DummyResource() {
@@ -130,5 +147,30 @@ public class CreateProjectJob extends ComposerJob {
 		public IPath getFullPath() {
 			return new Path("/dummy/composer.phar");
 		}
+	}
+
+	public void setSync(InitListener latch) {
+		this.sync = latch;
+	}
+	
+	private void notifyWizard() {
+		try {
+			if (notified) {
+				return;
+			}
+
+			synchronized (sync) {
+				sync.jobStarted();
+				notified = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public interface InitListener {
+
+		void jobStarted();
+		
 	}
 }

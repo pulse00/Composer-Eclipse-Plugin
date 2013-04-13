@@ -163,4 +163,8 @@ public class ProjectTemplateGroup extends BasicSettingsGroup  {
 		setChanged();
 		notifyObservers();
 	}
+	
+	public String getVersion() {
+		return versionSelector.getText();
+	}
 }
