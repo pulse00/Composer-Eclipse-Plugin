@@ -8,7 +8,11 @@ import org.eclipse.dltk.core.environment.IFileHandle;
 import com.dubture.composer.ui.wizard.AbstractValidator;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
 import com.dubture.composer.ui.wizard.ValidationException;
+import com.dubture.composer.ui.wizard.ValidationException.Severity;
 
+/**
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ */
 @SuppressWarnings("restriction")
 public final class Validator extends AbstractValidator {
 
@@ -25,10 +29,7 @@ public final class Validator extends AbstractValidator {
 			IPath futurepath = directory.getPath().append(firstPage.nameGroup.getName());
 			File futureFile = futurepath.toFile();
 			if ((futureFile.exists() && futureFile.isFile()) || (futureFile.exists() && futureFile.isDirectory() && futureFile.list().length > 0)) {
-				this.firstPage.setErrorMessage("The target directory is not empty. Unable to run \"create-project\" with a target directory containing files.");
-				this.firstPage.setMessage(null);
-				this.firstPage.setPageComplete(false);
-				throw new ValidationException();
+				throw new ValidationException("The target directory is not empty. Unable to run \"create-project\" with a target directory containing files.", Severity.ERROR);
 			}
 		}
 	}

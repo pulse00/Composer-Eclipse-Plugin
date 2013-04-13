@@ -16,6 +16,8 @@ import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.dltk.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.dltk.ui.DLTKUIPlugin;
 
+import com.dubture.composer.ui.wizard.ValidationException.Severity;
+
 @SuppressWarnings("restriction")
 abstract public class AbstractValidator implements Observer {
 
@@ -49,6 +51,21 @@ abstract public class AbstractValidator implements Observer {
 			validateLocation();
 			finishValidation();
 		} catch (ValidationException e) {
+
+			switch (e.getSeverity()) {
+			case WARNING:
+				firstPage.setErrorMessage(null);
+				firstPage.setMessage(e.getMessage());
+				break;
+			case ERROR:
+				firstPage.setErrorMessage(e.getMessage());
+				firstPage.setMessage(null);
+				break;
+			default:
+				return;
+			}
+			
+			firstPage.setPageComplete(false);
 			return;
 		}
 
@@ -65,17 +82,12 @@ abstract public class AbstractValidator implements Observer {
 	 */
 	protected void validateName() throws ValidationException {
 		if (name == null || name.length() == 0) {
-			firstPage.setErrorMessage(null);
-			firstPage.setMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_enterProjectName);
-			firstPage.setPageComplete(false);
-			throw new ValidationException();
+			throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_enterProjectName, Severity.WARNING);
 		}
 
 		final IStatus nameStatus = workspace.validateName(name, IResource.PROJECT);
 		if (!nameStatus.isOK()) {
-			firstPage.setErrorMessage(nameStatus.getMessage());
-			firstPage.setPageComplete(false);
-			throw new ValidationException();
+			throw new ValidationException(nameStatus.getMessage(), Severity.ERROR);
 		}
 	}
 
@@ -83,9 +95,7 @@ abstract public class AbstractValidator implements Observer {
 		// check whether project already exists
 		if (!firstPage.isInLocalServer()) {
 			if (handle.exists()) {
-				firstPage.setErrorMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_projectAlreadyExists);
-				firstPage.setPageComplete(false);
-				throw new ValidationException();
+				throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_projectAlreadyExists, Severity.ERROR);
 			}
 		}
 
@@ -94,9 +104,7 @@ abstract public class AbstractValidator implements Observer {
 		for (IProject currentProject : projects) {
 			String existingProjectName = currentProject.getName();
 			if (existingProjectName.toLowerCase().equals(newProjectNameLowerCase)) {
-				firstPage.setErrorMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_projectAlreadyExists);
-				firstPage.setPageComplete(false);
-				throw new ValidationException();
+				throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_projectAlreadyExists, Severity.ERROR);
 			}
 		}
 	}
@@ -104,24 +112,17 @@ abstract public class AbstractValidator implements Observer {
 	protected void validateLocation() throws ValidationException {
 		// check whether location is empty
 		if (location.length() == 0) {
-			firstPage.setErrorMessage(null);
-			firstPage.setMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_enterLocation);
-			firstPage.setPageComplete(false);
-			throw new ValidationException();
+			throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_enterLocation, Severity.WARNING);
 		}
 		// check whether the location is a syntactically correct path
 		if (!Path.EMPTY.isValidPath(location)) {
-			firstPage.setErrorMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_invalidDirectory);
-			firstPage.setPageComplete(false);
-			throw new ValidationException();
+			throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_invalidDirectory, Severity.ERROR);
 		}
 
 		// check whether the location has the workspace as prefix
 		IPath projectPath = Path.fromOSString(location);
 		if (!firstPage.PHPLocationGroup.isInWorkspace() && Platform.getLocation().isPrefixOf(projectPath)) {
-			firstPage.setErrorMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_cannotCreateInWorkspace);
-			firstPage.setPageComplete(false);
-			throw new ValidationException();
+			throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_cannotCreateInWorkspace, Severity.ERROR);
 		}
 
 		// If we do not place the contents in the workspace validate the
@@ -130,20 +131,31 @@ abstract public class AbstractValidator implements Observer {
 			if (EnvironmentManager.isLocal(environment)) {
 				final IStatus locationStatus = workspace.validateProjectLocation(handle, projectPath);
 				if (!locationStatus.isOK()) {
-					firstPage.setErrorMessage(locationStatus.getMessage());
-					firstPage.setPageComplete(false);
-					throw new ValidationException();
+					throw new ValidationException(locationStatus.getMessage(), Severity.ERROR);
 				}
 
 				if (!firstPage.canCreate(projectPath.toFile())) {
-					firstPage.setErrorMessage(NewWizardMessages.ScriptProjectWizardFirstPage_Message_invalidDirectory);
-					firstPage.setPageComplete(false);
-					throw new ValidationException();
+					throw new ValidationException(NewWizardMessages.ScriptProjectWizardFirstPage_Message_invalidDirectory, Severity.ERROR);
 				}
 			}
 		}
 	}
 
+	/**
+	 * Begin the validation process of the project wizards first page
+	 * 
+	 * Place your custom validation logic here and throw a {@link ValidationException} if validation fails.
+	 * 
+	 * @throws ValidationException
+	 */
 	abstract protected void beginValidation() throws ValidationException;
+	
+	/**
+	 * Finish the validation process of the project wizards first page
+	 * 
+	 * Place your custom validation logic here and throw a {@link ValidationException} if validation fails.
+	 * 
+	 * @throws ValidationException
+	 */
 	abstract protected void finishValidation() throws ValidationException;
 }

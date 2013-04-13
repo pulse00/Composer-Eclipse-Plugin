@@ -19,6 +19,9 @@ import com.dubture.composer.ui.wizard.project.ComposerProjectWizardFirstPage;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
 import com.dubture.getcomposer.core.ComposerPackage;
 
+/**
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ */
 @SuppressWarnings("restriction")
 public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPage {
 
@@ -39,9 +42,9 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		composite.setLayout(initGridLayout(new GridLayout(1, false), false));
 		composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
-		fInitialName = "";
+		initialName = "";
 		// create UI elements
-		nameGroup = new NameGroup(composite, fInitialName, getShell());
+		nameGroup = new NameGroup(composite, initialName, getShell());
 		settingsGroup = new ProjectTemplateGroup(composite, getShell());
 		
 		nameGroup.addObserver(this);

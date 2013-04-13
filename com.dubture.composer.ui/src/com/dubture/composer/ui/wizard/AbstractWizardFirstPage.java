@@ -27,6 +27,12 @@ import com.dubture.composer.ui.converter.String2KeywordsConverter;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
 import com.dubture.getcomposer.core.ComposerPackage;
 
+/**
+ * Base implementation for the first page of a new Composer project wizard.
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 @SuppressWarnings("restriction")
 abstract public class AbstractWizardFirstPage extends WizardPage implements IPHPProjectCreateWizardPage, Observer {
 
@@ -34,7 +40,7 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 	public LocationGroup PHPLocationGroup;
 	public VersionGroup versionGroup;
 	
-	protected String fInitialName;
+	protected String initialName;
 	protected Composite composite;
 	protected AbstractValidator validator;
 	protected DetectGroup detectGroup;
@@ -53,9 +59,9 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 		composite.setLayout(initGridLayout(new GridLayout(1, false), false));
 		composite.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
 
-		fInitialName = "";
+		initialName = "";
 		// create UI elements
-		nameGroup = new NameGroup(composite, fInitialName, getShell());
+		nameGroup = new NameGroup(composite, initialName, getShell());
 		nameGroup.addObserver(this);
 		validator = getValidator();
 		
@@ -175,6 +181,4 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 	public ComposerPackage getPackage() {
 		return composerPackage;
 	}
-	
-	
 }
