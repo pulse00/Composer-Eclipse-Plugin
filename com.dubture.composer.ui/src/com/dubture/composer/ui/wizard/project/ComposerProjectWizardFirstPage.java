@@ -40,26 +40,7 @@ public class ComposerProjectWizardFirstPage extends AbstractWizardFirstPage {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (o instanceof BasicSettingsGroup) {
-			if (settingsGroup.getVendor() != null && nameGroup.getName() != null) {
-				composerPackage.setName(String.format("%s/%s", settingsGroup.getVendor(), nameGroup.getName()));
-			}
-
-			if (settingsGroup.getDescription().length() > 0) {
-				composerPackage.setDescription(settingsGroup.getDescription());
-			}
-
-			if (settingsGroup.getLicense().length() > 0) {
-				composerPackage.getLicense().clear();
-				composerPackage.getLicense().add(settingsGroup.getLicense());
-			}
-
-			if (settingsGroup.getType().length() > 0) {
-				composerPackage.setType(settingsGroup.getType());
-			}
-
-			if (settingsGroup.getKeywords().length() > 0) {
-				keywordConverter.convert(settingsGroup.getKeywords());
-			}
+			updatePackageFromSettingsGroup(settingsGroup);
 		}
 	}
 

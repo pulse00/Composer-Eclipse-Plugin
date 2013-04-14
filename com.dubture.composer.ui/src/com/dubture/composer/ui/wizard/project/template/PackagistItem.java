@@ -34,6 +34,11 @@ import com.dubture.getcomposer.core.entities.JsonValue;
 import com.dubture.getcomposer.packages.AsyncPackagistDownloader;
 import com.dubture.getcomposer.packages.PackageListenerInterface;
 
+/**
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 @SuppressWarnings("restriction")
 public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 

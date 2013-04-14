@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
+import com.dubture.composer.ui.wizard.project.BasicSettingsGroup;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
 import com.dubture.getcomposer.core.ComposerPackage;
 
@@ -183,5 +184,28 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 	
 	public ComposerPackage getPackage() {
 		return composerPackage;
+	}
+	
+	public void updatePackageFromSettingsGroup(BasicSettingsGroup settingsGroup) {
+		if (settingsGroup.getVendor() != null && nameGroup.getName() != null) {
+			composerPackage.setName(String.format("%s/%s", settingsGroup.getVendor(), nameGroup.getName()));
+		}
+
+		if (settingsGroup.getDescription().length() > 0) {
+			composerPackage.setDescription(settingsGroup.getDescription());
+		}
+
+		if (settingsGroup.getLicense().length() > 0) {
+			composerPackage.getLicense().clear();
+			composerPackage.getLicense().add(settingsGroup.getLicense());
+		}
+
+		if (settingsGroup.getType().length() > 0) {
+			composerPackage.setType(settingsGroup.getType());
+		}
+
+		if (settingsGroup.getKeywords().length() > 0) {
+			keywordConverter.convert(settingsGroup.getKeywords());
+		}
 	}
 }

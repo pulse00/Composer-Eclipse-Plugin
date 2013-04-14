@@ -2,6 +2,11 @@ package com.dubture.composer.ui.wizard.project.template;
 
 import com.dubture.getcomposer.core.MinimalPackage;
 
+/**
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 class PackageFilterItem {
 
 	protected boolean isChecked;

@@ -1,8 +1,10 @@
 package com.dubture.composer.ui.wizard.project.template;
 
+import java.io.ByteArrayInputStream;
 import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -10,6 +12,7 @@ import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
@@ -22,6 +25,7 @@ import com.dubture.composer.ui.job.CreateProjectJob;
 import com.dubture.composer.ui.job.CreateProjectJob.JobListener;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
 import com.dubture.composer.ui.wizard.AbstractWizardSecondPage;
+import com.dubture.getcomposer.core.ComposerPackage;
 
 /**
  * 
@@ -79,6 +83,8 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 
 		PackageFilterItem filterItem = filter.getSelectedPackage();
 		final CountDownLatch latch = new CountDownLatch(1);
+		
+		monitor.beginTask("Initializing composer project", 1);
 		CreateProjectJob projectJob = new CreateProjectJob(firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
 		projectJob.setJobListener(new JobListener() {
 			@Override
@@ -112,11 +118,28 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		} catch (InterruptedException e) {
 			
 		}
+		
+		monitor.worked(1);
 	}
 
 	@Override
 	protected void finishPage(IProgressMonitor monitor) throws Exception {
-
+		try {
+			PackageProjectWizardFirstPage page = (PackageProjectWizardFirstPage) firstPage;
+			if (page.doesOverrideComposer()) {
+				monitor.beginTask("Updating composer.json with new values", 1);
+				ComposerPackage package1 = firstPage.getPackage();
+				IFile file = getProject().getFile(new Path("composer.json"));
+				if (file != null && file.exists()) {
+					ByteArrayInputStream is = new ByteArrayInputStream(package1.toJson().getBytes());
+					file.setContents(is, IResource.FORCE, monitor);
+				}
+			}
+		} catch (Exception e) {
+			Logger.logException(e);
+		} finally {
+			monitor.worked(1);
+		}
 	}
 	
 	

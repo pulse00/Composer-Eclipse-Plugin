@@ -2,7 +2,6 @@ package com.dubture.composer.ui.wizard.project;
 
 import java.util.Observable;
 
-
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
 import org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil;
@@ -147,5 +146,15 @@ public class BasicSettingsGroup extends Observable implements IDialogFieldListen
 	
 	public void show() {
 		nameComposite.setVisible(true);
+	}
+
+	public void setEnabled(boolean enabled) {
+		
+		vendorField.setEnabled(enabled);
+		nameComposite.setEnabled(enabled);
+		typeField.setEnabled(enabled);
+		descriptionField.setEnabled(enabled);
+		keywordField.setEnabled(enabled);
+		licenseField.setEnabled(enabled);
 	}
 }

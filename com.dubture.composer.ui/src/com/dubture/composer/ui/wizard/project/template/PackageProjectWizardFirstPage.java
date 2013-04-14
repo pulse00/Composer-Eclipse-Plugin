@@ -7,14 +7,19 @@ import org.eclipse.php.internal.ui.wizards.CompositeData;
 import org.eclipse.php.internal.ui.wizards.LocationGroup;
 import org.eclipse.php.internal.ui.wizards.NameGroup;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
+import com.dubture.composer.ui.wizard.project.BasicSettingsGroup;
 import com.dubture.composer.ui.wizard.project.ComposerProjectWizardFirstPage;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
 import com.dubture.getcomposer.core.ComposerPackage;
@@ -26,6 +31,9 @@ import com.dubture.getcomposer.core.ComposerPackage;
 public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPage implements IShellProvider {
 
 	private Validator projectTemplateValidator;
+	
+	private Button overrideComposer;
+	private boolean doesOverride = false;
 	
 	public PackageProjectWizardFirstPage() {
 		super();
@@ -49,6 +57,25 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		nameGroup.addObserver(this);
 		
 		PHPLocationGroup = new LocationGroup(composite, nameGroup, getShell());
+		
+		overrideComposer = new Button(composite, SWT.CHECK);
+		overrideComposer.setText("Override composer.json from target package");
+		overrideComposer.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				doesOverride = overrideComposer.getSelection();
+				settingsGroup.setEnabled(overrideComposer.getSelection());
+			}
+		});
+		
+		final Group group = new Group(composite, SWT.None);
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		group.setLayout(new GridLayout(3, false));
+		group.setText("");
+		
+		settingsGroup = new BasicSettingsGroup(group, getShell());
+		settingsGroup.setEnabled(false);
+		settingsGroup.addObserver(this);
 
 		CompositeData data = new CompositeData();
 		data.setParetnt(composite);
@@ -66,8 +93,6 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		// create and connect validator
 		projectTemplateValidator = new Validator(this);
 		
-
-
 		nameGroup.addObserver(projectTemplateValidator);
 		PHPLocationGroup.addObserver(projectTemplateValidator);
 
@@ -90,5 +115,9 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 	@Override
 	protected void setHelpContext(Control container) {
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, ComposerUIPlugin.PLUGIN_ID + "." + "help_context_wizard_template_firstpage");
+	}
+	
+	public boolean doesOverrideComposer() {
+		return doesOverride;
 	}
 }

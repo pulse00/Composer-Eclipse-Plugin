@@ -255,7 +255,7 @@
             finalPerspective="org.eclipse.php.perspective"
             icon="icons/full/obj16/composer_project.gif"
             id="com.dubture.composer.ui.projectwizard"
-            name="Composer Project"
+            name="Empty Composer Project"
             preferredPerspectives="org.eclipse.php.perspective"
             project="true">
          <selection
@@ -269,7 +269,7 @@
             category="org.eclipse.php.project.ui"
             class="com.dubture.composer.ui.wizard.project.template.PackageProjectCreationWizard"
             finalPerspective="org.eclipse.php.perspective"
-            icon="icons/full/obj16/composer_project.gif"
+            icon="icons/full/obj16/logical_package_obj.gif"
             id="com.dubture.composer.ui.projectFromPackagewizard"
             name="Composer Project from existing package"
             preferredPerspectives="org.eclipse.php.perspective"

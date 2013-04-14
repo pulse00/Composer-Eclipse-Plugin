@@ -26,6 +26,11 @@ import com.dubture.getcomposer.packages.AsyncPackagistSearch;
 import com.dubture.getcomposer.packages.PackageSearchListenerInterface;
 import com.dubture.getcomposer.packages.SearchResult;
 
+/**
+ * 
+ * @author Robert Gruendler <r.gruendler@gmail.com>
+ *
+ */
 @SuppressWarnings("restriction")
 public class PackageFilterViewer extends FilteredViewer implements PackageFilterChangedListener {
 
