@@ -13,8 +13,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.job.CreateProjectJob;
 import com.dubture.composer.ui.job.CreateProjectJob.JobListener;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
@@ -53,6 +56,7 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		filter.setMinimumHeight(480);
 		setControl(filter.getControl());
 		setPageComplete(false);
+		setHelpContext(filter.getControl());
 	}
 
 	@Override
@@ -142,5 +146,11 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		}
 		
 		setPageComplete(false);
+	}
+
+
+	@Override
+	protected void setHelpContext(Control control) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(control, ComposerUIPlugin.PLUGIN_ID + "." + "help_context_wizard_template_secondpage");
 	}	
 }

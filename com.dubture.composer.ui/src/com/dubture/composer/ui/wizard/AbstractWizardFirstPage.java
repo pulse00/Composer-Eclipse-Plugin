@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
 import com.dubture.composer.ui.wizard.project.VersionGroup;
@@ -96,6 +97,8 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 		keywordConverter = new String2KeywordsConverter(composerPackage);
 		
 		finishControlSetup();
+		
+		setHelpContext(composite);
 	}
 
 	public void performFinish(IProgressMonitor monitor) {
@@ -108,7 +111,7 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 	abstract protected AbstractValidator getValidator();
 	abstract public void update(Observable o, Object arg);
 	abstract public void initPage();
-	abstract protected void installHelp();
+	abstract protected void setHelpContext(Control container);
 	
 	public GridLayout initGridLayout(GridLayout layout, boolean margins) {
 		layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);

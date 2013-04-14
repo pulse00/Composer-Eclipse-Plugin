@@ -10,6 +10,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
@@ -71,11 +72,12 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		PHPLocationGroup.addObserver(projectTemplateValidator);
 
 		Dialog.applyDialogFont(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
 		
 		setControl(composite);
 		composerPackage = new ComposerPackage();
 		keywordConverter = new String2KeywordsConverter(composerPackage);
+		
+		setHelpContext(composite);
 		
 	}
 	
@@ -83,5 +85,10 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 	public void performFinish(final IProgressMonitor monitor) {
 		
 
+	}
+	
+	@Override
+	protected void setHelpContext(Control container) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, ComposerUIPlugin.PLUGIN_ID + "." + "help_context_wizard_template_firstpage");
 	}
 }

@@ -9,6 +9,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.PlatformUI;
 
@@ -48,9 +49,10 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 		autoloadGroup.addObserver(validator);
 		
 		Dialog.applyDialogFont(composite);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_autoload");
 		setControl(composite);
-		((ComposerProjectWizardFirstPage)firstPage).settingsGroup.addObserver(this);		
+		((ComposerProjectWizardFirstPage)firstPage).settingsGroup.addObserver(this);	
+		
+		setHelpContext(composite);
 
 	}
 
@@ -107,5 +109,10 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 	protected void beforeFinish(IProgressMonitor monitor) throws Exception {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected void setHelpContext(Control control) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(control, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_autoload");
 	}
 }

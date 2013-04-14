@@ -17,4 +17,19 @@ The PHP version selected on this page will be set as a requirement in your compo
 
 During project creation, a composer.phar will be automatically downloaded from getcomposer.org, and &quot;composer.phar dumpautoload&quot; will be executed to initialize the autoloading of your project.</description>
    </context>
+   <context id="help_context_wizard_template_firstpage">
+      <description>This Wizard allows you to initialize a new composer project from an existing package using the &quot;create-project&quot; command.
+
+If you want to override the composer.json values from the target package, check the corresponding option on the left.</description>
+      <topic href="http://getcomposer.org/doc/03-cli.md#create-project" label="Learn more about the create-project command"/>
+   </context>
+   <context id="help_context_wizard_template_secondpage">
+      <description>Type in the search field on the left to search for packages on packagist.org. Click the &quot;Download&quot; button to select a specific package for installation and choose the desired version from the dropdown to the right.
+
+Use the &quot;Select projects only&quot; check box to show only packages with the package type &quot;project&quot;.
+
+By clicking on the &quot;Favorite&quot; button the selected package will open in a new browser window on packagist.org.</description>
+      <topic href="http://getcomposer.org/doc/04-schema.md#type" label="Learn more about package types"/>
+      <topic href="https://packagist.org/about" label="Learn how to register your package on packagist.org"/>
+   </context>
 </contexts>

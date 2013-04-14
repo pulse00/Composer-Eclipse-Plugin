@@ -2,6 +2,7 @@ package com.dubture.composer.ui.wizard.project;
 
 import java.util.Observable;
 
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
@@ -72,8 +73,7 @@ public class ComposerProjectWizardFirstPage extends AbstractWizardFirstPage {
 	}
 
 	@Override
-	protected void installHelp() {
-		PlatformUI.getWorkbench().getHelpSystem()
-				.setHelp(composite, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
+	protected void setHelpContext(Control container) {
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(container, ComposerUIPlugin.PLUGIN_ID + "." + "help_project_wizard_basic");
 	}
 }
