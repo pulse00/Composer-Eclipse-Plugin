@@ -32,6 +32,8 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor SELFUPDATE = create(T_OBJ16, "selfupdate.gif");
 	public static final ImageDescriptor EVENT = create(T_OBJ16, "event3.png");
 	public static final ImageDescriptor SCRIPT = create(T_OBJ16, "script2.png");
+	public static final ImageDescriptor STAR = create(T_OBJ16, "star.png");
+	public static final ImageDescriptor DOWNLOAD = create(T_OBJ16, "download.png");
 	
 	public static final ImageDescriptor REPO_GENERIC = create(T_OBJ16, "repo_generic.gif");
 	public static final ImageDescriptor REPO_GIT = create(T_OBJ16, "repo_git.png");

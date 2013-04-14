@@ -1,4 +1,4 @@
-package com.dubture.composer.ui.wizard.projec.template;
+package com.dubture.composer.ui.wizard.project.template;
 
 import com.dubture.composer.ui.wizard.AbstractComposerWizard;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;

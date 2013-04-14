@@ -42,7 +42,10 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.e4.core.di,
  org.eclipse.wst.html.core,
  org.eclipse.ui.intro,
- org.apache.commons.io
+ org.apache.commons.io,
+ org.eclipse.equinox.p2.ui.discovery,
+ org.eclipse.equinox.p2.discovery,
+ org.eclipse.equinox.p2.discovery.compatibility
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: 

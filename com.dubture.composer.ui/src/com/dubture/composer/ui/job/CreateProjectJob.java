@@ -32,7 +32,7 @@ public class CreateProjectJob extends ComposerJob {
 	private boolean startNotified = false;
 	
 	public CreateProjectJob(String projectName, String packageName, String packageVersion) {
-		super("Install composer project");
+		super("Creating composer project");
 		this.projectName = projectName;
 		this.packageName = packageName;
 		this.packageVersion = packageVersion;
@@ -46,16 +46,15 @@ public class CreateProjectJob extends ComposerJob {
 			composerPath = workspace.getRoot().getLocation().append("composer.phar");
 			File file = composerPath.toFile();
 			
-			boolean existed = false;
+			boolean existed = true;
 			if (!file.exists()) {
-				existed = true;
+				existed = false;
 				PharDownloader downloader = new PharDownloader();
-				InputStream phar = downloader.download();
 				InputStream resource = downloader.download();
 				FileUtils.copyInputStreamToFile(resource, file);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 
@@ -154,7 +153,7 @@ public class CreateProjectJob extends ComposerJob {
 			initListener.jobStarted();
 			startNotified = true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
@@ -165,7 +164,7 @@ public class CreateProjectJob extends ComposerJob {
 			}
 			initListener.jobFinished(projectName);
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
@@ -177,15 +176,13 @@ public class CreateProjectJob extends ComposerJob {
 			}
 			initListener.jobFailed();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
 	public interface JobListener {
-
 		void jobStarted();
 		void jobFinished(String projectName);
 		void jobFailed();
-		
 	}
 }

@@ -1,4 +1,4 @@
-package com.dubture.composer.ui.wizard.projec.template;
+package com.dubture.composer.ui.wizard.project.template;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -267,7 +267,7 @@
       </wizard>
       <wizard
             category="org.eclipse.php.project.ui"
-            class="com.dubture.composer.ui.wizard.projec.template.PackageProjectCreationWizard"
+            class="com.dubture.composer.ui.wizard.project.template.PackageProjectCreationWizard"
             finalPerspective="org.eclipse.php.perspective"
             icon="icons/full/obj16/composer_project.gif"
             id="com.dubture.composer.ui.projectFromPackagewizard"
