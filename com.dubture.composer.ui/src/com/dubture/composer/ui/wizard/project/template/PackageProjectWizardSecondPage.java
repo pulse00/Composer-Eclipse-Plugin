@@ -50,6 +50,7 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		filter = new PackageFilterViewer();
 		filter.createControl(parent);
 		filter.addChangeListener(this);
+		filter.setMinimumHeight(480);
 		setControl(filter.getControl());
 		setPageComplete(false);
 	}

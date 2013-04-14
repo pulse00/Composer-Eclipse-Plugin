@@ -7,6 +7,7 @@ import org.eclipse.equinox.internal.p2.ui.discovery.util.ControlListItem;
 import org.eclipse.equinox.internal.p2.ui.discovery.util.ControlListViewer;
 import org.eclipse.equinox.internal.p2.ui.discovery.util.FilteredViewer;
 import org.eclipse.equinox.internal.p2.ui.discovery.wizards.DiscoveryResources;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -17,6 +18,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 
 import com.dubture.composer.core.log.Logger;
 import com.dubture.getcomposer.core.MinimalPackage;
@@ -33,11 +35,13 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 	private PackagistContentProvider contentProvider;
 	private PackageFilterItem currentSelection = null;
 	private List<PackageFilterChangedListener> listeners = new ArrayList<PackageFilterChangedListener>();
+	private Label searchResultCount;
 	
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		doFind("");
+		
 	}
 	
 	public void addChangeListener(PackageFilterChangedListener listener) {
@@ -58,6 +62,10 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 		};
 		
 		viewer.setContentProvider(contentProvider = new PackagistContentProvider());
+		
+		searchResultCount = new Label(container, SWT.NONE);
+		searchResultCount.setText("asdfasdf");
+		GridDataFactory.fillDefaults().grab(true, false).span(3,1).align(SWT.BEGINNING, SWT.CENTER).hint(400, SWT.DEFAULT).applyTo(searchResultCount);
 		
 		return viewer;
 	}
@@ -110,7 +118,7 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 					
 				}
 				@Override
-				public void packagesFound(List<MinimalPackage> packages, String query, SearchResult result) {
+				public void packagesFound(List<MinimalPackage> packages, String query, final SearchResult result) {
 					if (packages != null) {
 						final List<PackageFilterItem> items = new ArrayList<PackageFilterItem>();
 						for (MinimalPackage pkg : packages) {
@@ -122,6 +130,7 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 							public void run() {
 								contentProvider.add(items);
 								viewer.refresh();
+								searchResultCount.setText("Found " + result.total + " packages.");
 							}
 						});
 					}
@@ -215,15 +224,12 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 			}
 		}
 		
-		
 		List<PackageFilterItem> input = (List<PackageFilterItem>) viewer.getInput();
-		
 		if (!item.isChecked()) {
 			return;
 		}
 		
 		for (PackageFilterItem filterItem : input) {
-			
 			if (filterItem == item) {
 				continue;
 			}
@@ -234,7 +240,6 @@ public class PackageFilterViewer extends FilteredViewer implements PackageFilter
 		Point origin = control.getOrigin();
 		viewer.refresh();
 		control.setOrigin(origin);
-		
 		fireEvent(item);
 	}
 	
