@@ -4,6 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IAction;
@@ -12,6 +16,10 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -30,6 +38,7 @@ import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
+import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener {
@@ -60,21 +69,43 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	private String jsonDump;
 	private boolean saving = false;
 	private boolean pageChanging = false;
+	private DependencyGraphPage graphPage;
 
 	public ComposerFormEditor() {
 		super();
 		jsonEditor = new JsonTextEditor();
 		documentProvider = jsonEditor.getDocumentProvider();
 	}
-
+	
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
 		try {
 			documentProvider.connect(input);
 			documentProvider.getDocument(getEditorInput()).addDocumentListener(this);
+			
+			//TODO: check how to react on file deletion to close the editor when composer.json is deleted.
+			/*
+			final IFileEditorInput fileInput = (IFileEditorInput) input;
+			
+			IWorkspace workspace = ResourcesPlugin.getWorkspace();
+			IResourceChangeListener listener = new IResourceChangeListener() {
+				@Override
+				public void resourceChanged(IResourceChangeEvent event) {
+					
+					switch (event.getType()) {
+					case IResourceChangeEvent.PRE_DELETE:
+						System.err.println(event.getDelta().getResource());
+						break;
+					}
+				}
+			};
+			
+			workspace.addResourceChangeListener(listener);
+			*/
+			
 		} catch (CoreException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
@@ -106,6 +137,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
 		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
+		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph");
 
 		super.createPages();
 	}
@@ -117,10 +149,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			addPage(dependenciesPage);
 			addPage(autoloadPage);
 			addPage(configurationPage);
+			addPage(graphPage);
 			jsonEditorIndex = addPage(jsonEditor, getEditorInput());
 			setPageText(jsonEditorIndex, jsonEditor.getTitle());
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
@@ -155,11 +188,12 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	protected void createHeaderContents(IManagedForm headerForm) {
 		ScrolledForm header = headerForm.getForm();
 		header.setText("Composer");
-
+		
 		FormToolkit toolkit = headerForm.getToolkit();
 		toolkit.decorateFormHeading(header.getForm());
 		
 		ToolBarManager manager = (ToolBarManager) header.getToolBarManager();
+		
 		contributeToToolbar(manager);
 	    manager.update(true);
 	    

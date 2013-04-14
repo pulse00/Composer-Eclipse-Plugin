@@ -59,15 +59,18 @@ public class DependencyGraphView extends ViewPart implements
 	public DependencyGraphView() {
 		super();
 	}
+	
 
 	@Override
 	public void createPartControl(Composite parent) {
+		/*
 		getSite().getPage().addSelectionListener(this);
 		getSite().getPage().addPartListener(this);
 		selectionChanged(null, getSite().getPage().getSelection());
 		if (project == null) {
 			partActivated(getSite().getPage().getActivePart());
 		}
+		*/
 		
 		graphController = new GraphController(composerProject);
 		viewer = new GraphViewer(parent, SWT.BORDER);
@@ -95,7 +98,7 @@ public class DependencyGraphView extends ViewPart implements
 	
 	@Override
 	public void dispose() {
-		getSite().getPage().removeSelectionListener(this);
+		//getSite().getPage().removeSelectionListener(this);
 		super.dispose();
 	}
 
@@ -164,11 +167,13 @@ public class DependencyGraphView extends ViewPart implements
 	}
 
 	private void fillToolBar() {
+		/*
 		ZoomContributionViewItem toolbarZoomContributionViewItem = new ZoomContributionViewItem(
 				this);
 		IActionBars bars = getViewSite().getActionBars();
 		bars.getMenuManager().add(toolbarZoomContributionViewItem);
 		bars.getToolBarManager().add(toggleDevAction);
+		*/
 	}
 
 	public void createActions() {
