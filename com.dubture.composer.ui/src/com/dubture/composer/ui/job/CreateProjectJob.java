@@ -37,6 +37,7 @@ public class CreateProjectJob extends ComposerJob {
 		this.packageName = packageName;
 		this.packageVersion = packageVersion;
 		
+		Logger.debug("Creating new project " + projectName + " from package " + packageName + " / " + packageVersion);
 		workspace = ResourcesPlugin.getWorkspace();
 		path = workspace.getRoot().getLocation();
 		DummyProject project = new DummyProject(path);

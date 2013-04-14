@@ -295,6 +295,7 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	
 	public void performFinish(IProgressMonitor monitor) throws CoreException, InterruptedException {
 		try {
+			beforeFinish(monitor);
 			monitor.beginTask("Initializing buildpaths", 10);
 			if (getProject() == null || !getProject().exists()) {
 				updateProject(new SubProgressMonitor(monitor, 3));
@@ -314,6 +315,21 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	abstract public void update(Observable o, Object arg);
 	abstract protected String getPageTitle();
 	abstract protected String getPageDescription();
+	
+	/**
+	 * Run any logic before the actual project is being created.
+	 * 
+	 * @param monitor
+	 * @throws Exception
+	 */
+	protected abstract void beforeFinish(IProgressMonitor monitor) throws Exception;
+	
+	/**
+	 * Run any logic after the project has been created and is ready to use.
+	 * 
+	 * @param monitor
+	 * @throws Exception
+	 */
 	protected abstract void finishPage(IProgressMonitor monitor) throws Exception;
 	
 }

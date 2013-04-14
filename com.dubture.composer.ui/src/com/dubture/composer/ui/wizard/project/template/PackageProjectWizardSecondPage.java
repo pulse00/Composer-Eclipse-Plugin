@@ -1,6 +1,7 @@
 package com.dubture.composer.ui.wizard.project.template;
 
 import java.util.Observable;
+import java.util.concurrent.CountDownLatch;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -14,6 +15,8 @@ import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
 
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.job.CreateProjectJob;
+import com.dubture.composer.ui.job.CreateProjectJob.JobListener;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
 import com.dubture.composer.ui.wizard.AbstractWizardSecondPage;
 
@@ -23,20 +26,33 @@ import com.dubture.composer.ui.wizard.AbstractWizardSecondPage;
  *
  */
 @SuppressWarnings("restriction")
-public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage implements IShellProvider {
+public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage implements IShellProvider, PackageFilterChangedListener {
+
+	private PackageFilterViewer filter;
 
 	public PackageProjectWizardSecondPage(AbstractWizardFirstPage mainPage, String title) {
 		super(mainPage, title);
+		setPageComplete(false);
+	}
+	
+	
+	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		
+		if (filter.getSelectedPackage() == null || filter.getSelectedPackage().getSelectedVersion() == null) {
+			setPageComplete(false);
+		}
 	}
 	
 	@Override
 	public void createControl(Composite parent) {
-
-		PackageFilterViewer filter = new PackageFilterViewer();
+		filter = new PackageFilterViewer();
 		filter.createControl(parent);
+		filter.addChangeListener(this);
 		setControl(filter.getControl());
+		setPageComplete(false);
 	}
-	
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -52,19 +68,17 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 	protected String getPageDescription() {
 		return "Search for a package to be used as the startingpoint for your new Composer project.";
 	}
-
+	
 	@Override
-	protected void finishPage(IProgressMonitor monitor) throws Exception {
+	protected void beforeFinish(IProgressMonitor monitor) throws Exception {
 
-		/*
+		PackageFilterItem filterItem = filter.getSelectedPackage();
 		final CountDownLatch latch = new CountDownLatch(1);
-		CreateProjectJob projectJob = new CreateProjectJob(nameGroup.getName(), ((ProjectTemplateGroup)settingsGroup).projectName.getText(), ((ProjectTemplateGroup)settingsGroup).getVersion());
+		CreateProjectJob projectJob = new CreateProjectJob(firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
 		projectJob.setJobListener(new JobListener() {
 			@Override
 			public void jobStarted() {
-				synchronized (monitor) {
-					latch.countDown();
-				}
+				latch.countDown();
 			}
 
 			@Override
@@ -93,8 +107,13 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		} catch (InterruptedException e) {
 			
 		}
-		*/
 	}
+
+	@Override
+	protected void finishPage(IProgressMonitor monitor) throws Exception {
+
+	}
+	
 	
 	protected void refreshProject(String projectName) {
 		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
@@ -110,5 +129,19 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 				return Status.OK_STATUS;
 			}
 		}.schedule();
+	}
+
+
+	@Override
+	public void filterChanged(PackageFilterItem item) {
+		
+		System.err.println("aha");
+		if (item != null && item.getSelectedVersion() != null) {
+			setPageComplete(true);
+			return;
+		}
+		
+		System.err.println("false");
+		setPageComplete(false);
 	}	
 }

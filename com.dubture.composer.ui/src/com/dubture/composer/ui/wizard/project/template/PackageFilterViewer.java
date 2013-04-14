@@ -19,26 +19,31 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.ui.wizard.project.template.PackagistItem.ICheckBoxListener;
 import com.dubture.getcomposer.core.MinimalPackage;
 import com.dubture.getcomposer.packages.AsyncPackagistSearch;
 import com.dubture.getcomposer.packages.PackageSearchListenerInterface;
 import com.dubture.getcomposer.packages.SearchResult;
 
 @SuppressWarnings("restriction")
-public class PackageFilterViewer extends FilteredViewer implements ICheckBoxListener {
+public class PackageFilterViewer extends FilteredViewer implements PackageFilterChangedListener {
 
 	protected final static Object[] EMTPY = new Object[0];
 	private DiscoveryResources resources;
 	private Button showProjectsCheckbox;
-	
 	private PackagistContentProvider contentProvider;
-	
+	private PackageFilterItem currentSelection = null;
+	private List<PackageFilterChangedListener> listeners = new ArrayList<PackageFilterChangedListener>();
 	
 	@Override
 	public void createControl(Composite parent) {
 		super.createControl(parent);
 		doFind("");
+	}
+	
+	public void addChangeListener(PackageFilterChangedListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
 	}
 	
 	@Override
@@ -78,7 +83,7 @@ public class PackageFilterViewer extends FilteredViewer implements ICheckBoxList
 	protected ControlListItem<?> doCreateViewerItem(Composite parent, Object element) {
 		if (element instanceof PackageFilterItem) {
 			PackagistItem packagistItem = new PackagistItem(parent, SWT.NONE, resources, (PackageFilterItem) element);
-			packagistItem.setCheckBoxListener(this);
+			packagistItem.addFilterChangedListener(this);
 			return packagistItem;
 		}
 		
@@ -107,7 +112,7 @@ public class PackageFilterViewer extends FilteredViewer implements ICheckBoxList
 				@Override
 				public void packagesFound(List<MinimalPackage> packages, String query, SearchResult result) {
 					if (packages != null) {
-						final List<PackageFilterItem> items = new ArrayList<PackageFilterViewer.PackageFilterItem>();
+						final List<PackageFilterItem> items = new ArrayList<PackageFilterItem>();
 						for (MinimalPackage pkg : packages) {
 							items.add(new PackageFilterItem(pkg));
 						}
@@ -131,36 +136,6 @@ public class PackageFilterViewer extends FilteredViewer implements ICheckBoxList
 		} catch (Exception e) {
 			Logger.logException(e);
 		}
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void checked(PackageFilterItem item) {
-		
-		List<PackageFilterItem> input = (List<PackageFilterItem>) viewer.getInput();
-		
-		if (!item.isChecked()) {
-			return;
-		}
-		
-		for (PackageFilterItem filterItem : input) {
-			
-			if (filterItem == item) {
-				continue;
-			}
-			filterItem.setChecked(false);
-		}
-		
-		ScrolledComposite control = (ScrolledComposite) viewer.getControl();
-		Point origin = control.getOrigin();
-		viewer.refresh();
-		control.setOrigin(origin);
-		
-	}
-
-	@Override
-	public void unchecked(PackagistItem item) {
-		
 	}
 	
 	protected static class PackagistContentProvider implements ITreeContentProvider {
@@ -210,7 +185,7 @@ public class PackageFilterViewer extends FilteredViewer implements ICheckBoxList
 		}
 		
 		public void clear() {
-			packages = new ArrayList<PackageFilterViewer.PackageFilterItem>();
+			packages = new ArrayList<PackageFilterItem>();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -219,35 +194,55 @@ public class PackageFilterViewer extends FilteredViewer implements ICheckBoxList
 		}
 	}
 
-	protected static class PackageFilterItem {
+	public PackageFilterItem getSelectedPackage() {
 
-		protected boolean isChecked;
-		protected MinimalPackage item;
-		protected String[] versions;
-		
-		public PackageFilterItem(MinimalPackage pkg) {
-			isChecked = false;
-			item = pkg;
+		for (PackageFilterItem item : contentProvider.packages) {
+			if (item.isChecked()) {
+				return item;
+			}
 		}
 		
-		public MinimalPackage getPackage() {
-			return item;
-		}
-		
-		public boolean isChecked() {
-			return isChecked;
-		}
-		
-		public void setChecked(boolean checked) {
-			isChecked = checked;
-		}
+		return  null;
+	}
 
-		public void setVersions(String[] versionInput) {
-			versions = versionInput;
+	@Override
+	public void filterChanged(PackageFilterItem item) {
+
+		if (currentSelection != null) {
+			if (item == currentSelection) {
+				fireEvent(item);
+				return;
+			}
 		}
 		
-		public String[] getVersions() {
-			return versions;
+		
+		List<PackageFilterItem> input = (List<PackageFilterItem>) viewer.getInput();
+		
+		if (!item.isChecked()) {
+			return;
 		}
+		
+		for (PackageFilterItem filterItem : input) {
+			
+			if (filterItem == item) {
+				continue;
+			}
+			filterItem.setChecked(false);
+		}
+		
+		ScrolledComposite control = (ScrolledComposite) viewer.getControl();
+		Point origin = control.getOrigin();
+		viewer.refresh();
+		control.setOrigin(origin);
+		
+		fireEvent(item);
+	}
+	
+	protected void fireEvent(PackageFilterItem item) {
+		for (PackageFilterChangedListener listener : listeners) {
+			listener.filterChanged(item);
+		}
+		
+		currentSelection = item;
 	}
 }

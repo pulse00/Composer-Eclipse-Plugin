@@ -102,4 +102,10 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 		dumpAutoload(monitor);
 		monitor.worked(2);
 	}
+
+	@Override
+	protected void beforeFinish(IProgressMonitor monitor) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

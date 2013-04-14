@@ -1,5 +1,6 @@
 package com.dubture.composer.ui.wizard.project.template;
 
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -12,17 +13,19 @@ import org.eclipse.equinox.internal.p2.ui.discovery.wizards.AbstractDiscoveryIte
 import org.eclipse.equinox.internal.p2.ui.discovery.wizards.DiscoveryResources;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.ComposerUIPluginImages;
-import com.dubture.composer.ui.wizard.project.template.PackageFilterViewer.PackageFilterItem;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.core.MinimalPackage;
 import com.dubture.getcomposer.core.RepositoryPackage;
@@ -38,11 +41,11 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 	private Label nameLabel;
 	private Label description;
 	private Button downloadButton;
-	private ICheckBoxListener listener;
 	private final PackageFilterItem filterItem;
 	private Button favorButton;
 	private Combo versionCombo;
 	private boolean isLoadingVersions = false;
+	private List<PackageFilterChangedListener> listeners = new ArrayList<PackageFilterChangedListener>();
 
 	public PackagistItem(Composite parent, int style, DiscoveryResources resources, PackageFilterItem element) {
 		super(parent, style, resources, element);
@@ -54,10 +57,6 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 	@Override
 	protected void refresh() {
 
-	}
-
-	public void setCheckBoxListener(ICheckBoxListener listener) {
-		this.listener = listener;
 	}
 
 	private void createContent() {
@@ -111,10 +110,11 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 		favorButton.setToolTipText("Favorites on packagist.org");
 		favorButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
 		favorButton.setImage(ComposerUIPluginImages.STAR.createImage());
-
+		
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.CENTER).span(1, 2).applyTo(favorButton);
 
 		downloadButton = new Button(this, SWT.TOGGLE);
+		downloadButton.setToolTipText("Select this package for your new project.");
 		
 		if (filterItem.isChecked()) {
 			downloadButton.setSelection(true);
@@ -140,18 +140,35 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 
 	protected void initializeListeners() {
 		
-		downloadButton.addSelectionListener(new SelectionListener() {
-			public void widgetDefaultSelected(SelectionEvent e) {
-				widgetSelected(e);
-			}
-
+		downloadButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				boolean selected = downloadButton.getSelection();
-
 				filterItem.setChecked(selected);
-
-				if (listener != null) {
-					listener.checked(filterItem);
+				
+				for (PackageFilterChangedListener listener : listeners) {
+					listener.filterChanged(filterItem);
+				}
+			}
+		});
+		
+		favorButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				try {
+					final IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().createBrowser(null);
+					browser.openURL(new URL(item.getAsString("url")));
+				} catch (Exception e1) {
+					Logger.logException(e1);
+				}
+			}
+		});
+		
+		versionCombo.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				filterItem.setSelectedVersion(versionCombo.getText());
+				for (PackageFilterChangedListener listener : listeners) {
+					listener.filterChanged(filterItem);
 				}
 			}
 		});
@@ -161,6 +178,11 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 		versionCombo.setItems(filterItem.getVersions());
 		versionCombo.select(0);
 		versionCombo.setVisible(true);
+		filterItem.setSelectedVersion(versionCombo.getText());
+		
+		for (PackageFilterChangedListener listener : listeners) {
+			listener.filterChanged(filterItem);
+		}
 	}
 
 	protected void loadVersionCombo() {
@@ -204,8 +226,9 @@ public class PackagistItem extends AbstractDiscoveryItem<PackageFilterItem> {
 		isLoadingVersions = true;
 	}
 	
-	public interface ICheckBoxListener {
-		public void checked(PackageFilterItem filterItem);
-		public void unchecked(PackagistItem item);
+	public void addFilterChangedListener(PackageFilterChangedListener listener) {
+		if (!listeners.contains(listener)) {
+			listeners.add(listener);
+		}
 	}
 }
