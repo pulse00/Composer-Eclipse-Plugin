@@ -135,13 +135,11 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 	@Override
 	public void filterChanged(PackageFilterItem item) {
 		
-		System.err.println("aha");
 		if (item != null && item.getSelectedVersion() != null) {
 			setPageComplete(true);
 			return;
 		}
 		
-		System.err.println("false");
 		setPageComplete(false);
 	}	
 }

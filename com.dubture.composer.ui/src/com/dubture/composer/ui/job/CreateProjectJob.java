@@ -62,6 +62,9 @@ public class CreateProjectJob extends ComposerJob {
 	@Override
 	protected void launch(ScriptLauncher launcher) throws ExecuteException, IOException, InterruptedException {
 
+		// cloning large projects can take a long time...
+		//TODO: make this configurable via preferences
+		launcher.setTimeout(5 * 60000);
 		launcher.addResponseListener(new ExecutionResponseListener() {
 			
 			@Override

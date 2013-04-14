@@ -153,7 +153,6 @@ public class Psr0Dialog extends Dialog {
 						String item = (String) o;
 						pathViewer.remove(item);
 						namespace.remove(item);
-						System.err.println(o.getClass());
 					} catch (Exception e2) {
 						Logger.logException(e2);
 					}
