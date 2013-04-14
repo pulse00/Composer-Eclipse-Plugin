@@ -1,18 +1,17 @@
 package com.dubture.composer.ui.wizard.importer;
 
-import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.DialogField;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.IDialogFieldListener;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.IStringButtonAdapter;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.LayoutUtil;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.StringButtonDialogField;
+import org.eclipse.dltk.internal.ui.wizards.dialogfields.StringDialogField;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
@@ -21,13 +20,17 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  * @author Robert Gruendler <r.gruendler@gmail.com>
  *
  */
+@SuppressWarnings("restriction")
 public class WizardResourceImportPage extends WizardDataTransferPage {
 
 	private String path;
 	protected String projectName;
+	private StringButtonDialogField locationPath;
 	
 	public WizardResourceImportPage(IWorkbench aWorkbench, IStructuredSelection selection, String[] strings) {
 		super("Import composer project");
+		setTitle("Import an existing composer project");
+		setDescription("Importing an existing composer project will automatically setup your project.");
 	}
 
 	@Override
@@ -48,38 +51,57 @@ public class WizardResourceImportPage extends WizardDataTransferPage {
 
 		Composite control = new Composite(parent, SWT.NONE);
 		
-		GridLayoutFactory.fillDefaults().numColumns(2).applyTo(control);
+		int numColumns = 3;
+		GridLayoutFactory.fillDefaults().numColumns(numColumns).applyTo(control);
 		
-		final Text text = new Text(control, SWT.NONE);
-		GridDataFactory.fillDefaults().grab(true, false).span(2, 1).applyTo(text);
-		text.addKeyListener(new KeyListener() {
+		final StringDialogField text = new StringDialogField();
+		text.setLabelText("Project name");
+		text.doFillIntoGrid(control, numColumns);
+		LayoutUtil.setHorizontalGrabbing(text.getTextControl(null));
+		
+		text.setDialogFieldListener(new IDialogFieldListener() {
 			@Override
-			public void keyReleased(KeyEvent e) {
+			public void dialogFieldChanged(DialogField field) {
 				projectName = text.getText();
-				
-			}
-			@Override
-			public void keyPressed(KeyEvent e) {
+				updatePageCompletion();
 			}
 		});
 		
-		Button selector = new Button(control, SWT.PUSH);
-		selector.setText("Select");
-		GridDataFactory.fillDefaults().span(1, 1).applyTo(selector);
-		
-		selector.addSelectionListener(new SelectionAdapter() {
 
-
+		locationPath = new StringButtonDialogField(new IStringButtonAdapter() {
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void changeControlPressed(DialogField field) {
 				DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN);
 				dialog.setMessage("Select an existing composer project");
 				path = dialog.open();
+				if (path != null) {
+					locationPath.setText(path);
+				}
+				updatePageCompletion();
 			}
 		});
 		
+		locationPath.setLabelText("Path");
+		locationPath.setButtonLabel("Browse");
+		locationPath.doFillIntoGrid(control, numColumns);
+		
+		locationPath.getTextControl(null).setEnabled(false);
+		
+		
+		LayoutUtil.setHorizontalGrabbing(locationPath.getTextControl(null));
+		
 		setControl(control);
 		
+		updatePageCompletion();
+		
+	}
+	
+	
+	@Override
+	protected boolean validateSourceGroup() {
+		
+		// TODO: validate
+		return false;
 	}
 
 	@Override
