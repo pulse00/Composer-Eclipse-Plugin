@@ -1,4 +1,10 @@
-0.1.0
+1.0.2
+
+* Moved dependency graph to editor page
+* Added new wizard to create-project from existing composer package
+* Added new Import Wizard to import existing composer project
+
+1.0.1
 
 * Major release, adds composer.json editor, buildpath managment and new composer project wizard
 
