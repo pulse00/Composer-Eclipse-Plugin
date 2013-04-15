@@ -26,11 +26,13 @@ import org.eclipse.php.internal.core.project.PHPNature;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 import com.dubture.composer.core.ComposerNature;
 import com.dubture.composer.core.facet.FacetManager;
+import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.ui.ComposerUIPluginImages;
 
 @SuppressWarnings("restriction")
 public class ComposerImportWizard extends Wizard implements IImportWizard {
@@ -57,8 +59,7 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 		}
 
 		setWindowTitle(DataTransferMessages.DataTransfer_importTitle);
-		setDefaultPageImageDescriptor(IDEWorkbenchPlugin
-				.getIDEImageDescriptor("wizban/importzip_wiz.png"));//$NON-NLS-1$
+		setDefaultPageImageDescriptor(ComposerUIPluginImages.IMPORT_PROJECT);//$NON-NLS-1$
 		setNeedsProgressMonitor(true);
 		
 	}
@@ -84,7 +85,7 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 				
 				try {
 					
-					IPath locationPath = new Path(mainPage.getPath());
+					IPath locationPath = new Path(mainPage.getSourcePath());
 					IProjectDescription description = null;
 					
 					if (locationPath.append(".project").toFile().exists()) {
@@ -92,12 +93,13 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 						description = reader.read(locationPath.append(".project"));
 					} else {
 						description = workspace.newProjectDescription(projectName);
-						// If it is under the root use the default location
-						if (Platform.getLocation().isPrefixOf(locationPath)) {
-							description.setLocation(null);
-						} else {
-							description.setLocation(locationPath);
-						}
+					}
+					
+					// If it is under the root use the default location
+					if (Platform.getLocation().isPrefixOf(locationPath)) {
+						description.setLocation(null);
+					} else {
+						description.setLocation(locationPath);
 					}
 					
 					monitor.worked(1);
@@ -105,8 +107,16 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 					project.open(monitor);
 					monitor.worked(1);
 					
-					ResourceUtil.addNature(project, monitor, PHPNature.ID);
-					ResourceUtil.addNature(project, monitor, ComposerNature.NATURE_ID);
+					if (!project.hasNature(PHPNature.ID)) {
+						ResourceUtil.addNature(project, monitor, PHPNature.ID);
+					}
+					
+					if (!project.hasNature(ComposerNature.NATURE_ID)) {
+						ResourceUtil.addNature(project, monitor, ComposerNature.NATURE_ID);
+					}
+					
+					ProjectFacetsManager.create(project);
+					
 					FacetManager.installFacets(project, PHPVersion.PHP5_4, monitor);
 					
 					monitor.worked(1);
@@ -115,10 +125,9 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 					monitor.worked(2);
 					
 				} catch (CoreException e) {
-					e.printStackTrace();
+					Logger.logException(e);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Logger.logException(e);
 				} finally {
 					monitor.done();
 				}
@@ -128,6 +137,7 @@ public class ComposerImportWizard extends Wizard implements IImportWizard {
 		try {
 			getContainer().run(false, true, op);
 		} catch (Exception e) {
+			Logger.logException(e);
 			return false;
 		}
 		return true;

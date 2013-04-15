@@ -30,14 +30,22 @@ public class FacetManager {
 				return null;
 			}
 			
+			
+			
 			IProjectFacet coreFacet = ProjectFacetsManager.getProjectFacet(PHPFacetsConstants.PHP_CORE_COMPONENT);
 			IProjectFacet composerFacet = ProjectFacetsManager.getProjectFacet(ComposerFacetConstants.COMPOSER_COMPONENT);
-
-			// install the fixed facets
-			facetedProject.installProjectFacet(coreFacet.getDefaultVersion(), null, monitor);
-			facetedProject.installProjectFacet(PHPFacets.convertToFacetVersion(version), null, monitor);
-			facetedProject.installProjectFacet(composerFacet.getVersion(ComposerFacetConstants.COMPOSER_COMPONENT_VERSION_1), composerFacet, monitor);
 			
+			// install the fixed facets
+			
+			if (!facetedProject.hasProjectFacet(coreFacet)) {
+				facetedProject.installProjectFacet(coreFacet.getDefaultVersion(), null, monitor);
+				facetedProject.installProjectFacet(PHPFacets.convertToFacetVersion(version), null, monitor);
+			}
+			
+			if (!facetedProject.hasProjectFacet(composerFacet)) {
+				facetedProject.installProjectFacet(composerFacet.getVersion(ComposerFacetConstants.COMPOSER_COMPONENT_VERSION_1), composerFacet, monitor);
+			}
+
 			return facetedProject;
 			
 		} catch (CoreException ex) {

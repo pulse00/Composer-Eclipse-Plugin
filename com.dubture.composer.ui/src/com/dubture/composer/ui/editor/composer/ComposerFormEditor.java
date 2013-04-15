@@ -152,8 +152,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		
 		pageChanging = true;
 		ToolBarManager manager = (ToolBarManager) getHeaderForm().getForm().getToolBarManager();
-		IContributionItem toggleDevAction = manager.find("toggleDev");
-		toggleDevAction.setVisible(newPageIndex == 4);
+		manager.find("toggleDev").setVisible(newPageIndex == 4);
+		manager.find("graphSeparator").setVisible(newPageIndex == 4);
 		searchControl.setVisible(newPageIndex == 4);
 		manager.update(true);
 		
@@ -202,6 +202,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		
 		manager.add(searchControl);
 		manager.add(new ToggleDevAction());
+		
+		Separator graphSeparator = new Separator();
+		graphSeparator.setId("graphSeparator");
+		manager.add(graphSeparator);
+		
 		manager.add(getInstallAction());
 		manager.add(getInstallDevAction());
 		manager.add(new Separator());

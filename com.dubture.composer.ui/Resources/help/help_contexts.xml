@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.contexts"?>
 <contexts>
-   <context  id="help_project_wizard_autoload" >
+   <context id="help_project_wizard_autoload" title="Specifying your psr-0 autoload settings">
         <description>This page lets you configure the psr-0 namespace for your project. It will automatically map to the &quot;src&quot; folder in the root of your project.
 
 By providing psr-0 compatible autoloading in your project, the composer plugin will be able to determine the namespaces for your classes automatically.</description>
@@ -23,7 +23,7 @@ During project creation, a composer.phar will be automatically downloaded from g
 If you want to override the composer.json values from the target package, check the corresponding option on the left.</description>
       <topic href="http://getcomposer.org/doc/03-cli.md#create-project" label="Learn more about the create-project command"/>
    </context>
-   <context id="help_context_wizard_template_secondpage">
+   <context id="help_context_wizard_template_secondpage" title="Selecting an existing Composer package">
       <description>Type in the search field on the left to search for packages on packagist.org. Click the &quot;Download&quot; button to select a specific package for installation and choose the desired version from the dropdown to the right.
 
 Use the &quot;Select projects only&quot; check box to show only packages with the package type &quot;project&quot;.
@@ -31,5 +31,12 @@ Use the &quot;Select projects only&quot; check box to show only packages with th
 By clicking on the &quot;Favorite&quot; button the selected package will open in a new browser window on packagist.org.</description>
       <topic href="http://getcomposer.org/doc/04-schema.md#type" label="Learn more about package types"/>
       <topic href="https://packagist.org/about" label="Learn how to register your package on packagist.org"/>
+   </context>
+   <context id="help_context_wizard_importer" title="Composer Import Wizard">
+      <description>This wizard helps you to setup an existing Composer project in Eclipse. Just select the folder containing your project, and the importer will 
+
+- Create a new eclipse project in your workspace
+- Setup your project with the corresponding builders and facets
+- Configure your buildpath automatically</description>
    </context>
 </contexts>

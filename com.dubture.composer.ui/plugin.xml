@@ -318,16 +318,12 @@
    </extension>
    <extension
          point="org.eclipse.ui.importWizards">
-      <category
-            id="com.dubture.composer.ui.importcategory"
-            name="Composer">
-      </category>
       <wizard
-            category="com.dubture.composer.ui.importcategory"
+            category="org.eclipse.php.ui.PHP"
             class="com.dubture.composer.ui.wizard.importer.ComposerImportWizard"
             icon="icons/full/obj16/correction_move.gif"
             id="com.dubture.composer.ui.importWizard"
-            name="Existing composer project">
+            name="Existing Composer Project">
       </wizard>
    </extension>
    
