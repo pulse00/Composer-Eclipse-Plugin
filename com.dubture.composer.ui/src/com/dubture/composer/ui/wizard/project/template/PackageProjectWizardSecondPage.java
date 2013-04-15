@@ -5,15 +5,9 @@ import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.resources.WorkspaceJob;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -143,23 +137,6 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 	}
 	
 	
-	protected void refreshProject(String projectName) {
-		final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		if (project == null) {
-			Logger.log(ERROR, "Error finishing create-project installation. Could not obtain project from workspace: " + projectName);
-			return;
-		}
-		
-		new WorkspaceJob("Refreshing " + projectName) {
-			@Override
-			public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
-				project.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-				return Status.OK_STATUS;
-			}
-		}.schedule();
-	}
-
-
 	@Override
 	public void filterChanged(PackageFilterItem item) {
 		

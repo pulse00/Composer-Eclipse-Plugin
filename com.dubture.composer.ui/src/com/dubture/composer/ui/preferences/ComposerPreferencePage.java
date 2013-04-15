@@ -33,17 +33,13 @@ public class ComposerPreferencePage extends PropertyAndPreferencePage {
 	public void createControl(Composite parent) {
 
 		IWorkbenchPreferenceContainer container = (IWorkbenchPreferenceContainer) getContainer();
-		
 		LauncherKeyBag bag = new ComposerLauncherBag();
 		configurationBlock = new ComposerConfigurationBlock(getNewStatusChangedListener(), getProject(), container, bag);
-
 		super.createControl(parent);
-
 	}
 
 	@Override
 	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override

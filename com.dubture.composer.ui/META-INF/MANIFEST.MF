@@ -57,6 +57,7 @@ Export-Package:
  com.dubture.composer.ui.dialogs,
  com.dubture.composer.ui.editor,
  com.dubture.composer.ui.editor.composer,
+ com.dubture.composer.ui.editor.toolbar,
  com.dubture.composer.ui.explorer,
  com.dubture.composer.ui.handler,
  com.dubture.composer.ui.job,
@@ -66,5 +67,8 @@ Export-Package:
  com.dubture.composer.ui.pex,
  com.dubture.composer.ui.preferences,
  com.dubture.composer.ui.utils,
- com.dubture.composer.ui.wizard.project
+ com.dubture.composer.ui.wizard,
+ com.dubture.composer.ui.wizard.importer,
+ com.dubture.composer.ui.wizard.project,
+ com.dubture.composer.ui.wizard.project.template
 Bundle-ClassPath: .

@@ -40,7 +40,7 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 
 	public NameGroup nameGroup;
 	public LocationGroup PHPLocationGroup;
-	public VersionGroup versionGroup;
+	public AbstractVersionGroup versionGroup;
 	
 	protected String initialName;
 	protected Composite composite;
