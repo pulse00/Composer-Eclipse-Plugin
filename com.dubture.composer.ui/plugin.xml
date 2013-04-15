@@ -169,18 +169,6 @@
       </command>
    </extension>
    <extension
-         point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            category="org.eclipse.ui"
-            class="com.dubture.composer.ui.views.DependencyGraphView"
-            icon="icons/full/obj16/composer.png"
-            id="com.dubture.composer.ui.view.dependencyGraph"
-            name="Dependency Graph"
-            restorable="true">
-      </view>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.eclipse.php.ui.preferences.PHPBasePreferencePage"

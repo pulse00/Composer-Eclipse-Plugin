@@ -6,6 +6,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
@@ -19,17 +21,18 @@ import org.eclipse.zest.layouts.algorithms.HorizontalShift;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.internal.resources.ComposerProject;
+import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.composer.ui.controller.GraphController;
 import com.dubture.composer.ui.editor.ComposerFormPage;
+import com.dubture.composer.ui.editor.toolbar.SearchControl;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.core.collection.ComposerPackages;
 
 /**
  * @author Robert Gruendler <r.gruendler@gmail.com>
  */
-public class DependencyGraphPage extends ComposerFormPage {
+public class DependencyGraphPage extends ComposerFormPage implements ModifyListener {
 
 	public final static String ID = "com.dubture.composer.ui.editor.composer.DependencyGraphPage";
 	protected ComposerFormEditor editor;
@@ -37,10 +40,14 @@ public class DependencyGraphPage extends ComposerFormPage {
 	private GraphViewer viewer;
 	private IComposerProject composerProject;
 	private IProject project;
+	private final SearchControl searchControl;
 	
-	public DependencyGraphPage(ComposerFormEditor editor, String id, String title) {
+	
+	public DependencyGraphPage(ComposerFormEditor editor, String id, String title, SearchControl searchControl) {
 		super(editor, id, title);
 		this.editor = editor;
+		this.searchControl = searchControl;
+		this.searchControl.addModifyListener(this);
 	}
 	
 	@Override
@@ -56,8 +63,7 @@ public class DependencyGraphPage extends ComposerFormPage {
 		try {
 			createGraph(managedForm);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.logException(e);
 		}
 	}
 	
@@ -68,10 +74,9 @@ public class DependencyGraphPage extends ComposerFormPage {
 		body.setLayout(new FillLayout());
 		
 		project = getComposerEditor().getProject();
-		
-		composerProject = new ComposerProject(project);
-
+		composerProject = ComposerPlugin.getDefault().getComposerProject(project);
 		graphController = new GraphController(composerProject);
+		graphController.setComposerProject(composerProject);
 		viewer = new GraphViewer(body, SWT.BORDER);
 		viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		viewer.setContentProvider(graphController);
@@ -83,9 +88,6 @@ public class DependencyGraphPage extends ComposerFormPage {
 		ViewerFilter[] filters = new ViewerFilter[1];
 		filters[0] = filter;
 		viewer.setFilters(filters);
-		
-		composerProject = ComposerPlugin.getDefault().getComposerProject(project);
-		graphController.setComposerProject(composerProject);
 		
 		update();
 	}
@@ -129,7 +131,7 @@ public class DependencyGraphPage extends ComposerFormPage {
 		}
 	}
 	
-	private void applyFilter(boolean showDev) {
+	public void applyFilter(boolean showDev) {
 		DevFilter filter = new DevFilter();
 
 		if (showDev == false) {
@@ -140,5 +142,17 @@ public class DependencyGraphPage extends ComposerFormPage {
 		filters[0] = filter;
 		viewer.setFilters(filters);
 		viewer.applyLayout();
+	}
+
+	@Override
+	public void modifyText(ModifyEvent e) {
+		long start = System.nanoTime();
+		
+		graphController.setFilterText(searchControl.getText());
+		viewer.refresh();
+		
+		double elapsed = (System.nanoTime() - start) * 1.0e-9;
+		
+		System.err.println("refresh inaaa " + elapsed);
 	}
 }

@@ -36,6 +36,9 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor STAR = create(T_OBJ16, "star.png");
 	public static final ImageDescriptor DOWNLOAD = create(T_OBJ16, "download.png");
 	
+	public static final ImageDescriptor CLEAR = create(T_OBJ16, "clear.gif");
+	public static final ImageDescriptor CLEAR_DISABLED = create(T_OBJ16, "clear_disabled.gif");
+	
 	public static final ImageDescriptor REPO_GENERIC = create(T_OBJ16, "repo_generic.gif");
 	public static final ImageDescriptor REPO_GIT = create(T_OBJ16, "repo_git.png");
 	public static final ImageDescriptor REPO_SVN = create(T_OBJ16, "repo_svn.png");

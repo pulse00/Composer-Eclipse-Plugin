@@ -12,7 +12,10 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dltk.ui.DLTKPluginImages;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
@@ -37,6 +40,7 @@ import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
+import com.dubture.composer.ui.editor.toolbar.SearchControl;
 import com.dubture.getcomposer.core.ComposerPackage;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener, IResourceChangeListener {
@@ -70,6 +74,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	private DependencyGraphPage graphPage;
 	
 	private IFile jsonFile;
+	private SearchControl searchControl;
 
 	public ComposerFormEditor() {
 		super();
@@ -120,7 +125,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
 		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
-		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph");
+		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph", searchControl);
 
 		super.createPages();
 	}
@@ -146,6 +151,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		super.pageChange(newPageIndex);
 		
 		pageChanging = true;
+		ToolBarManager manager = (ToolBarManager) getHeaderForm().getForm().getToolBarManager();
+		IContributionItem toggleDevAction = manager.find("toggleDev");
+		toggleDevAction.setVisible(newPageIndex == 4);
+		searchControl.setVisible(newPageIndex == 4);
+		manager.update(true);
 		
 		// react to it
 		if (getActiveEditor() == jsonEditor) {
@@ -177,16 +187,21 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		
 		ToolBarManager manager = (ToolBarManager) header.getToolBarManager();
 		
-		contributeToToolbar(manager);
+		contributeToToolbar(manager, headerForm);
 	    manager.update(true);
 	    
 	}
 	
-	protected void contributeToToolbar(ToolBarManager manager) {
+	
+	protected void contributeToToolbar(ToolBarManager manager, IManagedForm headerForm) {
 		// this does not work for some reasons? how to make it working and get rid of the action package?
 //		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
 //		menuService.populateContributionManager(manager, "toolbar:com.dubture.composer.ui.editor.toolbar");
+
+		searchControl = new SearchControl("composer.SearchControl", headerForm);
 		
+		manager.add(searchControl);
+		manager.add(new ToggleDevAction());
 		manager.add(getInstallAction());
 		manager.add(getInstallDevAction());
 		manager.add(new Separator());
@@ -370,6 +385,24 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			}
 		} catch (CoreException ex) {
 			Logger.logException(ex);
+		}
+	}
+	
+	protected class ToggleDevAction extends Action {
+
+		private boolean showDev;
+
+		public ToggleDevAction() {
+			super("Toggle dev packages");
+			setDescription("Toggle dev packages");
+			setToolTipText("Toggle dev packages");
+			setId("toggleDev");
+			DLTKPluginImages.setLocalImageDescriptors(this, "th_showqualified.gif"); //$NON-NLS-1$
+		}
+
+		public void run() {
+			showDev = !showDev;
+			graphPage.applyFilter(showDev);
 		}
 	}
 }

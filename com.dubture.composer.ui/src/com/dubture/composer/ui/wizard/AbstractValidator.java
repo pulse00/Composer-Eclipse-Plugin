@@ -40,7 +40,11 @@ abstract public class AbstractValidator implements Observer {
 
 		workspace = DLTKUIPlugin.getWorkspace();
 		name = firstPage.nameGroup.getName();
-		handle = firstPage.getProjectHandle();
+		
+		if (name != null && name.length() > 0) {
+			handle = firstPage.getProjectHandle();
+		}
+		
 		location = firstPage.PHPLocationGroup.getLocation().toOSString();
 		environment = firstPage.getEnvironment();
 
