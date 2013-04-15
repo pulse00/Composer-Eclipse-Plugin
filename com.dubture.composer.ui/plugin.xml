@@ -206,6 +206,9 @@
             icon="icons/full/obj16/packd_obj.gif"
             id="com.dubture.composer.ui.editor.composer.ComposerEditor"
             name="Composer">
+         <contentTypeBinding
+               contentTypeId="com.dubture.composer.core.composerJson">
+         </contentTypeBinding>
       </editor>
    </extension>
    <extension

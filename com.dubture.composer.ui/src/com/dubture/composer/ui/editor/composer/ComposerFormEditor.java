@@ -3,10 +3,12 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -16,10 +18,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -38,10 +37,9 @@ import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
-import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.getcomposer.core.ComposerPackage;
 
-public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener {
+public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener, IResourceChangeListener {
 	
 	public static final String ID = "com.dubture.composer.ui.editor.composer.ComposerEditor";
 	protected boolean dirty = false;
@@ -70,6 +68,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	private boolean saving = false;
 	private boolean pageChanging = false;
 	private DependencyGraphPage graphPage;
+	
+	private IFile jsonFile;
 
 	public ComposerFormEditor() {
 		super();
@@ -83,27 +83,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		try {
 			documentProvider.connect(input);
 			documentProvider.getDocument(getEditorInput()).addDocumentListener(this);
-			
-			//TODO: check how to react on file deletion to close the editor when composer.json is deleted.
-			/*
-			final IFileEditorInput fileInput = (IFileEditorInput) input;
-			
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IResourceChangeListener listener = new IResourceChangeListener() {
-				@Override
-				public void resourceChanged(IResourceChangeEvent event) {
-					
-					switch (event.getType()) {
-					case IResourceChangeEvent.PRE_DELETE:
-						System.err.println(event.getDelta().getResource());
-						break;
-					}
-				}
-			};
-			
-			workspace.addResourceChangeListener(listener);
-			*/
-			
 		} catch (CoreException e) {
 			Logger.logException(e);
 		}
@@ -115,8 +94,12 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		super.init(site, input);
 
 		if (input instanceof IFileEditorInput) {
-			project = ((IFileEditorInput)input).getFile().getProject();
-			setPartName(project.getName());
+			jsonFile = ((IFileEditorInput)input).getFile();
+			if (jsonFile != null) {
+				project = jsonFile.getProject();
+				setPartName(project.getName());
+				ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+			}
 		}
 			
 		// ok, cool way here we go
@@ -337,5 +320,56 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 
 	public ComposerPackage getComposerPackge() {
 		return composerPackage;
+	}
+
+
+	/**
+	 * Based on org.eclipse.m2e.editor.pom.MavenPomEditor
+	 */
+	@Override
+	public void resourceChanged(IResourceChangeEvent event) {
+
+		if (jsonFile == null) {
+			return;
+		}
+
+	    //handle project delete
+		if (event.getType() == IResourceChangeEvent.PRE_CLOSE || event.getType() == IResourceChangeEvent.PRE_DELETE) {
+			if (jsonFile.getProject().equals(event.getResource())) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						close(false);
+					}
+				});
+			}
+			return;
+		}
+
+		// handle json delete
+		class RemovedResourceDeltaVisitor implements IResourceDeltaVisitor {
+			boolean removed = false;
+			public boolean visit(IResourceDelta delta) throws CoreException {
+				if (delta.getResource() != null && delta.getResource().equals(jsonFile) && (delta.getKind() & (IResourceDelta.REMOVED)) != 0) {
+					removed = true;
+					return false;
+				}
+				return true;
+			}
+		}
+		;
+
+		try {
+			RemovedResourceDeltaVisitor visitor = new RemovedResourceDeltaVisitor();
+			event.getDelta().accept(visitor);
+			if (visitor.removed) {
+				Display.getDefault().asyncExec(new Runnable() {
+					public void run() {
+						close(true);
+					}
+				});
+			}
+		} catch (CoreException ex) {
+			Logger.logException(ex);
+		}
 	}
 }

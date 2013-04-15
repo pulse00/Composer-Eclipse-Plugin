@@ -15,6 +15,9 @@
       <builder
             id="com.dubture.composer.core.builder.buildPathManagementBuilder">
       </builder>
+      <content-type
+            id="com.dubture.composer.core.composerJson">
+      </content-type>
    </extension>
    <extension
          id="com.dubture.composer.core.builder.buildPathManagementBuilder"
@@ -123,6 +126,19 @@
             class="com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory"
             id="com.dubture.composer.core.launcherfactory">
       </environmentFactory>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.sourceforge.jsonedit.core.jsonsource"
+            id="composerJson"
+            name="Composer JSON"
+            priority="high">
+      </content-type>
+      <file-association
+            content-type="com.dubture.composer.core.composerJson"
+            file-names="composer.json">
+      </file-association>
    </extension>
    
 
