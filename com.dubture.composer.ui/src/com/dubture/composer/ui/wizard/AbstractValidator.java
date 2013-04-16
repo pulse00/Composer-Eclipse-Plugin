@@ -45,7 +45,10 @@ abstract public class AbstractValidator implements Observer {
 			handle = firstPage.getProjectHandle();
 		}
 		
-		location = firstPage.PHPLocationGroup.getLocation().toOSString();
+		if (firstPage.PHPLocationGroup != null) {
+			location = firstPage.PHPLocationGroup.getLocation().toOSString();
+		}
+		
 		environment = firstPage.getEnvironment();
 
 		try {

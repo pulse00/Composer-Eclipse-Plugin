@@ -8,6 +8,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -79,7 +80,8 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		final CountDownLatch latch = new CountDownLatch(1);
 		
 		monitor.beginTask("Initializing composer project", 1);
-		CreateProjectJob projectJob = new CreateProjectJob(firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
+		
+		CreateProjectJob projectJob = new CreateProjectJob(Platform.getLocation(), firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
 		projectJob.setJobListener(new JobListener() {
 			@Override
 			public void jobStarted() {

@@ -31,15 +31,15 @@ public class CreateProjectJob extends ComposerJob {
 	private String packageVersion;
 	private boolean startNotified = false;
 	
-	public CreateProjectJob(String projectName, String packageName, String packageVersion) {
+	public CreateProjectJob(IPath path, String projectName, String packageName, String packageVersion) {
 		super("Creating composer project");
 		this.projectName = projectName;
 		this.packageName = packageName;
 		this.packageVersion = packageVersion;
+		this.path = path;
 		
 		Logger.debug("Creating new project " + projectName + " from package " + packageName + " / " + packageVersion);
 		workspace = ResourcesPlugin.getWorkspace();
-		path = workspace.getRoot().getLocation();
 		DummyProject project = new DummyProject(path);
 		setProject(project);
 		

@@ -4,7 +4,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.php.internal.ui.wizards.CompositeData;
-import org.eclipse.php.internal.ui.wizards.LocationGroup;
 import org.eclipse.php.internal.ui.wizards.NameGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -19,6 +18,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.converter.String2KeywordsConverter;
+import com.dubture.composer.ui.wizard.LocationGroup;
 import com.dubture.composer.ui.wizard.project.BasicSettingsGroup;
 import com.dubture.composer.ui.wizard.project.ComposerProjectWizardFirstPage;
 import com.dubture.composer.ui.wizard.project.VersionGroup;

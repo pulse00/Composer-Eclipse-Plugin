@@ -7,6 +7,7 @@ import java.util.Observer;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dltk.core.environment.IEnvironment;
 import org.eclipse.jface.dialogs.Dialog;
@@ -14,9 +15,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.ui.wizards.CompositeData;
-import org.eclipse.php.internal.ui.wizards.DetectGroup;
 import org.eclipse.php.internal.ui.wizards.IPHPProjectCreateWizardPage;
-import org.eclipse.php.internal.ui.wizards.LocationGroup;
 import org.eclipse.php.internal.ui.wizards.NameGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -157,6 +156,10 @@ abstract public class AbstractWizardFirstPage extends WizardPage implements IPHP
 	public URI getLocationURI() {
 		IEnvironment environment = getEnvironment();
 		return environment.getURI(PHPLocationGroup.getLocation());
+	}
+	
+	public IPath getPath() {
+		return PHPLocationGroup.getLocation();
 	}
 
 	public boolean getDetect() {
