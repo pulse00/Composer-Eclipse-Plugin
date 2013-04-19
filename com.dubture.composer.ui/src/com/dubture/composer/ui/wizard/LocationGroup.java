@@ -71,9 +71,7 @@ public class LocationGroup extends Observable implements Observer, IStringButton
 		group.setLayout(new GridLayout(numColumns, false));
 		group.setText(NewWizardMessages.ScriptProjectWizardFirstPage_LocationGroup_title);
 		fWorkspaceRadio = new SelectionButtonDialogField(SWT.RADIO);
-		fWorkspaceRadio.setDialogFieldListener(this);
 		fWorkspaceRadio.setLabelText(NewWizardMessages.ScriptProjectWizardFirstPage_LocationGroup_workspace_desc);
-		fWorkspaceRadio.setSelection(true);
 		fWorkspaceRadio.doFillIntoGrid(group, numColumns);
 		
 		createExternalLocation(group, numColumns);
@@ -88,6 +86,8 @@ public class LocationGroup extends Observable implements Observer, IStringButton
 			}
 		}
 
+		fWorkspaceRadio.setDialogFieldListener(this);
+		fWorkspaceRadio.setSelection(true);
 		createLocalServersGroup(group, numColumns);
 	}
 	

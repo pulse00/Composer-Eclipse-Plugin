@@ -3,9 +3,11 @@ package com.dubture.composer.ui;
 import org.eclipse.php.internal.debug.core.PHPDebugPlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.pdtextensions.core.ui.preferences.PHPExecutableChangeListener;
 
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.ui.preferences.PHPExecutableChangeListener;
+import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -36,7 +38,10 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 		plugin = this;
 		
 		try {
-			PHPDebugPlugin.getDefault().getPluginPreferences().addPropertyChangeListener(new PHPExecutableChangeListener());
+			PHPDebugPlugin
+					.getDefault()
+					.getPluginPreferences()
+					.addPropertyChangeListener(new PHPExecutableChangeListener(ComposerPlugin.ID, Keys.PHP_EXECUTABLE));
 		} catch (Exception e) {
 			Logger.logException(e);
 		}
