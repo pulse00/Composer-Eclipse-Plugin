@@ -2,7 +2,6 @@ package com.dubture.composer.ui.wizard.project.template;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.net.URI;
 import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
 
@@ -11,7 +10,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -55,7 +53,7 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		filter = new PackageFilterViewer();
 		filter.createControl(parent);
 		filter.addChangeListener(this);
-		filter.setMinimumHeight(480);
+		filter.setMinimumHeight(400);
 		setControl(filter.getControl());
 		setPageComplete(false);
 		setHelpContext(filter.getControl());
