@@ -123,14 +123,19 @@ public class LocationGroup extends Observable implements Observer, IStringButton
 	 */
 	protected void createLocalServersGroup(final Group group, final int numColumns) {
 		Server[] servers = ServersManager.getServers();
+		Server defaultServer = ServersManager.getDefaultServer(null);
 		List<String> docRoots = new ArrayList<String>();
+		int selection = 0;
 		for (int i = 0; i < servers.length; i++) {
 			String docRoot = servers[i].getDocumentRoot();
 			if (docRoot != null && !"".equals(docRoot.trim())) { //$NON-NLS-1$
 				docRoots.add(docRoot);
+				if (defaultServer != null && servers[i].getDocumentRoot().equals(defaultServer.getDocumentRoot())) {
+					selection = i;
+				}
 			}
 		}
-
+		
 		if (docRoots.size() > 0) {
 			fLocalServerRadio = new SelectionButtonDialogField(SWT.RADIO);
 			fLocalServerRadio.setDialogFieldListener(this);
@@ -145,7 +150,7 @@ public class LocationGroup extends Observable implements Observer, IStringButton
 			docRootArray = new String[docRoots.size()];
 			docRoots.toArray(docRootArray);
 			fSeverLocationList.setItems(docRootArray);
-			fSeverLocationList.selectItem(0);
+			fSeverLocationList.selectItem(selection);
 			fLocalServerRadio.attachDialogField(fSeverLocationList);
 			fWorkspaceRadio.setSelection(false);
 			fLocalServerRadio.setSelection(true);
