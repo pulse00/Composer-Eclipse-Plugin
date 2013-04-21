@@ -1,11 +1,14 @@
 package com.dubture.composer.ui.wizard.project.template;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.net.URI;
 import java.util.Observable;
 import java.util.concurrent.CountDownLatch;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -79,9 +82,18 @@ public class PackageProjectWizardSecondPage extends AbstractWizardSecondPage imp
 		PackageFilterItem filterItem = filter.getSelectedPackage();
 		final CountDownLatch latch = new CountDownLatch(1);
 		
-		monitor.beginTask("Initializing composer project", 1);
+		monitor.beginTask("Initializing composer project", 2);
+		monitor.worked(1);
 		
-		CreateProjectJob projectJob = new CreateProjectJob(Platform.getLocation(), firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
+		File file = new File(firstPage.getLocationURI());
+		IPath location = new Path(file.toString());
+		
+		// let the create-project command handle folder creation
+		if (firstPage.isInLocalServer()) {
+			location = location.removeLastSegments(1);
+		}
+		
+		CreateProjectJob projectJob = new CreateProjectJob(location, firstPage.nameGroup.getName(), filterItem.getPackage().getName(), filterItem.getSelectedVersion());
 		projectJob.setJobListener(new JobListener() {
 			@Override
 			public void jobStarted() {

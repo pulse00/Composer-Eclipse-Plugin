@@ -53,9 +53,7 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		initialName = "";
 		// create UI elements
 		nameGroup = new NameGroup(composite, initialName, getShell());
-		
 		nameGroup.addObserver(this);
-		
 		PHPLocationGroup = new LocationGroup(composite, nameGroup, getShell());
 		
 		overrideComposer = new Button(composite, SWT.CHECK);
@@ -83,16 +81,12 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		data.setObserver(PHPLocationGroup);
 
 		versionGroup = new VersionGroup(this, composite);
-		//detectGroup = new DetectGroup(composite, PHPLocationGroup, nameGroup);
-
 		nameGroup.addObserver(PHPLocationGroup);
 
-		//PHPLocationGroup.addObserver(detectGroup);
 		// initialize all elements
 		nameGroup.notifyObservers();
 		// create and connect validator
 		projectTemplateValidator = new Validator(this);
-		
 		nameGroup.addObserver(projectTemplateValidator);
 		PHPLocationGroup.addObserver(projectTemplateValidator);
 
@@ -101,9 +95,7 @@ public class PackageProjectWizardFirstPage extends ComposerProjectWizardFirstPag
 		setControl(composite);
 		composerPackage = new ComposerPackage();
 		keywordConverter = new String2KeywordsConverter(composerPackage);
-		
 		setHelpContext(composite);
-		
 	}
 	
 	@Override
