@@ -14,7 +14,7 @@ import com.dubture.composer.ui.wizard.ValidationException.Severity;
  * @author Robert Gruendler <r.gruendler@gmail.com>
  */
 @SuppressWarnings("restriction")
-public final class Validator extends AbstractValidator {
+public class Validator extends AbstractValidator {
 
 	public Validator(AbstractWizardFirstPage composerProjectWizardFirstPage) {
 		super(composerProjectWizardFirstPage);
