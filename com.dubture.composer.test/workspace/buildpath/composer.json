@@ -9,7 +9,8 @@
 	},
 	"autoload" : {
 		"psr-0" : {
-			"test" : ["src", "test"]
+			"test" : ["src", "test"],
+			"": "nother"
 		}
 	},
 	"config" : {

@@ -11,6 +11,7 @@ package com.dubture.composer.core.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -98,6 +99,32 @@ public class ModelAccess implements NamespaceResolverInterface
         
         return null;
     }
+    
+	@Override
+	public IPath reverseResolve(IProject project, String namespace) {
+		
+		if (!psr0Map.containsKey(project.getName()) || namespace == null) {
+			return null;
+		}
+		
+		Psr0 psr0 = psr0Map.get(project.getName());
+
+		String nsPath = namespace.replace("\\", "/");
+		for (Namespace ns : psr0) {
+			String other = ns.getNamespace();
+			if (namespace.startsWith(other)) {
+				for (Object path : ns.getPaths()) {					
+					IFolder folder = project.getFolder(new Path((String) path).append(nsPath));
+					if (folder.exists() && folder.getFullPath().segmentCount() > 1) {
+						return folder.getFullPath().removeFirstSegments(1);
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
+    
 
     public PackageManager getPackageManager()
     {

@@ -8,6 +8,7 @@
  */
 package com.dubture.composer.core.model;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
@@ -29,4 +30,11 @@ public interface NamespaceResolverInterface
      * @return the resolved namespace as an IPath
      */
     IPath resolve(IResource resource);
+    
+    /**
+     * Resolve the source folder for given Namespace in a project
+     * @param namespace The Namespace to be resolved
+     * @return {@link IPath} | null
+     */
+    IPath reverseResolve(IProject project, String namespace);
 }

@@ -1,5 +1,6 @@
 package com.dubture.composer.core.model;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IPath;
@@ -87,5 +88,10 @@ public class EclipsePHPPackage implements
     {
         return phpPackage;
     }
-    
+
+	@Override
+	public IPath reverseResolve(IProject project, String namespace) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
