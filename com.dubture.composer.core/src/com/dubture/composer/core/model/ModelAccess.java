@@ -115,9 +115,7 @@ public class ModelAccess implements NamespaceResolverInterface
 			if (namespace.startsWith(other)) {
 				for (Object path : ns.getPaths()) {					
 					IFolder folder = project.getFolder(new Path((String) path).append(nsPath));
-					if (folder.exists() && folder.getFullPath().segmentCount() > 1) {
-						return folder.getFullPath().removeFirstSegments(1);
-					}
+					return folder.getFullPath().removeFirstSegments(1);
 				}
 			}
 		}
