@@ -31,7 +31,7 @@ public class ReverseNamespaceResolverTest extends AbstractModelTests {
 	@Test
 	public void testNamespaceResolver() throws CoreException, IOException {
 
-		IScriptProject scriptProject = setUpScriptProject("testproject1");
+		IScriptProject scriptProject = setUpScriptProject("testproject2");
 
 		assertNotNull(scriptProject);
 
