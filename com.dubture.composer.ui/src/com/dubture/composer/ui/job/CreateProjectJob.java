@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -24,12 +23,13 @@ public class CreateProjectJob extends ComposerJob {
 
 	private final String projectName;
 	private final String packageName;
-	private IWorkspace workspace;
 	private IPath composerPath;
 	private IPath path;
 	private JobListener initListener;
 	private String packageVersion;
 	private boolean startNotified = false;
+	private boolean existed;
+	private File composerFile;
 	
 	public CreateProjectJob(IPath path, String projectName, String packageName, String packageVersion) {
 		super("Creating composer project");
@@ -39,20 +39,20 @@ public class CreateProjectJob extends ComposerJob {
 		this.path = path;
 		
 		Logger.debug("Creating new project " + projectName + " from package " + packageName + " / " + packageVersion);
-		workspace = ResourcesPlugin.getWorkspace();
+		ResourcesPlugin.getWorkspace();
 		DummyProject project = new DummyProject(path);
 		setProject(project);
 		
 		try {
-			composerPath = workspace.getRoot().getLocation().append("composer.phar");
-			File file = composerPath.toFile();
-			
-			boolean existed = true;
-			if (!file.exists()) {
+			//TODO: cache the phar file locally
+			composerPath = path.append("composer.phar");
+			composerFile = composerPath.toFile();
+			existed = true;
+			if (!composerFile.exists()) {
 				existed = false;
 				PharDownloader downloader = new PharDownloader();
 				InputStream resource = downloader.download();
-				FileUtils.copyInputStreamToFile(resource, file);
+				FileUtils.copyInputStreamToFile(resource, composerFile);
 			}
 		} catch (Exception e) {
 			Logger.logException(e);
@@ -85,7 +85,7 @@ public class CreateProjectJob extends ComposerJob {
 			
 			@Override
 			public void executionFinished(String response, int exitValue) {
-				notifyOnFinish();				
+				notifyOnFinish();
 			}
 			
 			@Override
@@ -188,5 +188,11 @@ public class CreateProjectJob extends ComposerJob {
 		void jobStarted();
 		void jobFinished(String projectName);
 		void jobFailed();
+	}
+	
+	protected void cleanup() {
+		if (existed == false && composerFile != null) {
+			composerFile.delete();
+		}
 	}
 }
