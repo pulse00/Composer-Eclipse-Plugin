@@ -103,9 +103,7 @@ public class CreateProjectJob extends ComposerJob {
 			}
 		});
 		
-		launcher.launch("create-project", new String[]{"--verbose", packageName, projectName, packageVersion});
-		
-		// TODO: remove composer.phar
+		launcher.launch("create-project", new String[]{"--no-interaction", packageName, projectName, packageVersion});
 	}
 	
 	protected class DummyProject extends Project {
