@@ -30,7 +30,11 @@ public class AutoloadVisitor extends PHPASTVisitor
         visitor = new NamespaceVisitor();
         s.traverse(visitor);
         
-        ModelAccess.getInstance().updatePsr0(visitor.getPsr0(), source.getScriptProject());
+        Psr0 psr0 = visitor.getPsr0();
+        
+        if (psr0.size() > 0) {
+        	ModelAccess.getInstance().updatePsr0(psr0, source.getScriptProject());
+        }
         
         return true;
     }
@@ -51,14 +55,34 @@ public class AutoloadVisitor extends PHPASTVisitor
         @Override
         public boolean visit(ArrayElement element) throws Exception
         {
-            if (!(element.getKey() instanceof Scalar) || !(element.getValue() instanceof InfixExpression)) {
+            if (!(element.getKey() instanceof Scalar)) {
                 return false;
             }
             
-            Scalar namespace = (Scalar) element.getKey();
-            Scalar path = (Scalar) ((InfixExpression) element.getValue()).getRight();
-            VariableReference reference = (VariableReference) ((InfixExpression) element.getValue()).getLeft();
+            if (element.getValue() instanceof InfixExpression) {
+                Scalar namespace = (Scalar) element.getKey();
+                Scalar path = (Scalar) ((InfixExpression) element.getValue()).getRight();
+                VariableReference reference = (VariableReference) ((InfixExpression) element.getValue()).getLeft();
+                extractPsr0(namespace, path, reference);
+                return false;
+            } else if(element.getValue() instanceof ArrayCreation) {
+                Scalar namespace = (Scalar) element.getKey();
+                ArrayCreation paths = (ArrayCreation) element.getValue();
+                for (ArrayElement elem  : paths.getElements()) {
+                	if (elem.getValue() instanceof InfixExpression) {
+                		Scalar path = (Scalar) ((InfixExpression) elem.getValue()).getRight();
+                        VariableReference reference = (VariableReference) ((InfixExpression) elem.getValue()).getLeft();
+                        extractPsr0(namespace, path, reference);
+                	}
+                	return false;
+                }
+            }
             
+            return true;
+        }
+        
+        
+        protected void extractPsr0(Scalar namespace, Scalar path, VariableReference reference) {
             String resourcePath = "";
             
             if ("$baseDir".equals(reference.getName())) {
@@ -73,8 +97,6 @@ public class AutoloadVisitor extends PHPASTVisitor
             
             String ns = namespace.getValue().replace("'", "").replace("\\\\", "\\");
             psr0.add(new Namespace(ns, resourcePath));
-            
-            return true;
         }
         
         public Psr0 getPsr0()
