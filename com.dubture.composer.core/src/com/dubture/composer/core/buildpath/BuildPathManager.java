@@ -76,16 +76,6 @@ public class BuildPathManager {
 			}
 		}
 		exclusions = exs.toArray(new IPath[]{});
-
-		// clean build path
-		IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
-		for (IBuildpathEntry entry : rawBuildpath) {
-			if (entry.getEntryKind() != IBuildpathEntry.BPE_SOURCE) {
-				continue;
-			}
-
-			BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
-		}
 		
 		// add new entries to buildpath
 		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
@@ -145,6 +135,11 @@ public class BuildPathManager {
 				
 				if (!exclusion.toString().startsWith("*")) {
 					exclusion = composerProject.getProject().getFullPath().append(exclusion);
+				}
+				
+				// remove buildpath entries with exact exclusion matches
+				if (path.equals(exclusion)) {
+					return;
 				}
 				
 				// if exclusion matches path, add the trailing path segments as exclusion
