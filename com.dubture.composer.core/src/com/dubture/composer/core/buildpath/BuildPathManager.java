@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.internal.core.builder.SubTaskProgressMonitor;
 import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 
 import com.dubture.composer.core.ComposerPlugin;
@@ -27,7 +26,7 @@ import com.dubture.composer.core.resources.IComposerProject;
 public class BuildPathManager {
 
 	private IComposerProject composerProject;
-	private IPath[] exclusions;
+	private IPath[] exclusions; // gnoar, shouldn't be a property, what did I thought? DI 'n stuff...
 	private IPath vendorPath;
 	private IPath composerPath;
 	
@@ -37,12 +36,11 @@ public class BuildPathManager {
 		composerPath = vendorPath.append("composer");
 	}
 	
+	public void update() throws CoreException {
+		update(new NullProgressMonitor());
+	}
+	
 	public void update(IProgressMonitor monitor) throws CoreException {
-		
-		if (monitor == null) {
-			monitor = new NullProgressMonitor();
-		}
-		
 		IProject project = composerProject.getProject();
 		IScriptProject scriptProject = composerProject.getScriptProject();
 		BuildPathParser parser = new BuildPathParser(composerProject);
@@ -50,26 +48,35 @@ public class BuildPathManager {
 		
 		// project prefs
 		IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project);
+		IPath[] inclusions;
 
 		try {
 			String encoded = prefs.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
 			exclusions = scriptProject.decodeBuildpathEntry(encoded).getExclusionPatterns();
+			inclusions = scriptProject.decodeBuildpathEntry(encoded).getInclusionPatterns();
 		} catch (Exception e) {
 			exclusions = new IPath[]{};
+			inclusions = new IPath[]{};
 		}
 		
 		// add includes
-//			paths.addAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.include", ""))));
-		
-		// remove excludes
-//			paths.removeAll(Arrays.asList(PreferenceHelper.deserialize(prefs.get("buildpath.exclude", ""))));
-		
-		// Debug:
-		Logger.debug("Paths to add:");
-		for (String path : paths) {
-			Logger.debug("> " + path);
+		for (IPath inclusion : inclusions) {
+			paths.add(inclusion.toString());
 		}
 		
+		// clean up exclusion patterns: remove exact matches
+		List<IPath> exs = new ArrayList<IPath>();
+		for (IPath exclusion : exclusions) {
+			String exc = exclusion.removeTrailingSeparator().toString();
+			
+			if (paths.contains(exc)) {
+				paths.remove(exc);
+			} else {
+				exs.add(exclusion);
+			}
+		}
+		exclusions = exs.toArray(new IPath[]{});
+
 		// clean build path
 		IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
 		for (IBuildpathEntry entry : rawBuildpath) {
@@ -79,7 +86,7 @@ public class BuildPathManager {
 
 			BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
 		}
-
+		
 		// add new entries to buildpath
 		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
 		for (String path : paths) {
@@ -107,10 +114,11 @@ public class BuildPathManager {
 		for (IBuildpathEntry entry : entries) {
 			if (entry.getPath().isPrefixOf(path)) {
 				parent = entry;
+				break;
 			}
 		}
 		
-		// add exclusion to found parent
+		// add path as exclusion to found parent
 		if (parent != null) {
 			List<IPath> exclusions = new ArrayList<IPath>(); 
 			exclusions.addAll(Arrays.asList(parent.getExclusionPatterns()));
@@ -124,14 +132,37 @@ public class BuildPathManager {
 		}
 		
 		// add own entry
-		// add exclusions only to vendor folders, but not to vendor/composer
-		if (vendorPath.isPrefixOf(path) && composerPath.isPrefixOf(path) == false) {
-			entries.add(DLTKCore.newSourceEntry(path, exclusions));
+		// leave vendor/composer untouched with exclusions
+		if (vendorPath.isPrefixOf(path) && composerPath.isPrefixOf(path)) {
+			entries.add(DLTKCore.newSourceEntry(path));
+			
+		// add exclusions
 		} else {
-			entries.add(DLTKCore.newSourceEntry(path));			
+			List<IPath> ex = new ArrayList<IPath>();
+			
+			// find the applying exclusion patterns for the new entry
+			for (IPath exclusion : exclusions) {
+				
+				if (!exclusion.toString().startsWith("*")) {
+					exclusion = composerProject.getProject().getFullPath().append(exclusion);
+				}
+				
+				// if exclusion matches path, add the trailing path segments as exclusion
+				if (path.removeTrailingSeparator().isPrefixOf(exclusion)) {
+					ex.add(exclusion.removeFirstSegments(path.matchingFirstSegments(exclusion)));
+				}
+				
+				// if exclusion starts with wildcard, add also
+				else if (exclusion.toString().startsWith("*")) {
+					ex.add(exclusion);
+				}
+			}
+ 
+			entries.add(DLTKCore.newSourceEntry(path, ex.toArray(new IPath[]{})));			
 		}
 	}
 	
+	// is this method necessary at all?
 	public static void setExclusionPattern(IScriptProject project, IBuildpathEntry entry) {
 
 		try {

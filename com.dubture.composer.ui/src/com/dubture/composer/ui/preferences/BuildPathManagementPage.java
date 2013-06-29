@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -14,9 +15,11 @@ import org.eclipse.dltk.internal.core.BuildpathEntry;
 import org.eclipse.dltk.internal.ui.wizards.buildpath.BPListElement;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.ui.preferences.WizardPropertyPage;
+import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPluginConstants;
+import com.dubture.composer.core.buildpath.BuildPathManager;
 import com.dubture.composer.core.internal.resources.ComposerProject;
 import com.dubture.composer.core.log.Logger;
 
@@ -59,7 +62,7 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 	public void setElement(IAdaptable element) {
 		super.setElement(element);
 		
-		if(element instanceof IProject) {
+		if (element instanceof IProject) {
 			scriptProject = DLTKCore.create((IProject)element);
 			return;
 		}
@@ -80,6 +83,24 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 			String encodeBuildpathEntry = scriptProject.encodeBuildpathEntry(entry);
 			IEclipsePreferences projectPreferences = ComposerPlugin.getDefault().getProjectPreferences(scriptProject.getProject());
 			projectPreferences.put(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, encodeBuildpathEntry);
+
+			// update buildpath
+			try {
+				// store preferences - is this needed here?
+				projectPreferences.flush();
+				
+				// update buildpath
+				ComposerProject composerProject = new ComposerProject(scriptProject.getProject());
+				BuildPathManager bpm = new BuildPathManager(composerProject);
+				bpm.update();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (CoreException e) {
+				e.printStackTrace();
+			} catch (BackingStoreException e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 }

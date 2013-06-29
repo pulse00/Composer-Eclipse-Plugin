@@ -47,7 +47,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.equinox.p2.discovery,
  org.eclipse.equinox.p2.discovery.compatibility,
  org.eclipse.php.server.ui,
- org.eclipse.php.server.core
+ org.eclipse.php.server.core,
+ org.eclipse.ui.ide.application
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: 
