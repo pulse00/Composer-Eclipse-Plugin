@@ -27,6 +27,7 @@ import com.dubture.composer.ui.dialogs.DependencyDialog;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TableSection;
+import com.dubture.composer.ui.job.UpdateJob;
 import com.dubture.composer.ui.parts.TablePart;
 import com.dubture.getcomposer.core.VersionedPackage;
 import com.dubture.getcomposer.core.collection.Dependencies;
@@ -38,15 +39,21 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 
 	private IAction editAction;
 	private IAction removeAction;
+	private IAction updateAction;
+	
+	private UpdateJob updateJob;
 	
 	private static final int EDIT_INDEX = 0;
 	private static final int REMOVE_INDEX = 1;
+	private static final int UPDATE_INDEX = 2;
 	
 	public DependencySection(ComposerFormPage page, Composite parent, Dependencies dependencies, String title, String description, boolean expanded) {
-		super(page, parent, Section.EXPANDED | Section.DESCRIPTION | Section.TWISTIE | Section.TITLE_BAR, new String[]{"Edit...", "Remove"});
+		super(page, parent, Section.EXPANDED | Section.DESCRIPTION | Section.TWISTIE | Section.TITLE_BAR, new String[]{"Edit...", "Remove", "Update"});
 		
 		this.dependencies = dependencies;
 		createClient(getSection(), page.getManagedForm().getToolkit(), title, description, expanded);
+		updateJob = new UpdateJob(page.getComposerEditor().getProject());
+		updateJob.setUser(true);
 	}
 
 	protected void createClient(final Section section, FormToolkit toolkit, String title, String description, boolean expanded) {
@@ -98,6 +105,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		TablePart tablePart = getTablePart();
 		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
 		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
+		tablePart.setButtonEnabled(UPDATE_INDEX, !selection.isEmpty());
 	}
 	
 	private void updateMenu() {
@@ -105,6 +113,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
+		updateAction.setEnabled(selection.size() > 0);
 	}
 
 	public void refresh() {
@@ -136,12 +145,20 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 				handleRemove();
 			}
 		};
+		
+		updateAction = new Action("Update Selected") {
+			@Override
+			public void run() {
+				handleUpdate();
+			}
+		};
 	}
 	
 	@Override
 	protected void fillContextMenu(IMenuManager manager) {
 		manager.add(editAction);
 		manager.add(removeAction);
+		manager.add(updateAction);
 	}
 	
 	private void handleEdit() {
@@ -182,6 +199,23 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void handleUpdate() {
+		StructuredSelection selection = ((StructuredSelection)dependencyViewer.getSelection());
+		Iterator<Object> it = selection.iterator();
+		String[] names = new String[selection.size()];
+		List<VersionedPackage> deps = new ArrayList<VersionedPackage>();
+
+		for (int i = 0; it.hasNext(); i++) {
+			VersionedPackage dep = (VersionedPackage)it.next();
+			deps.add(dep);
+			names[i] = dep.getName();
+		}
+		
+		updateJob.setPackages(names);
+		updateJob.schedule();
+	}
+	
 	@Override
 	protected void buttonSelected(int index) {
 		switch (index) {
@@ -192,6 +226,10 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 			
 		case REMOVE_INDEX:
 			handleRemove();
+			break;
+			
+		case UPDATE_INDEX:
+			handleUpdate();
 			break;
 		}
 	}
