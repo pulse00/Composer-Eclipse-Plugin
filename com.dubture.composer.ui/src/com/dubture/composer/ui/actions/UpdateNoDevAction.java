@@ -16,6 +16,8 @@ public class UpdateNoDevAction extends ComposerAction {
 	
 	@Override
 	public void run() {
+		ensureSaved();
+		
 		UpdateNoDevJob job = new UpdateNoDevJob(project);
 		job.setUser(true);
 		job.schedule();

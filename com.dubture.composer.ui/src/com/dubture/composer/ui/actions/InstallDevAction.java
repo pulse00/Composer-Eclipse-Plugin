@@ -14,6 +14,8 @@ public class InstallDevAction extends ComposerAction {
 	
 	@Override
 	public void run() {
+		ensureSaved();
+		
 		InstallDevJob job = new InstallDevJob(project);
 		job.setUser(true);
 		job.schedule();

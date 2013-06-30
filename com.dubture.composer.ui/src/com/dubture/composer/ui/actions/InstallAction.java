@@ -15,6 +15,8 @@ public class InstallAction extends ComposerAction {
 	
 	@Override
 	public void run() {
+		ensureSaved();
+		
 		InstallJob job = new InstallJob(project);
 		job.setUser(true);
 		job.schedule();

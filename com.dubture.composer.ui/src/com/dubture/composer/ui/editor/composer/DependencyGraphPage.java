@@ -77,7 +77,7 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 		composerProject = ComposerPlugin.getDefault().getComposerProject(project);
 		graphController = new GraphController(composerProject);
 		graphController.setComposerProject(composerProject);
-		viewer = new GraphViewer(body, SWT.BORDER);
+		viewer = new GraphViewer(body, SWT.NO_REDRAW_RESIZE);
 		viewer.setConnectionStyle(ZestStyles.CONNECTIONS_DIRECTED);
 		viewer.setContentProvider(graphController);
 		viewer.setLabelProvider(graphController);
