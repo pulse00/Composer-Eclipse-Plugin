@@ -32,6 +32,9 @@ public class BuildPathParser {
 		// empty list for found package paths
 		List<String> paths = new ArrayList<String>();
 		
+		// add composer vendor dir
+		paths.add(vendor + "/composer");
+		
 		// add source paths from this package
 		parsePackage(composer, paths);
 		
@@ -39,10 +42,7 @@ public class BuildPathParser {
 		for (ComposerPackage p : packages) {
 			parsePackage(p, paths, vendor + "/" + p.getName());
 		}
-		
-		// maybe add this one ?!
-		// those want/need it, can add it via project settings
-		paths.add(vendor + "/composer");
+
 		return paths;
 	}
 	

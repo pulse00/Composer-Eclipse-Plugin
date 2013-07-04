@@ -98,7 +98,7 @@ public class BuildPathManager {
 		if (newEntries.size() > 0) {
 			BuildPathUtils.addNonDupEntriesToBuildPath(scriptProject, newEntries);
 		}
-		
+
 		IFolder folder = project.getFolder(new Path(composerProject.getVendorDir()));
 		
 		if (folder != null && folder.exists() && !folder.isDerived()) {
