@@ -77,6 +77,14 @@ public class BuildPathManager {
 		}
 		exclusions = exs.toArray(new IPath[]{});
 		
+		// clean build path
+		IBuildpathEntry[] rawBuildpath = scriptProject.getRawBuildpath();
+		for (IBuildpathEntry entry : rawBuildpath) {
+			if (entry.getEntryKind() == IBuildpathEntry.BPE_SOURCE) {
+				BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
+			}
+		}
+		
 		// add new entries to buildpath
 		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
 		for (String path : paths) {

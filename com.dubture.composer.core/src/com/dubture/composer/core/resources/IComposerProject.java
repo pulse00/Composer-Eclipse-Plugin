@@ -29,8 +29,4 @@ public interface IComposerProject {
 	public IScriptProject getScriptProject();
 	
 	public ComposerPackages getInstalledPackages();
-	
-	public ComposerPackages getInstalledDevPackages();
-	
-	public ComposerPackages getAllInstalledPackages();
 }

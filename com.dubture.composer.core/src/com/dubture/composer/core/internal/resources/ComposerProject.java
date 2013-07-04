@@ -116,25 +116,25 @@ public class ComposerProject implements IComposerProject {
 		return packages;
 	}
 
-	@Override
-	public ComposerPackages getInstalledDevPackages() {
-		String vendor = getVendorDir();
-		ComposerPackages packages = new ComposerPackages();
-		
-		IFile installedDev = project.getFile(vendor + "/composer/installed_dev.json");
-		if (installedDev != null && installedDev.exists()) {
-			packages.addAll(loadInstalled(installedDev));
-		}
-		
-		return packages;
-	}
-
-	@Override
-	public ComposerPackages getAllInstalledPackages() {
-		ComposerPackages packages = getInstalledPackages();
-		packages.addAll(getInstalledDevPackages());
-		return packages;
-	}
+//	@Override
+//	public ComposerPackages getInstalledDevPackages() {
+//		String vendor = getVendorDir();
+//		ComposerPackages packages = new ComposerPackages();
+//		
+//		IFile installedDev = project.getFile(vendor + "/composer/installed_dev.json");
+//		if (installedDev != null && installedDev.exists()) {
+//			packages.addAll(loadInstalled(installedDev));
+//		}
+//		
+//		return packages;
+//	}
+//
+//	@Override
+//	public ComposerPackages getAllInstalledPackages() {
+//		ComposerPackages packages = getInstalledPackages();
+//		packages.addAll(getInstalledDevPackages());
+//		return packages;
+//	}
 	
 	protected ComposerPackages loadInstalled(IFile installed) {
 		try {

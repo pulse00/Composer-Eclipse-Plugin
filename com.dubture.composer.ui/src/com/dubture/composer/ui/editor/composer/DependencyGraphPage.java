@@ -124,7 +124,7 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 	
 	protected void update() {
 		if (composerProject != null && viewer != null && viewer != null && !viewer.getControl().isDisposed()) {
-			ComposerPackages packages = composerProject.getAllInstalledPackages();
+			ComposerPackages packages = composerProject.getInstalledPackages();
 			packages.add(composerProject.getComposerPackage());
 			viewer.setInput(packages);
 			applyFilter(true);

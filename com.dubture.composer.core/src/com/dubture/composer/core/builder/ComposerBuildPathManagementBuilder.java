@@ -45,10 +45,10 @@ public class ComposerBuildPathManagementBuilder extends
 
 			boolean changed = false;
 			IResourceDelta delta = getDelta(project);
+			BuildPathManager buildPathManager = new BuildPathManager(composerProject);
 
 			if (delta == null) {
 				if (project.hasNature(ComposerNature.NATURE_ID)) {
-					BuildPathManager buildPathManager = new BuildPathManager(composerProject);
 					buildPathManager.update(monitor);
 				}
 				
@@ -59,12 +59,13 @@ public class ComposerBuildPathManagementBuilder extends
 
 			for (IResourceDelta affected : delta.getAffectedChildren()) {
 				String path = affected.getProjectRelativePath().toOSString();
-
+				
 				if (path.equals("composer.lock") 
 						|| path.equals(vendor)
 						|| path.equals(vendor + "/composer/autoload_namespaces.php")
 						|| path.equals(vendor + "/composer/autoload_classmap.php")
-						|| path.equals(vendor + "/composer/autoload_files.php")) {
+						|| path.equals(vendor + "/composer/autoload_files.php")
+						|| path.equals(vendor + "/composer/installed.json")) {
 					changed = true;
 				}
 			}
@@ -74,8 +75,6 @@ public class ComposerBuildPathManagementBuilder extends
 				return null;
 			}
 			
-			
-			BuildPathManager buildPathManager = new BuildPathManager(composerProject);
 			buildPathManager.update(monitor);
 		} catch (Exception e) {
 			Logger.logException(e);
