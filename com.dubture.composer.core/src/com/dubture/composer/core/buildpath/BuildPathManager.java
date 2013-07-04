@@ -90,7 +90,7 @@ public class BuildPathManager {
 		for (String path : paths) {
 			IPath entry = new Path(path);
 			IFolder folder = project.getFolder(entry);
-			if (folder != null) {
+			if (folder != null && folder.exists()) {
 				addPath(folder.getFullPath(), newEntries);
 			}
 		}
