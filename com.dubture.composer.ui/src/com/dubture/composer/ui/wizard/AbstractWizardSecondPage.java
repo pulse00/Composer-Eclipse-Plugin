@@ -37,6 +37,7 @@ import org.eclipse.dltk.ui.util.ExceptionHandler;
 import org.eclipse.dltk.ui.wizards.CapabilityConfigurationPage;
 import org.eclipse.e4.core.contexts.ContextInjectionFactory;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.core.includepath.IncludePath;
 import org.eclipse.php.internal.core.language.LanguageModelInitializer;
@@ -52,9 +53,11 @@ import org.pdtextensions.core.launch.ScriptLauncher;
 import org.pdtextensions.core.launch.ScriptLauncherManager;
 import org.pdtextensions.core.ui.PEXUIPlugin;
 
+import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPluginConstants;
 import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
 import com.dubture.getcomposer.core.ComposerPackage;
@@ -144,11 +147,15 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	}
 
 	protected void installComposer(IProgressMonitor monitor) throws CoreException {
-		downloader = new PharDownloader();
-		InputStream resource = downloader.download();
-		IFile file = getProject().getFile("composer.phar");
-		file.create(resource, true, monitor);
-		file.refreshLocal(IResource.DEPTH_ZERO, monitor);
+		// only download composer.phar when config is set to use project phar
+		IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
+		if (prefs.getBoolean(Keys.USE_PROJECT_PHAR)) {
+			downloader = new PharDownloader();
+			InputStream resource = downloader.download();
+			IFile file = getProject().getFile("composer.phar");
+			file.create(resource, true, monitor);
+			file.refreshLocal(IResource.DEPTH_ZERO, monitor);
+		}
 	}
 
 	protected void addComposerJson(IProgressMonitor monitor) throws CoreException {
