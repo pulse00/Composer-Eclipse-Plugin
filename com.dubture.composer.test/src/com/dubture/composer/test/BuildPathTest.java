@@ -76,12 +76,12 @@ public class BuildPathTest extends AbstractModelTests {
 				"nother",
 				"src",
 				"test",
+				"mordor/composer",
 				"mordor/phing/phing/classes/phing",
 				"mordor/propel/propel1/runtime/lib",
 				"mordor/propel/propel1/generator/lib",
 				"mordor/gossi/ldap/src",
-				"mordor/symfony/console",
-				"mordor/composer"));
+				"mordor/symfony/console"));
 		assertThat(paths, is(expected));
 		
 		// let indexing threads shutdown to avoid SWT thread access errors
