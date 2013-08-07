@@ -120,7 +120,14 @@ public class BuildPathManager {
 		if (parent != null) {
 			List<IPath> exclusions = new ArrayList<IPath>(); 
 			exclusions.addAll(Arrays.asList(parent.getExclusionPatterns()));
-			IPath diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath())).removeTrailingSeparator().addTrailingSeparator();
+			
+			IPath diff;
+			if (parent.getPath().equals(composerPath)) {
+				diff = path.removeFirstSegments(path.matchingFirstSegments(composerPath)).uptoSegment(1);
+			} else {
+				diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
+			}
+			diff = diff.removeTrailingSeparator().addTrailingSeparator();
 			exclusions.add(diff);
 			
 			entries.remove(parent);
@@ -131,7 +138,7 @@ public class BuildPathManager {
 		
 		// add own entry
 		// leave vendor/composer untouched with exclusions
-		if (vendorPath.isPrefixOf(path) && composerPath.isPrefixOf(path)) {
+		if (vendorPath.equals(path) || composerPath.equals(path)) {
 			entries.add(DLTKCore.newSourceEntry(path));
 			
 		// add exclusions
