@@ -2,6 +2,7 @@ package com.dubture.composer.core.buildpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
@@ -84,6 +85,9 @@ public class BuildPathManager {
 				BuildPathUtils.removeEntryFromBuildPath(scriptProject, entry);
 			}
 		}
+		
+		// sort paths for nesting detection
+		Collections.sort(paths);
 		
 		// add new entries to buildpath
 		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
