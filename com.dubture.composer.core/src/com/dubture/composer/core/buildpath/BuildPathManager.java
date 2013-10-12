@@ -129,11 +129,11 @@ public class BuildPathManager {
 			List<IPath> exclusions = new ArrayList<IPath>(); 
 			exclusions.addAll(Arrays.asList(parent.getExclusionPatterns()));
 			
-			IPath diff = path
-					.removeFirstSegments(path.matchingFirstSegments(parent.getPath()))
-					.uptoSegment(1)
-					.removeTrailingSeparator()
-					.addTrailingSeparator();
+			IPath diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
+			if (parent.getPath().equals(composerPath)) {
+				diff = path.uptoSegment(1);
+			}
+			diff = diff.removeTrailingSeparator().addTrailingSeparator();
 			if (!exclusions.contains(diff)) {
 				exclusions.add(diff);
 			}
