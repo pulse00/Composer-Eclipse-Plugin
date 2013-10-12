@@ -134,7 +134,9 @@ public class BuildPathManager {
 					.uptoSegment(1)
 					.removeTrailingSeparator()
 					.addTrailingSeparator();
-			exclusions.add(diff);
+			if (!exclusions.contains(diff)) {
+				exclusions.add(diff);
+			}
 			
 			entries.remove(parent);
 			
