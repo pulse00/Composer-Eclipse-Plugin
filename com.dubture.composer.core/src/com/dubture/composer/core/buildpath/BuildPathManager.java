@@ -113,10 +113,14 @@ public class BuildPathManager {
 	private void addPath(IPath path, List<IBuildpathEntry> entries) {
 		// find parent
 		IBuildpathEntry parent = null;
+		int parentLength = 0;
+		IPath entryPath;
 		for (IBuildpathEntry entry : entries) {
-			if (entry.getPath().isPrefixOf(path)) {
+			entryPath = entry.getPath();
+			if (entryPath.isPrefixOf(path) 
+					&& (parent == null || (entryPath.toString().length() > parentLength))) {
 				parent = entry;
-				break;
+				parentLength = parent.getPath().toString().length();
 			}
 		}
 		
@@ -125,13 +129,11 @@ public class BuildPathManager {
 			List<IPath> exclusions = new ArrayList<IPath>(); 
 			exclusions.addAll(Arrays.asList(parent.getExclusionPatterns()));
 			
-			IPath diff;
-			if (parent.getPath().equals(composerPath)) {
-				diff = path.removeFirstSegments(path.matchingFirstSegments(composerPath)).uptoSegment(1);
-			} else {
-				diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
-			}
-			diff = diff.removeTrailingSeparator().addTrailingSeparator();
+			IPath diff = path
+					.removeFirstSegments(path.matchingFirstSegments(parent.getPath()))
+					.uptoSegment(1)
+					.removeTrailingSeparator()
+					.addTrailingSeparator();
 			exclusions.add(diff);
 			
 			entries.remove(parent);
