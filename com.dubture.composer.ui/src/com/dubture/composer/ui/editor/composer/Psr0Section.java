@@ -96,14 +96,24 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 		ISelection selection = psr0Viewer.getSelection();
 
 		TreePart treePart = getTreePart();
-		treePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
-		treePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
+		treePart.setButtonEnabled(ADD_INDEX, enabled);
+		treePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty() && enabled);
+		treePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty() && enabled);
 	}
 
 	private void updateMenu() {
 		IStructuredSelection selection = (IStructuredSelection) psr0Viewer.getSelection();
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		updateButtons();
+		
+		refresh();
+		psr0Viewer.getTree().setEnabled(enabled);
 	}
 
 	public void refresh() {

@@ -30,6 +30,14 @@ import com.dubture.getcomposer.core.ComposerConstants;
 
 public class GeneralSection extends ComposerSection {
 
+	private FormEntry nameEntry;
+	private FormEntry descriptionEntry;
+	private FormEntry typeEntry;
+	private FormEntry keywordsEntry;
+	private FormEntry homepageEntry;
+	private FormEntry licenseEntry;
+	private ComboFormEntry minimumStabilityEntry;
+	
 	public GeneralSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
 		createClient(getSection(), page.getManagedForm().getToolkit());
@@ -53,9 +61,22 @@ public class GeneralSection extends ComposerSection {
 		createLicenseEntry(client, toolkit);
 		createStabilityEntry(client, toolkit);
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		nameEntry.setEnabled(enabled);
+		descriptionEntry.setEnabled(enabled);
+		typeEntry.setEnabled(enabled);
+		keywordsEntry.setEnabled(enabled);
+		homepageEntry.setEnabled(enabled);
+		licenseEntry.setEnabled(enabled);
+		minimumStabilityEntry.setEditable(enabled);
+	}
 
 	private void createNameEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry nameEntry = new FormEntry(client, toolkit, "Name", null, false);
+		nameEntry = new FormEntry(client, toolkit, "Name", null, false);
 		nameEntry.setValue(composerPackage.getName(), true);
 		
 		nameEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -71,7 +92,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createDescriptionEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry descriptionEntry = new FormEntry(client, toolkit, "Description", null, false);
+		descriptionEntry = new FormEntry(client, toolkit, "Description", null, false);
 		descriptionEntry.setValue(composerPackage.getDescription(), true);
 		
 		descriptionEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -87,7 +108,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createTypeEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry typeEntry = new FormEntry(client, toolkit, "Type", null, false);
+		typeEntry = new FormEntry(client, toolkit, "Type", null, false);
 		typeEntry.setValue(composerPackage.getType(), true);
 		
 		ControlDecoration decoration = new ControlDecoration(typeEntry.getText(), SWT.TOP | SWT.LEFT);
@@ -115,7 +136,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createKeywordsEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry keywordsEntry = new FormEntry(client, toolkit, "Keywords", null, false);
+		keywordsEntry = new FormEntry(client, toolkit, "Keywords", null, false);
 		
 		final Keywords2StringConverter converter = new Keywords2StringConverter();
 		keywordsEntry.setValue(converter.convert(composerPackage.getKeywords()), true);
@@ -140,7 +161,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createHomepageEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry homepageEntry = new WeblinkFormEntry(client, toolkit, "Homepage");
+		homepageEntry = new WeblinkFormEntry(client, toolkit, "Homepage");
 		homepageEntry.setValue(composerPackage.getHomepage());
 		
 		homepageEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -156,7 +177,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createLicenseEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry licenseEntry = new FormEntry(client, toolkit, "License", null, false);
+		licenseEntry = new FormEntry(client, toolkit, "License", null, false);
 		
 		ControlDecoration decoration = new ControlDecoration(licenseEntry.getText(), SWT.TOP | SWT.LEFT);
 		
@@ -192,7 +213,7 @@ public class GeneralSection extends ComposerSection {
 	}
 	
 	private void createStabilityEntry(Composite client, FormToolkit toolkit) {
-		final ComboFormEntry minimumStabilityEntry = new ComboFormEntry(client, toolkit, "Minimum Stability", SWT.FLAT | SWT.READ_ONLY);
+		minimumStabilityEntry = new ComboFormEntry(client, toolkit, "Minimum Stability", SWT.FLAT | SWT.READ_ONLY);
 		minimumStabilityEntry.getComboPart().setItems(ComposerConstants.STABILITIES);
 		minimumStabilityEntry.setValue(composerPackage.getMinimumStability(), true);
 		

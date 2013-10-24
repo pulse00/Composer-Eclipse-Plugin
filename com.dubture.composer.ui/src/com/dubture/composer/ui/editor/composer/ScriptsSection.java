@@ -79,8 +79,9 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		ISelection selection = scriptsViewer.getSelection();
 		
 		TreePart treePart = getTreePart();
-		treePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
-		treePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
+		treePart.setButtonEnabled(ADD_INDEX, enabled);
+		treePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty() && enabled);
+		treePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty() && enabled);
 	}
 	
 	private void updateMenu() {
@@ -88,6 +89,15 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		updateButtons();
+		
+		refresh();
+		scriptsViewer.getTree().setEnabled(enabled);
 	}
 
 	public void refresh() {

@@ -21,6 +21,7 @@ import com.dubture.composer.ui.utils.WidgetFactory;
 
 public class BooleanFormEntry {
 
+	private boolean enabled = true;
 	private Label label;
 	private Button checkbox;
 	private boolean ignoreNotify = false;
@@ -56,6 +57,16 @@ public class BooleanFormEntry {
 		this.ignoreNotify = ignoreNotify;
 		setValue(value);
 		this.ignoreNotify = false;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		
+		checkbox.setEnabled(enabled);
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	/**

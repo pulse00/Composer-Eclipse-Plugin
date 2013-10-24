@@ -15,6 +15,10 @@ public class ConfigurationPage extends ComposerFormPage {
 
 	protected ComposerFormEditor editor;
 	
+	protected ConfigSection configSection;
+	protected ScriptsSection scriptsSection;
+	protected RepositoriesSection repositoriesSection;
+	
 	private Composite left;
 	private Composite right;
 
@@ -57,13 +61,28 @@ public class ConfigurationPage extends ComposerFormPage {
 		left.setLayout(new TableWrapLayout());
 		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
-		new ConfigSection(this, left);
-		new ScriptsSection(this, left);
+		configSection = new ConfigSection(this, left);
+		configSection.setEnabled(enabled);
+		
+		scriptsSection = new ScriptsSection(this, left);
+		scriptsSection.setEnabled(enabled);
 		
 		right = toolkit.createComposite(form.getBody());
 		right.setLayout(new TableWrapLayout());
 		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
-		new RepositoriesSection(this, right);
+		repositoriesSection = new RepositoriesSection(this, right);
+		repositoriesSection.setEnabled(enabled);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		if (configSection != null) {
+			configSection.setEnabled(enabled);
+			scriptsSection.setEnabled(enabled);
+			repositoriesSection.setEnabled(enabled);
+		}
 	}
 }

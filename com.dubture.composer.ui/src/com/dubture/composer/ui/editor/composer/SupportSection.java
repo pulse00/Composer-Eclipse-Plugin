@@ -20,6 +20,13 @@ public class SupportSection extends ComposerSection {
 
 	Support support;
 	
+	private FormEntry emailEntry;
+	private FormEntry issuesEntry;
+	private FormEntry forumEntry;
+	private FormEntry wikiEntry;
+	private FormEntry ircEntry;
+	private FormEntry sourceEntry;
+	
 	public SupportSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
 		support = composerPackage.getSupport();
@@ -43,9 +50,21 @@ public class SupportSection extends ComposerSection {
 		createIrcEntry(client, toolkit);
 		createSourceEntry(client, toolkit);
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		emailEntry.setEnabled(enabled);
+		issuesEntry.setEnabled(enabled);
+		forumEntry.setEnabled(enabled);
+		wikiEntry.setEnabled(enabled);
+		ircEntry.setEnabled(enabled);
+		sourceEntry.setEnabled(enabled);
+	}
 
 	private void createEmailEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry emailEntry = new FormEntry(client, toolkit, "Email", null, false);
+		emailEntry = new FormEntry(client, toolkit, "Email", null, false);
 		emailEntry.setValue(support.getEmail(), true);
 		
 		emailEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -61,7 +80,7 @@ public class SupportSection extends ComposerSection {
 	}
 
 	private void createIssuesEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry issuesEntry = new WeblinkFormEntry(client, toolkit, "Issues");
+		issuesEntry = new WeblinkFormEntry(client, toolkit, "Issues");
 		issuesEntry.setValue(support.getIssues());
 		
 		issuesEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -77,7 +96,7 @@ public class SupportSection extends ComposerSection {
 	}
 	
 	private void createForumEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry forumEntry = new WeblinkFormEntry(client, toolkit, "Forum");
+		forumEntry = new WeblinkFormEntry(client, toolkit, "Forum");
 		forumEntry.setValue(support.getForum());
 		
 		forumEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -93,7 +112,7 @@ public class SupportSection extends ComposerSection {
 	}
 	
 	private void createWikiEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry wikiEntry = new WeblinkFormEntry(client, toolkit, "Wiki");
+		wikiEntry = new WeblinkFormEntry(client, toolkit, "Wiki");
 		wikiEntry.setValue(support.getWiki());
 		
 		wikiEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -109,7 +128,7 @@ public class SupportSection extends ComposerSection {
 	}
 	
 	private void createIrcEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry ircEntry = new WeblinkFormEntry(client, toolkit, "Irc");
+		ircEntry = new WeblinkFormEntry(client, toolkit, "Irc");
 		ircEntry.setValue(support.getIrc());
 		
 		ircEntry.addFormEntryListener(new FormEntryAdapter() {
@@ -125,7 +144,7 @@ public class SupportSection extends ComposerSection {
 	}
 	
 	private void createSourceEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry sourceEntry = new WeblinkFormEntry(client, toolkit, "Source");
+		sourceEntry = new WeblinkFormEntry(client, toolkit, "Source");
 		sourceEntry.setValue(support.getSource());
 		
 		sourceEntry.addFormEntryListener(new FormEntryAdapter() {

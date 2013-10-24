@@ -20,13 +20,13 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.dltk.core.IScriptProject;
-import org.json.simple.parser.ParseException;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.getcomposer.core.collection.Psr0;
 import com.dubture.getcomposer.core.objects.Namespace;
+import com.dubture.getcomposer.json.ParseException;
 
 /**
  * 
@@ -50,14 +50,14 @@ public class ModelAccess implements NamespaceResolverInterface
         }
     }
     
-    protected void initNamespaceMap() throws ParseException 
+    protected void initNamespaceMap() throws ParseException
     {
-        IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
+    	IEclipsePreferences instancePreferences = ConfigurationScope.INSTANCE.getNode(ComposerPlugin.ID);
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
             String prefKey = "namespacemap#" + project.getName();
             String json = instancePreferences.get(prefKey, "{}");
-            psr0Map.put(project.getName(), new Psr0(json));
-            Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
+         	psr0Map.put(project.getName(), new Psr0(json));
+		    Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
     }
 

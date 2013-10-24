@@ -178,8 +178,9 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		ISelection selection = repositoryViewer.getSelection();
 		
 		TablePart tablePart = getTablePart();
-		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
-		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
+		tablePart.setButtonEnabled(ADD_INDEX, enabled);
+		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty() && enabled);
+		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty() && enabled);
 	}
 	
 	private void updateMenu() {
@@ -187,6 +188,15 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		updateButtons();
+		
+		refresh();
+		repositoryViewer.getTable().setEnabled(enabled);
 	}
 
 	public void refresh() {

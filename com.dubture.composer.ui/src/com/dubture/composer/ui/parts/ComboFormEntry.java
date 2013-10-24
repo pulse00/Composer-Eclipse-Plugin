@@ -58,6 +58,10 @@ public class ComboFormEntry {
 		this.ignoreNotify = false;
 	}
 	
+	public void setEditable(boolean editable) {
+		combo.setEnabled(editable);
+	}
+	
 	/**
 	 * Attaches the listener for the entry.
 	 * 

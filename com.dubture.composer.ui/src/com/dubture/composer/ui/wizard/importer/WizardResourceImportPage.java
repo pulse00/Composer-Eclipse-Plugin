@@ -36,6 +36,7 @@ import com.dubture.composer.ui.wizard.ValidationException;
 import com.dubture.composer.ui.wizard.ValidationException.Severity;
 import com.dubture.getcomposer.core.ComposerConstants;
 import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.json.ParseException;
 
 /**
  * 
@@ -117,7 +118,7 @@ public class WizardResourceImportPage extends WizardDataTransferPage {
 				source = dialog.open();
 				try {
 					handleSourcePathChange();
-				} catch (IOException e) {
+				} catch (Exception e) {
 					Logger.logException(e);
 				}
 			}
@@ -186,7 +187,7 @@ public class WizardResourceImportPage extends WizardDataTransferPage {
 		updatePageCompletion();
 	}
 
-	protected void handleSourcePathChange() throws IOException {
+	protected void handleSourcePathChange() throws IOException, ParseException {
 		
 		if (source != null) {
 			sourcePath.setText(source);

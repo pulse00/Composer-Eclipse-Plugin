@@ -13,6 +13,7 @@ public abstract class ComposerSection extends SectionPart {
 
 	private ComposerFormPage page;
 	protected ComposerPackage composerPackage;
+	protected boolean enabled = true;
 	
 	public ComposerSection(ComposerFormPage page, Composite parent, int style) {
 		this(page, parent, style, true);
@@ -27,6 +28,14 @@ public abstract class ComposerSection extends SectionPart {
 	
 	public ComposerFormPage getPage() {
 		return page;
+	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	protected abstract void createClient(Section section, FormToolkit toolkit);

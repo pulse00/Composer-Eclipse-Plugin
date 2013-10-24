@@ -29,4 +29,6 @@ public interface IComposerProject {
 	public IScriptProject getScriptProject();
 	
 	public ComposerPackages getInstalledPackages();
+	
+	public boolean isValidComposerJson();
 }

@@ -13,6 +13,7 @@ import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.getcomposer.core.ComposerConstants;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.core.collection.ComposerPackages;
+import com.dubture.getcomposer.json.ParseException;
 
 public class ComposerProject implements IComposerProject {
 
@@ -28,19 +29,21 @@ public class ComposerProject implements IComposerProject {
 		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
 		
 		if (file != null && file.exists()) {
-			composer = new ComposerPackage(file.getLocation().toFile()); 
+			composer = new ComposerPackage();
+			try {
+				composer.fromJson(file.getLocation().toFile());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			} 
 		}
 	}
 	
 	@Override
 	public String getVendorDir() {
 		if (vendorDir == null) {
-			
-			if (composer == null || composer.getConfig() == null) {
-				return vendorDir = ComposerConstants.VENDOR_DIR_DEFAULT;
+			if (composer != null && composer.getConfig() != null) {
+				vendorDir = composer.getConfig().getVendorDir();	
 			}
-			
-			vendorDir = composer.getConfig().getVendorDir();
 			
 			if (vendorDir == null || vendorDir.trim().isEmpty()) {
 				vendorDir = ComposerConstants.VENDOR_DIR_DEFAULT; // default
@@ -82,8 +85,7 @@ public class ComposerProject implements IComposerProject {
 					return null;
 				}
 				composer = new ComposerPackage(json.getLocation().toFile());
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
 			}
 		}
 		
@@ -114,6 +116,20 @@ public class ComposerProject implements IComposerProject {
 		}
 		
 		return packages;
+	}
+
+	@Override
+	public boolean isValidComposerJson() {
+		IFile json = getComposerJson();
+		if (json != null && json.exists()) {
+			try {
+				new ComposerPackage(json.getLocation().toFile());
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+		return false;
 	}
 
 //	@Override

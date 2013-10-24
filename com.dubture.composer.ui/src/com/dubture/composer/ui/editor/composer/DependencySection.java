@@ -103,9 +103,9 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		ISelection selection = dependencyViewer.getSelection();
 		
 		TablePart tablePart = getTablePart();
-		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
-		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
-		tablePart.setButtonEnabled(UPDATE_INDEX, !selection.isEmpty());
+		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty() && enabled);
+		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty() && enabled);
+		tablePart.setButtonEnabled(UPDATE_INDEX, !selection.isEmpty() && enabled);
 	}
 	
 	private void updateMenu() {
@@ -114,6 +114,15 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
 		updateAction.setEnabled(selection.size() > 0);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		updateButtons();
+		
+		refresh();
+		dependencyViewer.getTable().setEnabled(enabled);
 	}
 
 	public void refresh() {

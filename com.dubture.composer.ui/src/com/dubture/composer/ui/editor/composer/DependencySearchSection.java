@@ -37,4 +37,10 @@ public class DependencySearchSection extends ComposerSection {
 	public void removeDependencySelectionFinishedListener(DependencySelectionFinishedListener listener) {
 		dependencySearch.removeDependencySelectionFinishedListener(listener);
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		dependencySearch.setEnabled(enabled);
+	}
 }

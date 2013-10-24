@@ -18,6 +18,11 @@ import com.dubture.composer.ui.parts.IBooleanFormEntryListener;
 
 public class ConfigSection extends ComposerSection {
 
+	protected FormEntry processTimeoutEntry;
+	protected FormEntry vendorDirEntry;
+	protected FormEntry binDirEntry;
+	protected BooleanFormEntry notifyOnInstallEntry;
+	
 	public ConfigSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION);
 		createClient(getSection(), page.getManagedForm().getToolkit());
@@ -38,9 +43,19 @@ public class ConfigSection extends ComposerSection {
 		createBinDirEntry(client, toolkit);
 		createNotifyOnInstallEntry(client, toolkit);
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		processTimeoutEntry.setEnabled(enabled);
+		vendorDirEntry.setEnabled(enabled);
+		binDirEntry.setEnabled(enabled);
+		notifyOnInstallEntry.setEnabled(enabled);
+	}
 
 	private void createProcessTimeoutEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry processTimeoutEntry = new FormEntry(client, toolkit, "process-timeout", null, false);
+		processTimeoutEntry = new FormEntry(client, toolkit, "process-timeout", null, false);
 		Integer processTimeout = composerPackage.getConfig().getProcessTimeout();
 		if (processTimeout != null) {
 			processTimeoutEntry.setValue("" + processTimeout, true);
@@ -68,7 +83,7 @@ public class ConfigSection extends ComposerSection {
 	}
 	
 	private void createVendorDirEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry vendorDirEntry = new FormEntry(client, toolkit, "vendor-dir", null, false);
+		vendorDirEntry = new FormEntry(client, toolkit, "vendor-dir", null, false);
 		String vendorDir = composerPackage.getConfig().getVendorDir();
 		if (vendorDir != null) {
 			vendorDirEntry.setValue(vendorDir, true);
@@ -97,7 +112,7 @@ public class ConfigSection extends ComposerSection {
 	}
 	
 	private void createBinDirEntry(Composite client, FormToolkit toolkit) {
-		final FormEntry binDirEntry = new FormEntry(client, toolkit, "bin-dir", null, false);
+		binDirEntry = new FormEntry(client, toolkit, "bin-dir", null, false);
 		String binDir = composerPackage.getConfig().getBinDir();
 		if (binDir != null) {
 			binDirEntry.setValue(binDir, true);
@@ -125,7 +140,7 @@ public class ConfigSection extends ComposerSection {
 	}
 
 	private void createNotifyOnInstallEntry(Composite client, FormToolkit toolkit) {
-		final BooleanFormEntry notifyOnInstallEntry = new BooleanFormEntry(client, toolkit, "notify-on-install");
+		notifyOnInstallEntry = new BooleanFormEntry(client, toolkit, "notify-on-install");
 		notifyOnInstallEntry.setValue(composerPackage.getConfig().getNotifyOnInstall());
 		
 		notifyOnInstallEntry.addBooleanFormEntryListener(new IBooleanFormEntryListener() {
