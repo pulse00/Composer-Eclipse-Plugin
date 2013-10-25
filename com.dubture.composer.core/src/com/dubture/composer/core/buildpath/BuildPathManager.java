@@ -32,8 +32,6 @@ public class BuildPathManager {
 	
 	public BuildPathManager(IComposerProject composerProject) {
 		this.composerProject = composerProject;
-		vendorPath = composerProject.getProject().getFullPath().append(composerProject.getVendorDir());
-		composerPath = vendorPath.append("composer");
 	}
 	
 	public void update() throws CoreException {
@@ -41,6 +39,15 @@ public class BuildPathManager {
 	}
 	
 	public void update(IProgressMonitor monitor) throws CoreException {
+		// check for valid composer json, stop processing when invalid
+		if (!composerProject.isValidComposerJson()) {
+			Logger.log(Logger.INFO, "Stop BuildPathManager, composer.json invalid");
+			return;
+		}
+		
+		vendorPath = composerProject.getProject().getFullPath().append(composerProject.getVendorDir());
+		composerPath = vendorPath.append("composer");
+
 		IProject project = composerProject.getProject();
 		IScriptProject scriptProject = composerProject.getScriptProject();
 		BuildPathParser parser = new BuildPathParser(composerProject);
@@ -167,7 +174,7 @@ public class BuildPathManager {
 					ex.add(exclusion);
 				}
 			}
- 
+
 			entries.add(DLTKCore.newSourceEntry(path, ex.toArray(new IPath[]{})));			
 		}
 	}

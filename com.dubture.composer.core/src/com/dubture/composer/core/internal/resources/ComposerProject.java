@@ -33,8 +33,7 @@ public class ComposerProject implements IComposerProject {
 			try {
 				composer.fromJson(file.getLocation().toFile());
 			} catch (ParseException e) {
-				e.printStackTrace();
-			} 
+			}
 		}
 	}
 	
@@ -58,11 +57,11 @@ public class ComposerProject implements IComposerProject {
 		if (vendorPath == null) {
 			IPath root = project.getLocation();
 			String vendor = getVendorDir();
-	
+
 			if (root == null || root.segmentCount() <= 1) {
 				throw new RuntimeException("Error getting composer vendor path");
 			}
-	
+
 			vendorPath = root.removeLastSegments(1).addTrailingSeparator().append(vendor);
 		}
 		return vendorPath;

@@ -400,7 +400,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		if (valid) {
 			removeMessage(MSG_PARSE_ERROR);
 		} else {
-			e.printStackTrace();
 			addMessage(MSG_PARSE_ERROR, "Invalid Json: " + e.getMessage(), IMessage.ERROR);
 		}
 		
