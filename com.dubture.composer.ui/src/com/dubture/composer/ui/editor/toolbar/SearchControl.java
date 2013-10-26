@@ -62,9 +62,10 @@ public class SearchControl extends ControlContribution {
 		// gross, but on the Mac the search controls are cut off on the bottom,
 		// so they need to be bumped up a little. other OSs are fine.
 		if (isMac()) {
-			layout.marginHeight = -1;
+			layout.marginHeight = 1;
 		}
 		layout.verticalSpacing = 0;
+		layout.marginBottom = 0;
 		composite.setLayout(layout);
 		composite.setBackground(null);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -73,7 +74,6 @@ public class SearchControl extends ControlContribution {
 
 		searchText = toolkit.createText(composite, "", SWT.FLAT | SWT.SEARCH); //$NON-NLS-1$
 		searchText.setData(FormToolkit.TEXT_BORDER, Boolean.TRUE);
-
 		searchText.setLayoutData(new GridData(200, -1));
 		ToolBar cancelBar = new ToolBar(composite, SWT.FLAT);
 

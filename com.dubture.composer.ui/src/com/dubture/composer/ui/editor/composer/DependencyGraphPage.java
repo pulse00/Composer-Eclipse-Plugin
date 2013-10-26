@@ -3,6 +3,8 @@ package com.dubture.composer.ui.editor.composer;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
@@ -23,6 +25,7 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.composer.ui.actions.ToggleDevAction;
 import com.dubture.composer.ui.controller.GraphController;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.toolbar.SearchControl;
@@ -34,20 +37,22 @@ import com.dubture.getcomposer.core.collection.ComposerPackages;
  */
 public class DependencyGraphPage extends ComposerFormPage implements ModifyListener {
 
+	private static final String SEARCH_ID = "composer.dpg.search";
+	private static final String SEPARATOR_ID = "composer.dpg.separator";
 	public final static String ID = "com.dubture.composer.ui.editor.composer.DependencyGraphPage";
 	protected ComposerFormEditor editor;
 	private GraphController graphController;
 	private GraphViewer viewer;
 	private IComposerProject composerProject;
 	private IProject project;
-	private final SearchControl searchControl;
+	private SearchControl searchControl;
+	
+	private IToolBarManager manager;
 	
 	
-	public DependencyGraphPage(ComposerFormEditor editor, String id, String title, SearchControl searchControl) {
+	public DependencyGraphPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
 		this.editor = editor;
-		this.searchControl = searchControl;
-		this.searchControl.addModifyListener(this);
 	}
 	
 	@Override
@@ -55,6 +60,20 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 		super.setActive(active);
 		if (active) {
 			editor.getHeaderForm().getForm().setText("Dependency Graph");
+		}
+		
+		active = active && editor.isValidJson();
+		
+		// set toolbar contributions visible
+		manager.find(ToggleDevAction.ID).setVisible(active);
+		manager.find(SEPARATOR_ID).setVisible(active);
+		searchControl.setVisible(active);
+		manager.update(true);
+		
+		viewer.getControl().setEnabled(active);
+		
+		if (active) {
+			update();
 		}
 	}
 
@@ -92,6 +111,23 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 		update();
 	}
 	
+	@Override
+	public void contributeToToolbar(IToolBarManager manager, IManagedForm headerForm) {
+		this.manager = manager;
+		searchControl = new SearchControl(SEARCH_ID, headerForm);
+		searchControl.setVisible(false);
+		searchControl.addModifyListener(this);
+		
+		manager.add(searchControl);
+		manager.add(new ToggleDevAction(this));
+		manager.find(ToggleDevAction.ID).setVisible(false);
+		
+		Separator graphSeparator = new Separator();
+		graphSeparator.setId(SEPARATOR_ID);
+		graphSeparator.setVisible(false);
+		manager.add(graphSeparator);
+	}
+	
 	private LayoutAlgorithm setLayout() {
 		LayoutAlgorithm layout;
 		layout = new CompositeLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING, 
@@ -123,7 +159,10 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 	}
 	
 	protected void update() {
-		if (composerProject != null && viewer != null && viewer != null && !viewer.getControl().isDisposed()) {
+		if (composerProject != null 
+				&& viewer != null 
+				&& !viewer.getControl().isDisposed()
+				&& editor.isValidJson()) {
 			ComposerPackages packages = composerProject.getInstalledPackages();
 			packages.add(composerProject.getComposerPackage());
 			viewer.setInput(packages);
@@ -134,7 +173,7 @@ public class DependencyGraphPage extends ComposerFormPage implements ModifyListe
 	public void applyFilter(boolean showDev) {
 		DevFilter filter = new DevFilter();
 
-		if (showDev == false) {
+		if (!showDev) {
 			filter.hideDevPackages();
 		}
 

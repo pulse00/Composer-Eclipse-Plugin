@@ -1,11 +1,13 @@
 package com.dubture.composer.ui.editor;
 
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 
 import com.dubture.composer.ui.editor.composer.ComposerFormEditor;
 
-public abstract class ComposerFormPage extends FormPage {
+public class ComposerFormPage extends FormPage {
 
 	protected boolean enabled = true;
 	
@@ -23,5 +25,9 @@ public abstract class ComposerFormPage extends FormPage {
 	
 	public boolean isEnabled() {
 		return enabled;
+	}
+	
+	public void contributeToToolbar(IToolBarManager manager, IManagedForm headerForm) {
+		
 	}
 }

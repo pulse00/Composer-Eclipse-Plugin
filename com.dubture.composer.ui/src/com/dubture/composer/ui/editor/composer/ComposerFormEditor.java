@@ -12,9 +12,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
@@ -41,7 +40,6 @@ import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.actions.UpdateNoDevAction;
 import com.dubture.composer.ui.editor.ComposerFormPage;
-import com.dubture.composer.ui.editor.toolbar.SearchControl;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.json.ParseException;
 
@@ -72,6 +70,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected AutoloadPage autoloadPage;
 	protected JsonTextEditor jsonEditor;
 	protected DependencyGraphPage graphPage;
+	
+	protected IToolBarManager toolbarManager;
 
 	private boolean validJson = true;
 	
@@ -79,9 +79,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	private boolean saving = false;
 	private boolean pageChanging = false;
 	
-	
 	private IFile jsonFile;
-	private SearchControl searchControl;
 
 	public ComposerFormEditor() {
 		super();
@@ -128,7 +126,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 				});
 			}
 		}
-			
+
 		composerPackage = new ComposerPackage();
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
@@ -147,10 +145,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		FormToolkit toolkit = headerForm.getToolkit();
 		toolkit.decorateFormHeading(header.getForm());
 		
-		ToolBarManager manager = (ToolBarManager) header.getToolBarManager();
-		
-		contributeToToolbar(manager, headerForm);
-	    manager.update(true);
+		toolbarManager = (ToolBarManager) header.getToolBarManager();
 	}
 
 	@Override
@@ -160,11 +155,20 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
 		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
-		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph", searchControl);
+		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph");
 
 		// add them
 		super.createPages();
 		
+		// contribute toolbar items
+		for (Object pageObj : pages) {
+			if (pageObj instanceof ComposerFormPage && pageObj != jsonEditor) {
+				ComposerFormPage page = (ComposerFormPage) pageObj;
+				page.contributeToToolbar(toolbarManager, getHeaderForm());
+			}
+		}
+		contributeToToolbar(toolbarManager);
+
 		// parse json
 		jsonDump = documentProvider.getDocument(getEditorInput()).get();
 		parse(jsonDump);
@@ -201,11 +205,6 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		super.pageChange(newPageIndex);
 		
 		pageChanging = true;
-		ToolBarManager manager = (ToolBarManager) getHeaderForm().getForm().getToolBarManager();
-		manager.find("toggleDev").setVisible(newPageIndex == 4);
-		manager.find("graphSeparator").setVisible(newPageIndex == 4);
-		searchControl.setVisible(newPageIndex == 4);
-		manager.update(true);
 		
 		// change to json editor
 		if (isJsonEditor()) {
@@ -231,20 +230,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		pageChanging = false;
 	}
 	
-	protected void contributeToToolbar(ToolBarManager manager, IManagedForm headerForm) {
+	protected void contributeToToolbar(IToolBarManager manager) {
 		// this does not work for some reasons? how to make it working and get rid of the action package?
 //		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
 //		menuService.populateContributionManager(manager, "toolbar:com.dubture.composer.ui.editor.toolbar");
 
-		searchControl = new SearchControl("composer.SearchControl", headerForm);
-		
-		manager.add(searchControl);
-		manager.add(new ToggleDevAction());
-		
-		Separator graphSeparator = new Separator();
-		graphSeparator.setId("graphSeparator");
-		manager.add(graphSeparator);
-		
 		manager.add(getInstallAction());
 		manager.add(getInstallDevAction());
 		manager.add(new Separator());
@@ -252,6 +242,14 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		manager.add(getUpdateAction());
 		manager.add(new Separator());
 		manager.add(getSelfUpdateAction());
+		manager.update(true);
+	}
+	
+	@Override
+	public void dispose() {
+		toolbarManager = null;
+		
+		super.dispose();
 	}
 	
 	protected ISharedImages getSharedImages() {
@@ -307,22 +305,10 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			saving = true;
 			IDocument document = documentProvider.getDocument(getEditorInput());
 
-			// load from json editor when currently active
-//			if (getActivePage() == jsonEditorIndex) {
-//				String json = document.get();
-//				if (jsonDump != null && !jsonDump.equals(json)) {
-//					composerPackage.fromJson(json);
-//				}
-//				jsonDump = json;
-//			}
-
-			// validate
-//			parse(document.get());
-
-			if (!isJsonEditor()) {
-				document.set(composerPackage.toJson());
-			} else {
+			if (isJsonEditor()) {
 				validateJson(document.get());
+			} else {
+				document.set(composerPackage.toJson());
 			}
 
 			// write
@@ -330,6 +316,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
 			documentProvider.changed(getEditorInput());
 
+			jsonDump = document.get();
+			
 			setDirty(false);
 			saving = false;
 		} catch (Exception e) {
@@ -404,12 +392,18 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		}
 		
 		// change enabled status for pages
-		for (Object pageObj : pages) {
-			if (pageObj instanceof ComposerFormPage && pageObj != jsonEditor) {
-				ComposerFormPage page = (ComposerFormPage) pageObj;
-				page.setEnabled(valid);
+		if (pages != null) {
+			for (Object pageObj : pages) {
+				if (pageObj instanceof ComposerFormPage && pageObj != jsonEditor) {
+					ComposerFormPage page = (ComposerFormPage) pageObj;
+					page.setEnabled(valid);
+				}
 			}
 		}
+	}
+	
+	public boolean isValidJson() {
+		return validJson;
 	}
 	
 	private void addMessage(String id, String message, int type) {
@@ -495,22 +489,4 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		}
 	}
 
-	// where does this belong to ?!?
-	protected class ToggleDevAction extends Action {
-
-		private boolean showDev;
-
-		public ToggleDevAction() {
-			super("Toggle dev packages");
-			setDescription("Toggle dev packages");
-			setToolTipText("Toggle dev packages");
-			setId("toggleDev");
-			DLTKPluginImages.setLocalImageDescriptors(this, "th_showqualified.gif"); //$NON-NLS-1$
-		}
-
-		public void run() {
-			showDev = !showDev;
-			graphPage.applyFilter(showDev);
-		}
-	}
 }
