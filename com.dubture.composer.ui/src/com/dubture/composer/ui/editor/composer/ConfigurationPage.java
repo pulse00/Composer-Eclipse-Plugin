@@ -1,13 +1,14 @@
 package com.dubture.composer.ui.editor.composer;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
+import com.dubture.composer.ui.editor.FormLayoutFactory;
 
 public class ConfigurationPage extends ComposerFormPage {
 
@@ -51,25 +52,22 @@ public class ConfigurationPage extends ComposerFormPage {
 		
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
+		
+		form.getBody().setLayout(FormLayoutFactory.createFormGridLayout(true, 2));
+		
+		left = toolkit.createComposite(form.getBody(), SWT.NONE);
+		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		left.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		TableWrapLayout layout = new TableWrapLayout();
-		layout.makeColumnsEqualWidth = true;
-		layout.numColumns = 2;
-		form.getBody().setLayout(layout);
-		
-		left = toolkit.createComposite(form.getBody());
-		left.setLayout(new TableWrapLayout());
-		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
-		
 		configSection = new ConfigSection(this, left);
 		configSection.setEnabled(enabled);
 		
 		scriptsSection = new ScriptsSection(this, left);
 		scriptsSection.setEnabled(enabled);
 		
-		right = toolkit.createComposite(form.getBody());
-		right.setLayout(new TableWrapLayout());
-		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		right = toolkit.createComposite(form.getBody(), SWT.NONE);
+		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		right.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		repositoriesSection = new RepositoriesSection(this, right);
 		repositoriesSection.setEnabled(enabled);

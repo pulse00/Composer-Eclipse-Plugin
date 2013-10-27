@@ -59,14 +59,12 @@ public class Psr0Section extends TreeSection implements PropertyChangeListener {
 
 	@Override
 	protected void createClient(Section section, FormToolkit toolkit) {
-
 		section.setText("psr-0");
 		section.setDescription("Manage the psr-0 settings for your package.");
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.grabExcessVerticalSpace = true;
 		section.setLayoutData(gd);
-		
 
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.SINGLE, 2, toolkit);

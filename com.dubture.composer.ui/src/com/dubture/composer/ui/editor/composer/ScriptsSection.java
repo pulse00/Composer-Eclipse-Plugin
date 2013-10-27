@@ -14,10 +14,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 
 import com.dubture.composer.ui.controller.ScriptsController;
 import com.dubture.composer.ui.dialogs.ScriptDialog;
@@ -44,12 +44,15 @@ public class ScriptsSection extends TreeSection implements PropertyChangeListene
 		super(page, parent, Section.DESCRIPTION, new String[]{"Add...", "Edit...", "Remove"});
 		createClient(getSection(), page.getManagedForm().getToolkit());
 	}
-	
+
 	@Override
 	protected void createClient(Section section, FormToolkit toolkit) {
 		section.setText("Scripts");
 		section.setDescription("Manage the scripts for your package.");
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		gd.grabExcessVerticalSpace = true;
+		section.setLayoutData(gd);
 
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.SINGLE, 2, toolkit);

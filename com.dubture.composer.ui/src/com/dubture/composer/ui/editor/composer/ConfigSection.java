@@ -3,10 +3,10 @@ package com.dubture.composer.ui.editor.composer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.ComposerSection;
@@ -32,7 +32,8 @@ public class ConfigSection extends ComposerSection {
 	protected void createClient(Section section, FormToolkit toolkit) {
 		section.setText("Config");
 		section.setDescription("Configure your package.");
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+//		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
 		Composite client = toolkit.createComposite(section);
 		client.setLayout(FormLayoutFactory.createSectionClientTableWrapLayout(false, 2));

@@ -210,10 +210,12 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		if (isJsonEditor()) {
 			if (validJson) {
 				IDocument document = documentProvider.getDocument(getEditorInput());
-				jsonDump = composerPackage.toJson();
-				document.set(jsonDump);
+				String json = composerPackage.toJson();
+				document.set(json);
+				setDirty(jsonDump != null && !jsonDump.equals(json));
+				jsonDump = json;
 			}
-			
+
 			getHeaderForm().getForm().setText(jsonEditor.getTitle());
 		}
 
@@ -221,8 +223,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		if (lastPageIndex != -1 && lastPageIndex == jsonEditorIndex) {
 			String json = documentProvider.getDocument(jsonEditor.getEditorInput()).get();
 			if (jsonDump != null && !jsonDump.equals(json)) {
+				boolean dirty = isDirty();
 				parse(json);
-				setDirty(false);
+				setDirty(dirty);
 			}
 		}
 		
@@ -305,9 +308,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			saving = true;
 			IDocument document = documentProvider.getDocument(getEditorInput());
 
-			if (isJsonEditor()) {
-				validateJson(document.get());
-			} else {
+			validateJson(document.get());
+
+			if (!isJsonEditor() && isValidJson()) {
 				document.set(composerPackage.toJson());
 			}
 
