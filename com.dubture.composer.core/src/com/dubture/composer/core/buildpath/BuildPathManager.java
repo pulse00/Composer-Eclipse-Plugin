@@ -2,6 +2,7 @@ package com.dubture.composer.core.buildpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
@@ -92,6 +93,9 @@ public class BuildPathManager {
 			}
 		}
 		
+		// sort paths for nesting detection
+		Collections.sort(paths);
+		
 		// add new entries to buildpath
 		List<IBuildpathEntry> newEntries = new ArrayList<IBuildpathEntry>();
 		for (String path : paths) {
@@ -116,10 +120,14 @@ public class BuildPathManager {
 	private void addPath(IPath path, List<IBuildpathEntry> entries) {
 		// find parent
 		IBuildpathEntry parent = null;
+		int parentLength = 0;
+		IPath entryPath;
 		for (IBuildpathEntry entry : entries) {
-			if (entry.getPath().isPrefixOf(path)) {
+			entryPath = entry.getPath();
+			if (entryPath.isPrefixOf(path) 
+					&& (parent == null || (entryPath.toString().length() > parentLength))) {
 				parent = entry;
-				break;
+				parentLength = parent.getPath().toString().length();
 			}
 		}
 		
@@ -128,14 +136,14 @@ public class BuildPathManager {
 			List<IPath> exclusions = new ArrayList<IPath>(); 
 			exclusions.addAll(Arrays.asList(parent.getExclusionPatterns()));
 			
-			IPath diff;
+			IPath diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
 			if (parent.getPath().equals(composerPath)) {
-				diff = path.removeFirstSegments(path.matchingFirstSegments(composerPath)).uptoSegment(1);
-			} else {
-				diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
+				diff = path.uptoSegment(1);
 			}
 			diff = diff.removeTrailingSeparator().addTrailingSeparator();
-			exclusions.add(diff);
+			if (!exclusions.contains(diff)) {
+				exclusions.add(diff);
+			}
 			
 			entries.remove(parent);
 			
