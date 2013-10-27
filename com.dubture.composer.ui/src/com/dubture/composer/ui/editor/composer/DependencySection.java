@@ -27,7 +27,7 @@ import com.dubture.composer.ui.dialogs.DependencyDialog;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.composer.ui.editor.FormLayoutFactory;
 import com.dubture.composer.ui.editor.TableSection;
-import com.dubture.composer.ui.job.UpdateJob;
+import com.dubture.composer.ui.job.UpdateDevJob;
 import com.dubture.composer.ui.parts.TablePart;
 import com.dubture.getcomposer.core.VersionedPackage;
 import com.dubture.getcomposer.core.collection.Dependencies;
@@ -41,7 +41,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 	private IAction removeAction;
 	private IAction updateAction;
 	
-	private UpdateJob updateJob;
+	private UpdateDevJob updateJob;
 	
 	private static final int EDIT_INDEX = 0;
 	private static final int REMOVE_INDEX = 1;
@@ -52,7 +52,7 @@ public class DependencySection extends TableSection implements PropertyChangeLis
 		
 		this.dependencies = dependencies;
 		createClient(getSection(), page.getManagedForm().getToolkit(), title, description, expanded);
-		updateJob = new UpdateJob(page.getComposerEditor().getProject());
+		updateJob = new UpdateDevJob(page.getComposerEditor().getProject());
 		updateJob.setUser(true);
 	}
 

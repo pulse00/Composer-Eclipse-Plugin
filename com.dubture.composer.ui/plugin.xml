@@ -124,9 +124,9 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Run `composer.phar install`"
+            description="Run `composer.phar install --no-dev`"
             id="com.dubture.composer.ui.command.install"
-            name="Install dependencies">
+            name="Install Dependencies">
       </command>
       <command
             description="Run `composer.phar install --dev`"
@@ -134,14 +134,14 @@
             name="Install Dependencies (dev)">
       </command>
       <command
-            description="Run `composer.phar update`"
-            id="com.dubture.composer.ui.command.update"
-            name="Update dependencies">
+            description="Run `composer.phar update --dev`"
+            id="com.dubture.composer.ui.command.updateDev"
+            name="Update dependencies (dev)">
       </command>
       <command
             description="Run `composer.phar update --no-dev`"
-            id="com.dubture.composer.ui.command.updateNoDev"
-            name="Update Dependencies (no-dev)">
+            id="com.dubture.composer.ui.command.update"
+            name="Update Dependencies">
       </command>
       <command
             description="Run `composer.phar self-update`"

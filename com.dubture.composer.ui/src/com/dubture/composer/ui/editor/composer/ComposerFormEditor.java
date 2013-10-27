@@ -37,8 +37,8 @@ import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.actions.InstallAction;
 import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
+import com.dubture.composer.ui.actions.UpdateDevAction;
 import com.dubture.composer.ui.actions.UpdateAction;
-import com.dubture.composer.ui.actions.UpdateNoDevAction;
 import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.json.ParseException;
@@ -278,7 +278,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	
 	protected IAction getUpdateAction() {
 		if (updateAction == null) {
-			updateAction = new UpdateAction(project, getSite());
+			updateAction = new UpdateDevAction(project, getSite());
 		}
 		
 		return updateAction;
@@ -286,7 +286,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	
 	protected IAction getUpdateNoDevAction() {
 		if (updateNoDevAction == null) {
-			updateNoDevAction = new UpdateNoDevAction(project, getSite());
+			updateNoDevAction = new UpdateAction(project, getSite());
 		}
 		
 		return updateNoDevAction;
