@@ -130,6 +130,15 @@ public class FormEntry {
 		setTextWidthHint(DEFAULT_TEXT_WIDTH_HINT);
 	}
 
+	public void setEnabled(boolean enabled) {
+		text.setEnabled(enabled);
+		if (label instanceof Hyperlink)
+			((Hyperlink) label).setUnderlined(enabled);
+
+		if (browse != null)
+			browse.setEnabled(enabled);
+	}
+	
 	public void setEditable(boolean editable) {
 		text.setEditable(editable);
 		if (label instanceof Hyperlink)

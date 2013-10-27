@@ -1,19 +1,24 @@
 package com.dubture.composer.ui.editor.composer;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import com.dubture.composer.ui.editor.ComposerFormPage;
+import com.dubture.composer.ui.editor.FormLayoutFactory;
 
 public class ConfigurationPage extends ComposerFormPage {
 
 	public final static String ID = "com.dubture.composer.ui.editor.composer.ConfigurationPage";
 
 	protected ComposerFormEditor editor;
+	
+	protected ConfigSection configSection;
+	protected ScriptsSection scriptsSection;
+	protected RepositoriesSection repositoriesSection;
 	
 	private Composite left;
 	private Composite right;
@@ -47,23 +52,35 @@ public class ConfigurationPage extends ComposerFormPage {
 		
 		ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
+		
+		form.getBody().setLayout(FormLayoutFactory.createFormGridLayout(true, 2));
+		
+		left = toolkit.createComposite(form.getBody(), SWT.NONE);
+		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		left.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		TableWrapLayout layout = new TableWrapLayout();
-		layout.makeColumnsEqualWidth = true;
-		layout.numColumns = 2;
-		form.getBody().setLayout(layout);
+		configSection = new ConfigSection(this, left);
+		configSection.setEnabled(enabled);
 		
-		left = toolkit.createComposite(form.getBody());
-		left.setLayout(new TableWrapLayout());
-		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		scriptsSection = new ScriptsSection(this, left);
+		scriptsSection.setEnabled(enabled);
 		
-		new ConfigSection(this, left);
-		new ScriptsSection(this, left);
+		right = toolkit.createComposite(form.getBody(), SWT.NONE);
+		right.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
+		right.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
-		right = toolkit.createComposite(form.getBody());
-		right.setLayout(new TableWrapLayout());
-		right.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		repositoriesSection = new RepositoriesSection(this, right);
+		repositoriesSection.setEnabled(enabled);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
 		
-		new RepositoriesSection(this, right);
+		if (configSection != null) {
+			configSection.setEnabled(enabled);
+			scriptsSection.setEnabled(enabled);
+			repositoriesSection.setEnabled(enabled);
+		}
 	}
 }

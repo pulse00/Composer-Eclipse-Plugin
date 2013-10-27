@@ -29,8 +29,8 @@ public class ComposerUIPluginImages {
 	public static final ImageDescriptor BROWSER = create(T_OBJ16, "browser.gif");
 	public static final ImageDescriptor INSTALL = create(T_OBJ16, "install.gif");
 	public static final ImageDescriptor INSTALL_DEV = create(T_OBJ16, "install_dev.gif");
-	public static final ImageDescriptor UPDATE = create(T_OBJ16, "update.gif");
-	public static final ImageDescriptor UPDATE_NODEV = create(T_OBJ16, "update_nodev.gif");
+	public static final ImageDescriptor UPDATE = create(T_OBJ16, "update.png");
+	public static final ImageDescriptor UPDATE_DEV = create(T_OBJ16, "update_dev.png");
 	public static final ImageDescriptor SELFUPDATE = create(T_OBJ16, "selfupdate.gif");
 	public static final ImageDescriptor EVENT = create(T_OBJ16, "event3.png");
 	public static final ImageDescriptor SCRIPT = create(T_OBJ16, "script2.png");

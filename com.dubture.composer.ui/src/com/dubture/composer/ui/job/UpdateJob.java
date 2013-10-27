@@ -8,27 +8,12 @@ import org.pdtextensions.core.launch.ScriptLauncher;
 
 public class UpdateJob extends ComposerJob {
 
-	private String[] packages = null;
-	
 	public UpdateJob(IProject project) {
-		super(project, "Updating composer dependencies...");
-	}
-	
-	public void setPackages(String[] packages) {
-		this.packages = packages;
-	}
-	
-	public String[] getPackages() {
-		return packages;
+		super(project, "Updating composer dependencies (no-dev)...");
 	}
 
 	protected void launch(ScriptLauncher launcher) throws ExecuteException,
 			IOException, InterruptedException {
-		
-		if (packages == null) {
-			launcher.launch("update");
-		} else {
-			launcher.launch("update", packages);
-		}
+		launcher.launch("update", "--no-dev");
 	}
 }

@@ -66,6 +66,8 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		}
 	};
 	
+	protected boolean enabled = true;
+	
 	protected ComposerPackage composerPackage;
 	
 	protected Set<PackageSelectionFinishedListener> packageListeners = new HashSet<PackageSelectionFinishedListener>();
@@ -116,6 +118,8 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		body.setLayout(new GridLayout());
 		
 		searchField = factory.createText(body, SWT.SINGLE | SWT.BORDER | SWT.SEARCH | SWT.ICON_CANCEL | SWT.ICON_SEARCH);
+		searchField.setEnabled(enabled);
+		searchField.setEditable(enabled);
 		searchField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		searchField.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
@@ -145,6 +149,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 		searchController = getSearchResultsController();
 		searchController.addPackageCheckStateChangedListener(this);
 		searchResults = CheckboxTableViewer.newCheckList(body, style);
+		searchResults.getTable().setEnabled(enabled);
 		searchResults.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		searchResults.setCheckStateProvider(searchController);
 		searchResults.addCheckStateListener(searchController);
@@ -301,6 +306,21 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 	public Composite getBody() {
 		return body;
 	}
+	
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+		searchField.setEnabled(enabled);
+		searchField.setEditable(enabled);
+		searchResults.getTable().setEnabled(enabled);
+		
+		if (addButton != null) {
+			addButton.setEnabled(addButton.getEnabled() && enabled);
+		}
+	}
+	
+	public boolean isEnabled() {
+		return enabled;
+	}
 
 	@Override
 	public void packageCheckStateChanged(String name, boolean checked) {
@@ -310,7 +330,7 @@ public class PackageSearch implements PackageSearchListenerInterface, IPackageCh
 			packageControls.remove(name).dispose();
 		}
 		if (addButton != null) {
-			addButton.setEnabled(searchController.getCheckedPackagesCount() > 0);
+			addButton.setEnabled(searchController.getCheckedPackagesCount() > 0 && enabled);
 		}
 		getBody().layout(true, true);
 	}

@@ -23,10 +23,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.ui.forms.widgets.TableWrapData;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
 import com.dubture.composer.ui.controller.IController;
@@ -148,7 +148,7 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 	protected void createClient(Section section, FormToolkit toolkit) {
 		section.setText("Repositories");
 		section.setDescription("Manage repositories as sources for this package.");
-		section.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+		section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		Composite container = createClientContainer(section, 2, toolkit);
 		createViewerPartControl(container, SWT.MULTI, 2, toolkit);
@@ -178,8 +178,9 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		ISelection selection = repositoryViewer.getSelection();
 		
 		TablePart tablePart = getTablePart();
-		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty());
-		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty());
+		tablePart.setButtonEnabled(ADD_INDEX, enabled);
+		tablePart.setButtonEnabled(EDIT_INDEX, !selection.isEmpty() && enabled);
+		tablePart.setButtonEnabled(REMOVE_INDEX, !selection.isEmpty() && enabled);
 	}
 	
 	private void updateMenu() {
@@ -187,6 +188,15 @@ public class RepositoriesSection extends TableSection implements PropertyChangeL
 		
 		editAction.setEnabled(selection.size() > 0);
 		removeAction.setEnabled(selection.size() > 0);
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		updateButtons();
+		
+		refresh();
+		repositoryViewer.getTable().setEnabled(enabled);
 	}
 
 	public void refresh() {

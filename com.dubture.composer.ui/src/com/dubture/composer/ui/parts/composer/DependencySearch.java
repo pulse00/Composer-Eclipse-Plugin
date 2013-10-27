@@ -114,7 +114,7 @@ public class DependencySearch extends PackageSearch {
 							&& !((DependencySearchPart)psp).getVersionControl().getText().isEmpty();
 				}
 
-				addButton.setEnabled(canFinish);
+				addButton.setEnabled(canFinish && enabled);
 			}
 		});
 		

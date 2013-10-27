@@ -12,9 +12,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.dltk.ui.DLTKPluginImages;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.text.DocumentEvent;
@@ -27,6 +26,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -37,14 +37,17 @@ import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.ui.actions.InstallAction;
 import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
+import com.dubture.composer.ui.actions.UpdateDevAction;
 import com.dubture.composer.ui.actions.UpdateAction;
-import com.dubture.composer.ui.actions.UpdateNoDevAction;
-import com.dubture.composer.ui.editor.toolbar.SearchControl;
+import com.dubture.composer.ui.editor.ComposerFormPage;
 import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.json.ParseException;
 
-public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocumentListener, IResourceChangeListener {
+public class ComposerFormEditor extends SharedHeaderFormEditor {
 	
 	public static final String ID = "com.dubture.composer.ui.editor.composer.ComposerEditor";
+	public static final String MSG_PARSE_ERROR = "com.dubture.composer.ui.editor.composer.ParseException";
+
 	protected boolean dirty = false;
 	protected ComposerPackage composerPackage = null;
 	protected IDocumentProvider documentProvider;
@@ -66,14 +69,17 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	protected ConfigurationPage configurationPage;
 	protected AutoloadPage autoloadPage;
 	protected JsonTextEditor jsonEditor;
+	protected DependencyGraphPage graphPage;
+	
+	protected IToolBarManager toolbarManager;
 
-	private String jsonDump;
+	private boolean validJson = true;
+	
+	private String jsonDump = null;
 	private boolean saving = false;
 	private boolean pageChanging = false;
-	private DependencyGraphPage graphPage;
 	
 	private IFile jsonFile;
-	private SearchControl searchControl;
 
 	public ComposerFormEditor() {
 		super();
@@ -86,7 +92,17 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		super.setInput(input);
 		try {
 			documentProvider.connect(input);
-			documentProvider.getDocument(getEditorInput()).addDocumentListener(this);
+			documentProvider.getDocument(getEditorInput()).addDocumentListener(new IDocumentListener() {
+				@Override
+				public void documentChanged(DocumentEvent event) {
+					ComposerFormEditor.this.documentChanged(event);
+				}
+				
+				@Override
+				public void documentAboutToBeChanged(DocumentEvent event) {
+					ComposerFormEditor.this.documentAboutToBeChanged(event);
+				}
+			});
 		} catch (CoreException e) {
 			Logger.logException(e);
 		}
@@ -102,14 +118,16 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			if (jsonFile != null) {
 				project = jsonFile.getProject();
 				setPartName(project.getName());
-				ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
+				ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
+					@Override
+					public void resourceChanged(IResourceChangeEvent event) {
+						ComposerFormEditor.this.resourceChanged(event);
+					}
+				});
 			}
 		}
-			
-		// ok, cool way here we go
-		String json = documentProvider.getDocument(input).get();
-		
-		composerPackage = new ComposerPackage(json);
+
+		composerPackage = new ComposerPackage();
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				Logger.debug("Property change: " + e.getPropertyName() + ", oldValue: " + e.getOldValue() + ", newValue: " + e.getNewValue());
@@ -117,16 +135,53 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			}
 		});
 	}
+	
+	@Override
+	protected void createHeaderContents(IManagedForm headerForm) {
+		super.createHeaderContents(headerForm);
+		ScrolledForm header = headerForm.getForm();
+		header.setText("Composer");
+		
+		FormToolkit toolkit = headerForm.getToolkit();
+		toolkit.decorateFormHeading(header.getForm());
+		
+		toolbarManager = (ToolBarManager) header.getToolBarManager();
+	}
 
 	@Override
 	protected void createPages() {
+		// create pages
 		overviewPage = new OverviewPage(this, OverviewPage.ID, "Overview");
 		dependenciesPage = new DependenciesPage(this, DependenciesPage.ID, "Dependencies");
 		configurationPage = new ConfigurationPage(this, ConfigurationPage.ID, "Configuration");
 		autoloadPage = new AutoloadPage(this, AutoloadPage.ID, "Autoload");
-		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph", searchControl);
+		graphPage = new DependencyGraphPage(this, DependencyGraphPage.ID, "Dependency Graph");
 
+		// add them
 		super.createPages();
+		
+		// contribute toolbar items
+		for (Object pageObj : pages) {
+			if (pageObj instanceof ComposerFormPage && pageObj != jsonEditor) {
+				ComposerFormPage page = (ComposerFormPage) pageObj;
+				page.contributeToToolbar(toolbarManager, getHeaderForm());
+			}
+		}
+		contributeToToolbar(toolbarManager);
+
+		// parse json
+		jsonDump = documentProvider.getDocument(getEditorInput()).get();
+		parse(jsonDump);
+		setDirty(false);
+		
+		if (!validJson) {
+			setActivePage(jsonEditorIndex);
+			
+			IManagedForm headerForm = getHeaderForm();
+			if (headerForm != null) {
+				headerForm.getMessageManager().update();
+			}
+		}
 	}
 
 	@Override
@@ -143,69 +198,46 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			Logger.logException(e);
 		}
 	}
-	
+
 	@Override
 	protected void pageChange(int newPageIndex) {
 		// change page first
 		super.pageChange(newPageIndex);
 		
 		pageChanging = true;
-		ToolBarManager manager = (ToolBarManager) getHeaderForm().getForm().getToolBarManager();
-		manager.find("toggleDev").setVisible(newPageIndex == 4);
-		manager.find("graphSeparator").setVisible(newPageIndex == 4);
-		searchControl.setVisible(newPageIndex == 4);
-		manager.update(true);
 		
-		// react to it
-		if (getActiveEditor() == jsonEditor) {
-			IDocument document = documentProvider.getDocument(getEditorInput());
-			jsonDump = composerPackage.toJson();
-			document.set(jsonDump);
-			
+		// change to json editor
+		if (isJsonEditor()) {
+			if (validJson) {
+				IDocument document = documentProvider.getDocument(getEditorInput());
+				String json = composerPackage.toJson();
+				document.set(json);
+				setDirty(jsonDump != null && !jsonDump.equals(json));
+				jsonDump = json;
+			}
+
 			getHeaderForm().getForm().setText(jsonEditor.getTitle());
 		}
-		
+
+		// change from json editor
 		if (lastPageIndex != -1 && lastPageIndex == jsonEditorIndex) {
 			String json = documentProvider.getDocument(jsonEditor.getEditorInput()).get();
 			if (jsonDump != null && !jsonDump.equals(json)) {
-				composerPackage.fromJson(json);
+				boolean dirty = isDirty();
+				parse(json);
+				setDirty(dirty);
 			}
 		}
 		
 		lastPageIndex = newPageIndex;
 		pageChanging = false;
 	}
-
-	@Override
-	protected void createHeaderContents(IManagedForm headerForm) {
-		ScrolledForm header = headerForm.getForm();
-		header.setText("Composer");
-		
-		FormToolkit toolkit = headerForm.getToolkit();
-		toolkit.decorateFormHeading(header.getForm());
-		
-		ToolBarManager manager = (ToolBarManager) header.getToolBarManager();
-		
-		contributeToToolbar(manager, headerForm);
-	    manager.update(true);
-	    
-	}
 	
-	
-	protected void contributeToToolbar(ToolBarManager manager, IManagedForm headerForm) {
+	protected void contributeToToolbar(IToolBarManager manager) {
 		// this does not work for some reasons? how to make it working and get rid of the action package?
 //		IMenuService menuService = (IMenuService) getSite().getService(IMenuService.class);
 //		menuService.populateContributionManager(manager, "toolbar:com.dubture.composer.ui.editor.toolbar");
 
-		searchControl = new SearchControl("composer.SearchControl", headerForm);
-		
-		manager.add(searchControl);
-		manager.add(new ToggleDevAction());
-		
-		Separator graphSeparator = new Separator();
-		graphSeparator.setId("graphSeparator");
-		manager.add(graphSeparator);
-		
 		manager.add(getInstallAction());
 		manager.add(getInstallDevAction());
 		manager.add(new Separator());
@@ -213,6 +245,14 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		manager.add(getUpdateAction());
 		manager.add(new Separator());
 		manager.add(getSelfUpdateAction());
+		manager.update(true);
+	}
+	
+	@Override
+	public void dispose() {
+		toolbarManager = null;
+		
+		super.dispose();
 	}
 	
 	protected ISharedImages getSharedImages() {
@@ -241,7 +281,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	
 	protected IAction getUpdateAction() {
 		if (updateAction == null) {
-			updateAction = new UpdateAction(project, getSite());
+			updateAction = new UpdateDevAction(project, getSite());
 		}
 		
 		return updateAction;
@@ -249,7 +289,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 	
 	protected IAction getUpdateNoDevAction() {
 		if (updateNoDevAction == null) {
-			updateNoDevAction = new UpdateNoDevAction(project, getSite());
+			updateNoDevAction = new UpdateAction(project, getSite());
 		}
 		
 		return updateNoDevAction;
@@ -267,22 +307,20 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		try {
 			saving = true;
 			IDocument document = documentProvider.getDocument(getEditorInput());
-			
-			// load from json editor when currently active
-			if (getActivePage() == jsonEditorIndex) {
-				String json = document.get();
-				if (jsonDump != null && !jsonDump.equals(json)) {
-					composerPackage.fromJson(json);
-				}
-				jsonDump = json;
+
+			validateJson(document.get());
+
+			if (!isJsonEditor() && isValidJson()) {
+				document.set(composerPackage.toJson());
 			}
-			
+
 			// write
 			documentProvider.aboutToChange(getEditorInput());
-			document.set(composerPackage.toJson());
 			documentProvider.saveDocument(monitor, getEditorInput(), document, true);
 			documentProvider.changed(getEditorInput());
 
+			jsonDump = document.get();
+			
 			setDirty(false);
 			saving = false;
 		} catch (Exception e) {
@@ -297,33 +335,98 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		return false;
 	}
 
-	@Override
-	public void documentAboutToBeChanged(DocumentEvent event) {
-
+	private void documentAboutToBeChanged(DocumentEvent event) {
 	}
 
-	@Override
-	public void documentChanged(DocumentEvent event) {
+	private void documentChanged(DocumentEvent event) {
+		String contents = event.getDocument().get();
+		
 		// changes happen outside eclipse
 		if (!pageChanging && !saving) {
-			String contents = event.getDocument().get();
-			if (getActiveEditor() == jsonEditor) { 
+			if (isJsonEditor()) {
 				IDocument document = documentProvider.getDocument(getEditorInput());
-				if (document.get() != null && document.get().equals(contents) == false) {
+				if (document.get() != null && !document.get().equals(contents)) {
 					document.set(contents);
 				}
 			} else {
-				composerPackage.fromJson(contents);
+				parse(contents);
 			}
 			setDirty(false);
 		}
 		
 		// changes in eclipse
-		if (!saving && jsonDump != null && !jsonDump.equals(event.getDocument().get())) {
+		if (!saving && jsonDump != null && !jsonDump.equals(contents)) {
 			setDirty(true);
 		}
 	}
+
+	private boolean isJsonEditor() {
+		return getActiveEditor() == jsonEditor;
+	}
+
+	private void parse(String contents) {
+		try {
+			composerPackage.fromJson(contents);
+			setValidJson(true);
+		} catch (ParseException e) {
+			setValidJson(false, e);
+		}
+	}
+
+	private void validateJson(String contents) {
+		try {
+			new ComposerPackage(contents);
+			setValidJson(true);
+		} catch (ParseException e) {
+			setValidJson(false, e);
+		}
+	}
 	
+	private void setValidJson(boolean valid) {
+		setValidJson(valid, null);
+	}
+	
+	private void setValidJson(boolean valid, ParseException e) {
+		validJson = valid;
+		if (valid) {
+			removeMessage(MSG_PARSE_ERROR);
+		} else {
+			addMessage(MSG_PARSE_ERROR, "Invalid Json: " + e.getMessage(), IMessage.ERROR);
+		}
+		
+		// change enabled status for pages
+		if (pages != null) {
+			for (Object pageObj : pages) {
+				if (pageObj instanceof ComposerFormPage && pageObj != jsonEditor) {
+					ComposerFormPage page = (ComposerFormPage) pageObj;
+					page.setEnabled(valid);
+				}
+			}
+		}
+	}
+	
+	public boolean isValidJson() {
+		return validJson;
+	}
+	
+	private void addMessage(String id, String message, int type) {
+		addMessage(id, message, type, null);
+	}
+	
+	private void addMessage(String id, String message, int type, Object data) {
+		IManagedForm headerForm = getHeaderForm();
+		if (headerForm != null) {
+			headerForm.getMessageManager().addMessage(id, message, data, type);
+		}
+	}
+	
+	private void removeMessage(String id) {
+		IManagedForm headerForm = getHeaderForm();
+		if (headerForm != null) {
+			headerForm.getMessageManager().removeMessage(id);
+		}
+	}
+
 	public boolean isDirty() {
 		return this.dirty;
 	}
@@ -332,7 +435,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		this.dirty = value;
 		editorDirtyStateChanged();
 	}
-	
+
 	public IProject getProject() {
 		return project;
 	}
@@ -341,18 +444,16 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 		return composerPackage;
 	}
 
-
 	/**
 	 * Based on org.eclipse.m2e.editor.pom.MavenPomEditor
 	 */
-	@Override
-	public void resourceChanged(IResourceChangeEvent event) {
+	private void resourceChanged(IResourceChangeEvent event) {
 
 		if (jsonFile == null) {
 			return;
 		}
 
-	    //handle project delete
+	    // handle project delete
 		if (event.getType() == IResourceChangeEvent.PRE_CLOSE || event.getType() == IResourceChangeEvent.PRE_DELETE) {
 			if (jsonFile.getProject().equals(event.getResource())) {
 				Display.getDefault().asyncExec(new Runnable() {
@@ -374,8 +475,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 				}
 				return true;
 			}
-		}
-		;
+		};
 
 		try {
 			RemovedResourceDeltaVisitor visitor = new RemovedResourceDeltaVisitor();
@@ -391,22 +491,5 @@ public class ComposerFormEditor extends SharedHeaderFormEditor implements IDocum
 			Logger.logException(ex);
 		}
 	}
-	
-	protected class ToggleDevAction extends Action {
 
-		private boolean showDev;
-
-		public ToggleDevAction() {
-			super("Toggle dev packages");
-			setDescription("Toggle dev packages");
-			setToolTipText("Toggle dev packages");
-			setId("toggleDev");
-			DLTKPluginImages.setLocalImageDescriptors(this, "th_showqualified.gif"); //$NON-NLS-1$
-		}
-
-		public void run() {
-			showDev = !showDev;
-			graphPage.applyFilter(showDev);
-		}
-	}
 }

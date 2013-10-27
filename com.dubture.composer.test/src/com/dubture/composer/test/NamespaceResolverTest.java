@@ -11,7 +11,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.IScriptProject;
-import org.eclipse.dltk.core.tests.model.AbstractModelTests;
 import org.eclipse.php.internal.core.PHPVersion;
 import org.eclipse.php.internal.core.facet.PHPFacets;
 import org.eclipse.php.internal.core.project.PHPNature;
@@ -23,16 +22,16 @@ import com.dubture.composer.core.facet.FacetManager;
 import com.dubture.composer.core.model.ModelAccess;
 
 @SuppressWarnings("restriction")
-public class NamespaceResolverTest extends AbstractModelTests {
+public class NamespaceResolverTest extends ComposerModelTests {
 
 	public NamespaceResolverTest() {
-		super(ComposerCoreTestPlugin.PLUGIN_ID, "Namespace Resolver tests");
+		super("Namespace Resolver tests");
 	}
 
 	@Test
 	public void testNamespaceResolver() throws CoreException, IOException {
 
-		IScriptProject scriptProject = setUpScriptProject("testproject1");
+		IScriptProject scriptProject = ensureScriptProject("testproject1");
 
 		assertNotNull(scriptProject);
 

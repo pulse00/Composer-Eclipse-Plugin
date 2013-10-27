@@ -35,7 +35,7 @@ public class DependenciesPage extends ComposerFormPage {
 	protected Composite right;
 	protected DependencySection activeSection;
 
-	protected DependencySection requireSection;
+	protected DependencySection requireSection = null;
 	protected TableViewer requireView;
 	protected Button requireEdit;
 	protected Button requireRemove;
@@ -45,7 +45,7 @@ public class DependenciesPage extends ComposerFormPage {
 	protected Button requireDevEdit;
 	protected Button requireDevRemove;
 	
-	
+	protected DependencySearchSection searchSection;
 	
 	/**
 	 * @param editor
@@ -82,6 +82,7 @@ public class DependenciesPage extends ComposerFormPage {
 		requireSection = new DependencySection(this, left, composerPackage.getRequire(), "Require", "The dependencies for your package.", true);
 		requireDevSection = new DependencySection(this, left, composerPackage.getRequireDev(), "Require (Development)", "The development dependencies for your package.", false);
 		
+		requireSection.setEnabled(enabled);
 		requireSection.getSection().addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanging(ExpansionEvent e) {
 				activeSection = e.getState() ? requireSection : requireDevSection;
@@ -91,6 +92,7 @@ public class DependenciesPage extends ComposerFormPage {
 			}
 		});
 		
+		requireDevSection.setEnabled(enabled);
 		requireDevSection.getSection().addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanging(ExpansionEvent e) {
 				activeSection = e.getState() ? requireDevSection : requireSection;
@@ -106,7 +108,8 @@ public class DependenciesPage extends ComposerFormPage {
 		right.setLayoutData(new GridData(GridData.FILL_BOTH));
 		
 		
-		DependencySearchSection searchSection = new DependencySearchSection(this, right);
+		searchSection = new DependencySearchSection(this, right);
+		searchSection.setEnabled(enabled);
 		searchSection.addDependencySelectionFinishedListener(new DependencySelectionFinishedListener() {
 			public void dependenciesSelected(Dependencies dependencies) {
 				Dependencies deps = activeSection == requireSection
@@ -118,5 +121,16 @@ public class DependenciesPage extends ComposerFormPage {
 			}
 		});
 		
+	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		if (requireSection != null) {
+			requireSection.setEnabled(enabled);
+			requireDevSection.setEnabled(enabled);
+			searchSection.setEnabled(enabled);
+		}	
 	}
 }

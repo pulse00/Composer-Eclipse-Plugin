@@ -32,6 +32,10 @@ public class OverviewPage extends ComposerFormPage {
 	private Composite left;
 	private Composite right;
 	
+	private GeneralSection generalSection;
+	private AuthorSection authorSection;
+	private SupportSection supportSection;
+	
 	protected IHyperlinkListener linkListener = new HyperlinkAdapter() {
 		public void linkActivated(HyperlinkEvent event) {
 			String[] chunks = event.getHref().toString().split(":");
@@ -64,6 +68,15 @@ public class OverviewPage extends ComposerFormPage {
 			editor.getHeaderForm().getForm().setText("Overview");
 		}
 	}
+	
+	@Override
+	public void setEnabled(boolean enabled) {
+		super.setEnabled(enabled);
+		
+		generalSection.setEnabled(enabled);
+		authorSection.setEnabled(enabled);
+		supportSection.setEnabled(enabled);
+	}
 
 	@Override
 	protected void createFormContent(IManagedForm managedForm) {
@@ -79,9 +92,9 @@ public class OverviewPage extends ComposerFormPage {
 		left.setLayout(new TableWrapLayout());
 		left.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
 		
-		new GeneralSection(this, left);
-		new AuthorSection(this, left);
-		new SupportSection(this, left);
+		generalSection = new GeneralSection(this, left);
+		authorSection = new AuthorSection(this, left);
+		supportSection = new SupportSection(this, left);
 		
 		right = toolkit.createComposite(form.getBody());
 		right.setLayout(new TableWrapLayout());
@@ -167,4 +180,5 @@ public class OverviewPage extends ComposerFormPage {
 			}
 		});
 	}
+	
 }
