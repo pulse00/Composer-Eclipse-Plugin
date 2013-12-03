@@ -47,6 +47,9 @@ import com.dubture.composer.ui.actions.SelfUpdateAction;
 import com.dubture.composer.ui.actions.UpdateDevAction;
 import com.dubture.composer.ui.actions.UpdateAction;
 import com.dubture.composer.ui.editor.ComposerFormPage;
+import com.dubture.composer.ui.job.ComposerJob;
+import com.dubture.composer.ui.job.UpdateDevJob;
+import com.dubture.composer.ui.job.UpdateJob;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.json.ParseException;
 
@@ -81,14 +84,16 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected DependencyGraphPage graphPage;
 	
 	protected IToolBarManager toolbarManager;
-
-	private boolean validJson = true;
 	
+	private IFile jsonFile;
 	private String jsonDump = null;
+	
 	private boolean saving = false;
 	private boolean pageChanging = false;
 	
-	private IFile jsonFile;
+	private boolean validJson = true;
+	private boolean newDepSinceLastSave = false;
+	private boolean newDevDepSinceLastSave = false;
 
 	public ComposerFormEditor() {
 		super();
@@ -143,6 +148,15 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		composerPackage.addPropertyChangeListener(new PropertyChangeListener() {
 			public void propertyChange(PropertyChangeEvent e) {
 				Logger.debug("Property change: " + e.getPropertyName() + ", oldValue: " + e.getOldValue() + ", newValue: " + e.getNewValue());
+				
+				if (e.getPropertyName().startsWith("require")) {
+					newDepSinceLastSave = true;
+				}
+
+				if (e.getPropertyName().startsWith("require-dev")) {
+					newDevDepSinceLastSave = true;
+				}
+				
 				setDirty(true);
 			}
 		});
@@ -185,6 +199,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		jsonDump = documentProvider.getDocument(getEditorInput()).get();
 		parse(jsonDump);
 		setDirty(false);
+		newDepSinceLastSave = false;
+		newDevDepSinceLastSave = false;
 		
 		if (!validJson) {
 			setActivePage(jsonEditorIndex);
@@ -342,13 +358,27 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			
 			Boolean buildpath = prefSupport.getBooleanPreferencesValue(ComposerPreferenceConstants.SAVEACTION_BUILDPATH, false, project);
 			Boolean update = prefSupport.getBooleanPreferencesValue(ComposerPreferenceConstants.SAVEACTION_UPDATE, false, project);
-
-			if (buildpath) {
-				buildPathManager.update();
-			}
+			
+			update = update && (newDepSinceLastSave || newDevDepSinceLastSave); 
 
 			if (update) {
-				// TODO run UpdateAction or UpdateDevAction 
+				ComposerJob job;
+				
+				if (newDevDepSinceLastSave) {
+					job = new UpdateDevJob(project);
+				} else {
+					job = new UpdateJob(project);
+				}
+				
+				job.setUser(false);
+				job.schedule();
+				
+				newDepSinceLastSave = false;
+				newDevDepSinceLastSave = false;
+			}
+			
+			if (buildpath && !update) {
+				buildPathManager.update();
 			}
 			
 		} catch (Exception e) {

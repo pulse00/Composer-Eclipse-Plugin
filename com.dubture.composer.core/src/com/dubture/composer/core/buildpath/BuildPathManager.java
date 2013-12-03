@@ -40,8 +40,6 @@ public class BuildPathManager {
 	}
 	
 	public void update(IProgressMonitor monitor) throws CoreException {
-		Logger.log(Logger.INFO, "Run BuildPathManager.update()");
-		
 		// check for valid composer json, stop processing when invalid
 		if (!composerProject.isValidComposerJson()) {
 			Logger.log(Logger.INFO, "Stop BuildPathManager, composer.json invalid");
