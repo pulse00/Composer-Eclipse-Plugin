@@ -19,7 +19,7 @@ import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.ComposerPluginConstants;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 import com.dubture.composer.core.log.Logger;
 import com.dubture.composer.core.resources.IComposerProject;
 
@@ -40,6 +40,8 @@ public class BuildPathManager {
 	}
 	
 	public void update(IProgressMonitor monitor) throws CoreException {
+		Logger.log(Logger.INFO, "Run BuildPathManager.update()");
+		
 		// check for valid composer json, stop processing when invalid
 		if (!composerProject.isValidComposerJson()) {
 			Logger.log(Logger.INFO, "Stop BuildPathManager, composer.json invalid");
@@ -59,7 +61,7 @@ public class BuildPathManager {
 		IPath[] inclusions;
 
 		try {
-			String encoded = prefs.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
+			String encoded = prefs.get(ComposerPreferenceConstants.BUILDPATH_INCLUDES_EXCLUDES, "");
 			exclusions = scriptProject.decodeBuildpathEntry(encoded).getExclusionPatterns();
 			inclusions = scriptProject.decodeBuildpathEntry(encoded).getInclusionPatterns();
 		} catch (Exception e) {
@@ -193,7 +195,7 @@ public class BuildPathManager {
 		try {
 			String encoded = project.encodeBuildpathEntry(entry);
 			IEclipsePreferences prefs = ComposerPlugin.getDefault().getProjectPreferences(project.getProject());
-			prefs.put(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, encoded);
+			prefs.put(ComposerPreferenceConstants.BUILDPATH_INCLUDES_EXCLUDES, encoded);
 		} catch (Exception e) {
 			Logger.logException(e);
 		}

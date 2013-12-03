@@ -1,7 +1,5 @@
 package com.dubture.composer.core.internal.resources;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -13,7 +11,6 @@ import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.getcomposer.core.ComposerConstants;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.core.collection.ComposerPackages;
-import com.dubture.getcomposer.json.ParseException;
 
 public class ComposerProject implements IComposerProject {
 
@@ -24,7 +21,7 @@ public class ComposerProject implements IComposerProject {
 	private String vendorDir = null;
 	private IPath vendorPath = null;
 	
-	public ComposerProject(IProject project) throws IOException {
+	public ComposerProject(IProject project) {
 		this.project = project;
 		IFile file = project.getFile(ComposerConstants.COMPOSER_JSON);
 		
@@ -32,7 +29,7 @@ public class ComposerProject implements IComposerProject {
 			composer = new ComposerPackage();
 			try {
 				composer.fromJson(file.getLocation().toFile());
-			} catch (ParseException e) {
+			} catch (Exception e) {
 			}
 		}
 	}

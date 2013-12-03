@@ -16,6 +16,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -33,7 +34,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.sourceforge.jsonedit.core.editors.JsonTextEditor;
 
+import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.ComposerPreferenceConstants;
+import com.dubture.composer.core.buildpath.BuildPathManager;
+import com.dubture.composer.core.internal.resources.ComposerProject;
 import com.dubture.composer.core.log.Logger;
+import com.dubture.composer.core.preferences.PreferencesSupport;
+import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.composer.ui.actions.InstallAction;
 import com.dubture.composer.ui.actions.InstallDevAction;
 import com.dubture.composer.ui.actions.SelfUpdateAction;
@@ -54,6 +61,8 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	
 	private ISharedImages sharedImages = null;
 	private IProject project;
+	private IComposerProject composerProject;
+	private BuildPathManager buildPathManager;
 	
 	private IAction installAction = null;
 	private IAction installDevAction = null;
@@ -117,6 +126,9 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			jsonFile = ((IFileEditorInput)input).getFile();
 			if (jsonFile != null) {
 				project = jsonFile.getProject();
+				composerProject = new ComposerProject(project);
+				buildPathManager = new BuildPathManager(composerProject);
+				
 				setPartName(project.getName());
 				ResourcesPlugin.getWorkspace().addResourceChangeListener(new IResourceChangeListener() {
 					@Override
@@ -323,6 +335,22 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			
 			setDirty(false);
 			saving = false;
+			
+			// save actions
+			IPreferenceStore store = ComposerPlugin.getDefault().getPreferenceStore();
+			PreferencesSupport prefSupport = new PreferencesSupport(ComposerPlugin.ID, store);
+			
+			Boolean buildpath = prefSupport.getBooleanPreferencesValue(ComposerPreferenceConstants.SAVEACTION_BUILDPATH, false, project);
+			Boolean update = prefSupport.getBooleanPreferencesValue(ComposerPreferenceConstants.SAVEACTION_UPDATE, false, project);
+
+			if (buildpath) {
+				buildPathManager.update();
+			}
+
+			if (update) {
+				// TODO run UpdateAction or UpdateDevAction 
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

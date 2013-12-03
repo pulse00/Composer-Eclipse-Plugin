@@ -47,19 +47,31 @@ public class PreferencesSupport {
 	
 	public String getPreferencesValue(String key, String def, IProject project) {
 		if (project == null) {
-			return getWorkspacePreferencesValue(key);
+			return getWorkspacePreferencesValue(key, def);
 		}
 		String projectSpecificPreferencesValue = getProjectSpecificPreferencesValue(
-				key, def, project);
+				key, null, project);
 		if (projectSpecificPreferencesValue == null) {
-			return getWorkspacePreferencesValue(key);
+			return getWorkspacePreferencesValue(key, def);
 		}
 
 		return projectSpecificPreferencesValue;
+	}
+	
+	public boolean getBooleanPreferencesValue(String key, boolean def, IProject project) {
+		return Boolean.valueOf(getPreferencesValue(key, def ? "True" : "False", project)).booleanValue();
 	}
 	
 	public String getWorkspacePreferencesValue(String key) {
 		return preferenceStore.getString(key);
 	}
 
+	public String getWorkspacePreferencesValue(String key, String def) {
+		if (!preferenceStore.contains(key) && !preferenceStore.isDefault(key)) {
+			return def;
+		}
+		
+		return preferenceStore.getString(key);
+	}
+	
 }

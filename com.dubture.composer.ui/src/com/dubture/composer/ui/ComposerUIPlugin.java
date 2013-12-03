@@ -6,8 +6,8 @@ import org.osgi.framework.BundleContext;
 import org.pdtextensions.core.ui.preferences.PHPExecutableChangeListener;
 
 import com.dubture.composer.core.ComposerPlugin;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -41,7 +41,7 @@ public class ComposerUIPlugin extends AbstractUIPlugin {
 			PHPDebugPlugin
 					.getDefault()
 					.getPluginPreferences()
-					.addPropertyChangeListener(new PHPExecutableChangeListener(ComposerPlugin.ID, Keys.PHP_EXECUTABLE));
+					.addPropertyChangeListener(new PHPExecutableChangeListener(ComposerPlugin.ID, ComposerPreferenceConstants.PHP_EXECUTABLE));
 		} catch (Exception e) {
 			Logger.logException(e);
 		}

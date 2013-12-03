@@ -55,9 +55,9 @@ import org.pdtextensions.core.ui.PEXUIPlugin;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPluginConstants;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 import com.dubture.composer.core.launch.environment.ComposerEnvironmentFactory;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
 import com.dubture.composer.ui.handler.ConsoleResponseHandler;
 import com.dubture.composer.ui.job.runner.MissingExecutableRunner;
 import com.dubture.getcomposer.core.ComposerPackage;
@@ -149,7 +149,7 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	protected void installComposer(IProgressMonitor monitor) throws CoreException {
 		// only download composer.phar when config is set to use project phar
 		IPreferenceStore prefs = ComposerPlugin.getDefault().getPreferenceStore();
-		if (prefs.getBoolean(Keys.USE_PROJECT_PHAR)) {
+		if (prefs.getBoolean(ComposerPreferenceConstants.USE_PROJECT_PHAR)) {
 			downloader = new PharDownloader();
 			InputStream resource = downloader.download();
 			IFile file = getProject().getFile("composer.phar");

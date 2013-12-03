@@ -1,7 +1,5 @@
 package com.dubture.composer.ui.commands;
 
-import java.io.IOException;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -78,11 +76,7 @@ public class InjectAutoloadCommand extends AbstractHandler {
 	
 	protected IComposerProject getComposerProject(IProject project) {
 		IComposerProject composerProject = null;
-		try {
-			composerProject = ComposerPlugin.getDefault().getComposerProject(project);
-		} catch (IOException e) {
-			Logger.logException(e);
-		}
+		composerProject = ComposerPlugin.getDefault().getComposerProject(project);
 		return composerProject;
 	}
 

@@ -171,10 +171,15 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            category="org.eclipse.php.ui.preferences.PHPBasePreferencePage"
             class="com.dubture.composer.ui.preferences.ComposerPreferencePage"
-            id="com.dubture.composer.ui.preferences.Packages"
+            id="com.dubture.composer.ui.preferences.composer"
             name="Composer">
+      </page>
+      <page
+            category="com.dubture.composer.ui.preferences.composer"
+            class="com.dubture.composer.ui.preferences.SaveActionsPreferencePage"
+            id="com.dubture.composer.ui.preferences.composer.saveactions"
+            name="Save Actions">
       </page>
    </extension>
    <!--
@@ -224,6 +229,24 @@
             class="com.dubture.composer.ui.preferences.BuildPathManagementPage"
             id="com.dubture.composer.ui.preferences.project.buildpathManagement"
             name="Build Path Management">
+	         <enabledWhen>
+	            <adapt
+	                  type="org.eclipse.core.resources.IProject">
+	               <instanceof
+	                     value="org.eclipse.core.resources.IProject">
+	               </instanceof>
+	               <test
+	                     property="org.eclipse.core.resources.projectNature"
+	                     value="com.dubture.composer.core.composerNature">
+	               </test>
+	            </adapt>
+	        </enabledWhen>
+      </page>
+      <page
+            category="com.dubture.composer.ui.preferences.project.composer"
+            class="com.dubture.composer.ui.preferences.SaveActionsPreferencePage"
+            id="com.dubture.composer.ui.preferences.project.saveactions"
+            name="Save Actions">
 	         <enabledWhen>
 	            <adapt
 	                  type="org.eclipse.core.resources.IProject">
@@ -329,6 +352,12 @@
    <extension 
         point="org.eclipse.wst.common.project.facet.ui.images">
         <image path="icons/full/obj16/composer.png" facet="php.composer.component" />
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.dubture.composer.ui.preferences.composer.saveactions.PreferenceInitializer">
+      </initializer>
    </extension>   
 
 </plugin>

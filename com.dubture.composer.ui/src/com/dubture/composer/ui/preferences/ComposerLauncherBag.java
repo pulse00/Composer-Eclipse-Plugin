@@ -4,14 +4,14 @@ import org.eclipse.php.internal.ui.preferences.util.Key;
 import org.pdtextensions.core.ui.preferences.launcher.LauncherKeyBag;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 
 @SuppressWarnings("restriction")
 public class ComposerLauncherBag implements LauncherKeyBag {
 
-	private final Key exeKey = new Key(ComposerPlugin.ID, Keys.PHP_EXECUTABLE); 
-	private final Key pharKey = new Key(ComposerPlugin.ID, Keys.COMPOSER_PHAR); 
-	private final Key useKey = new Key(ComposerPlugin.ID, Keys.USE_PROJECT_PHAR); 
+	private final Key exeKey = new Key(ComposerPlugin.ID, ComposerPreferenceConstants.PHP_EXECUTABLE); 
+	private final Key pharKey = new Key(ComposerPlugin.ID, ComposerPreferenceConstants.COMPOSER_PHAR); 
+	private final Key useKey = new Key(ComposerPlugin.ID, ComposerPreferenceConstants.USE_PROJECT_PHAR); 
 	
 	@Override
 	public Key[] getAllKeys() {

@@ -5,7 +5,7 @@ import org.pdtextensions.core.launch.environment.AbstractEnvironmentFactory;
 import org.pdtextensions.core.launch.environment.PrjPharEnvironment;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.preferences.CorePreferenceConstants.Keys;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 
 public class ComposerEnvironmentFactory extends AbstractEnvironmentFactory {
 
@@ -28,16 +28,16 @@ public class ComposerEnvironmentFactory extends AbstractEnvironmentFactory {
 
 	@Override
 	protected String getExecutableKey() {
-		return Keys.PHP_EXECUTABLE;
+		return ComposerPreferenceConstants.PHP_EXECUTABLE;
 	}
 
 	@Override
 	protected String getUseProjectKey() {
-		return Keys.USE_PROJECT_PHAR;
+		return ComposerPreferenceConstants.USE_PROJECT_PHAR;
 	}
 
 	@Override
 	protected String getScriptKey() {
-		return Keys.COMPOSER_PHAR;
+		return ComposerPreferenceConstants.COMPOSER_PHAR;
 	}
 }

@@ -1,6 +1,5 @@
 package com.dubture.composer.ui.preferences;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -18,10 +17,9 @@ import org.eclipse.ui.preferences.WizardPropertyPage;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
-import com.dubture.composer.core.ComposerPluginConstants;
+import com.dubture.composer.core.ComposerPreferenceConstants;
 import com.dubture.composer.core.buildpath.BuildPathManager;
 import com.dubture.composer.core.internal.resources.ComposerProject;
-import com.dubture.composer.core.log.Logger;
 
 @SuppressWarnings("restriction")
 public class BuildPathManagementPage extends WizardPropertyPage {
@@ -34,25 +32,22 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 	protected IWizard createWizard() {
 		
 		BPListElement elem = new BPListElement(scriptProject, IBuildpathEntry.BPE_SOURCE, false);
-		try {
-			ComposerProject composerProject = new ComposerProject(scriptProject.getProject());
-			IPath path = scriptProject.getPath().append(composerProject.getVendorDir());
-			elem.setPath(path);
-			
-			IEclipsePreferences projectPreferences = ComposerPlugin.getDefault().getProjectPreferences(scriptProject.getProject());
-			String stored = projectPreferences.get(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, null);
-			
-			if (stored != null) {
-				IBuildpathEntry buildpathEntry = scriptProject.decodeBuildpathEntry(stored);
-				for (IPath includePath : buildpathEntry.getInclusionPatterns()) {
-					elem.addToInclusion(path.append(includePath));
-				}
-				for (IPath excludePath : buildpathEntry.getExclusionPatterns()) {
-					elem.addToExclusions(path.append(excludePath));
-				}
+		
+		ComposerProject composerProject = new ComposerProject(scriptProject.getProject());
+		IPath path = scriptProject.getPath().append(composerProject.getVendorDir());
+		elem.setPath(path);
+		
+		IEclipsePreferences projectPreferences = ComposerPlugin.getDefault().getProjectPreferences(scriptProject.getProject());
+		String stored = projectPreferences.get(ComposerPreferenceConstants.BUILDPATH_INCLUDES_EXCLUDES, null);
+		
+		if (stored != null) {
+			IBuildpathEntry buildpathEntry = scriptProject.decodeBuildpathEntry(stored);
+			for (IPath includePath : buildpathEntry.getInclusionPatterns()) {
+				elem.addToInclusion(path.append(includePath));
 			}
-		} catch (IOException e) {
-			Logger.logException(e);
+			for (IPath excludePath : buildpathEntry.getExclusionPatterns()) {
+				elem.addToExclusions(path.append(excludePath));
+			}
 		}
 		
 		return wizard = new BuildPathExclusionWizard(new BPListElement[]{}, elem);
@@ -82,7 +77,7 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 			BuildpathEntry entry = (BuildpathEntry) buildpathEntry;
 			String encodeBuildpathEntry = scriptProject.encodeBuildpathEntry(entry);
 			IEclipsePreferences projectPreferences = ComposerPlugin.getDefault().getProjectPreferences(scriptProject.getProject());
-			projectPreferences.put(ComposerPluginConstants.BUILDPATH_INCLUDES_EXCLUDES, encodeBuildpathEntry);
+			projectPreferences.put(ComposerPreferenceConstants.BUILDPATH_INCLUDES_EXCLUDES, encodeBuildpathEntry);
 
 			// update buildpath
 			try {
@@ -93,8 +88,6 @@ public class BuildPathManagementPage extends WizardPropertyPage {
 				ComposerProject composerProject = new ComposerProject(scriptProject.getProject());
 				BuildPathManager bpm = new BuildPathManager(composerProject);
 				bpm.update();
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (CoreException e) {
 				e.printStackTrace();
 			} catch (BackingStoreException e) {
