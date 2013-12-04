@@ -51,6 +51,8 @@ import com.dubture.composer.ui.job.ComposerJob;
 import com.dubture.composer.ui.job.UpdateDevJob;
 import com.dubture.composer.ui.job.UpdateJob;
 import com.dubture.getcomposer.core.ComposerPackage;
+import com.dubture.getcomposer.core.VersionedPackage;
+import com.dubture.getcomposer.core.collection.ComposerPackages;
 import com.dubture.getcomposer.json.ParseException;
 
 public class ComposerFormEditor extends SharedHeaderFormEditor {
@@ -336,7 +338,11 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			saving = true;
 			IDocument document = documentProvider.getDocument(getEditorInput());
 
-			validateJson(document.get());
+			if (isJsonEditor()) {
+				parse(document.get());
+			} else {
+				validateJson(document.get());
+			}
 
 			if (!isJsonEditor() && isValidJson()) {
 				document.set(composerPackage.toJson());
@@ -364,7 +370,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 			if (update) {
 				ComposerJob job;
 				
-				if (newDevDepSinceLastSave) {
+				if (newDevDepSinceLastSave || hasDevDepsInstalled()) {
 					job = new UpdateDevJob(project);
 				} else {
 					job = new UpdateJob(project);
@@ -384,6 +390,17 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean hasDevDepsInstalled() {
+		// is there like a more performant way to keep this list?
+		// keep in mind a composer update command can be run from outside eclipse
+		if (composerPackage.getRequireDev().size() > 0) {
+			VersionedPackage dev = composerPackage.getRequireDev().toArray()[0];
+			ComposerPackages installed = composerProject.getInstalledPackages();
+			return installed.has(dev.getName());
+		}
+		return false;
 	}
 
 	public void doSaveAs() {
