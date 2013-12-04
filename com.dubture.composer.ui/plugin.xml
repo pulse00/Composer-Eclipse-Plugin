@@ -120,6 +120,49 @@
             </visibleWhen>
          </command>
       </menuContribution>
+        <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               id="com.dubture.composer.ui.menu.composer"
+               label="Composer"
+               icon="icons/full/obj16/composer.png">
+            <visibleWhen
+                  checkEnabled="false">
+               <and>
+	               <with
+	                     variable="activeMenuSelection">
+	                  <iterate
+	                        ifEmpty="false"
+	                        operator="and">
+	                     <adapt
+	                           type="org.eclipse.core.resources.IProject">
+	                        <test
+	                              property="org.eclipse.core.resources.open"
+	                              value="true">
+	                        </test>
+	                     </adapt>
+	                  </iterate>
+	               </with>
+	               <with
+		                     variable="selection">
+		                  <iterate
+		                        ifEmpty="false"
+		                        operator="and">
+	       						<test
+									forcePluginActivation="true"
+									property="org.pdtextensions.parentProjectNature"
+									value="com.dubture.composer.core.composerNature">
+								</test>
+		                  </iterate>
+		               </with>
+	           </and>
+            </visibleWhen>
+            <command
+                  commandId="com.dubture.composer.ui.command.updateBuildpath"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -166,6 +209,11 @@
             defaultHandler="com.dubture.composer.ui.handler.RemoveComposerSupportHandler"
             id="com.dubture.composer.ui.command.removeComposerSupport"
             name="Remove Composer Support">
+      </command>
+      <command
+            defaultHandler="com.dubture.composer.ui.commands.UpdateBuildPathCommand"
+            id="com.dubture.composer.ui.command.updateBuildpath"
+            name="Update BuildPath">
       </command>
    </extension>
    <extension
