@@ -32,11 +32,11 @@ public class BuildPathParser {
 		// empty list for found package paths
 		List<String> paths = new ArrayList<String>();
 		
-		// add composer vendor dir
-		paths.add(vendor + "/composer");
-		
 		// add source paths from this package
 		parsePackage(composer, paths);
+		
+		// add composer vendor dir
+		paths.add(vendor + "/composer");
 		
 		// all installed packages
 		for (ComposerPackage p : packages) {
