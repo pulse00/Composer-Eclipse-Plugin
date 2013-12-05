@@ -138,7 +138,7 @@ public class BuildPathManager {
 			
 			IPath diff = path.removeFirstSegments(path.matchingFirstSegments(parent.getPath()));
 			if (parent.getPath().equals(composerPath)) {
-				diff = path.uptoSegment(1);
+				diff = diff.uptoSegment(1);
 			}
 			diff = diff.removeTrailingSeparator().addTrailingSeparator();
 			if (!exclusions.contains(diff)) {
