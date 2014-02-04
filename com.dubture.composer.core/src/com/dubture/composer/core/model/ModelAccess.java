@@ -24,7 +24,7 @@ import org.osgi.service.prefs.BackingStoreException;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.log.Logger;
-import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.collection.Psr;
 import com.dubture.getcomposer.core.objects.Namespace;
 import com.dubture.getcomposer.json.ParseException;
 
@@ -39,7 +39,7 @@ public class ModelAccess implements NamespaceResolverInterface
 {
     private PackageManager packageManager = null;
     private static ModelAccess instance = null;
-    private Map<String, Psr0> psr0Map = new HashMap<String, Psr0>();
+    private Map<String, Psr> psr0Map = new HashMap<String, Psr>();
     
     private ModelAccess()
     {
@@ -56,7 +56,7 @@ public class ModelAccess implements NamespaceResolverInterface
         for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
             String prefKey = "namespacemap#" + project.getName();
             String json = instancePreferences.get(prefKey, "{}");
-         	psr0Map.put(project.getName(), new Psr0(json));
+         	psr0Map.put(project.getName(), new Psr(json));
 		    Logger.debug("loading namespacemap from preferences for project " + project.getName() + " " + json);
         }
     }
@@ -79,7 +79,7 @@ public class ModelAccess implements NamespaceResolverInterface
             return null;
         }
         
-        Psr0 namespaces = psr0Map.get(resource.getProject().getName());
+        Psr namespaces = psr0Map.get(resource.getProject().getName());
         
         for(Namespace namespace : namespaces) {
         	for(Object object : namespace.getPaths()) {
@@ -107,7 +107,7 @@ public class ModelAccess implements NamespaceResolverInterface
 			return null;
 		}
 		
-		Psr0 psr0 = psr0Map.get(project.getName());
+		Psr psr0 = psr0Map.get(project.getName());
 
 		String nsPath = namespace.replace("\\", "/");
 		for (Namespace ns : psr0) {
@@ -142,7 +142,7 @@ public class ModelAccess implements NamespaceResolverInterface
         return instance.packageManager;
     }
 
-    public void updatePsr0(Psr0 psr0, IScriptProject scriptProject)
+    public void updatePsr0(Psr psr0, IScriptProject scriptProject)
     {
     	// escape namespace separators to avoid deserialization problems
         String json = psr0.toJson().replace("\\", "\\\\");
@@ -157,7 +157,7 @@ public class ModelAccess implements NamespaceResolverInterface
         }
     }
 
-    public Psr0 getNamespaceMappings(IProject project)
+    public Psr getNamespaceMappings(IProject project)
     {
         if (psr0Map.containsKey(project.getName())) {
             return psr0Map.get(project.getName());

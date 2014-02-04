@@ -19,6 +19,7 @@ public class AutoloadPage extends ComposerFormPage {
 	private Composite right;
 	
 	private Psr0Section psr0Section;
+	private Psr4Section psr4Section;
 	
 	public AutoloadPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
@@ -45,7 +46,10 @@ public class AutoloadPage extends ComposerFormPage {
 		left = toolkit.createComposite(form.getBody(), SWT.NONE);
 		left.setLayout(FormLayoutFactory.createFormPaneGridLayout(false, 1));
 		left.setLayoutData(new GridData(GridData.FILL_BOTH));
-				
+		
+		psr4Section = new Psr4Section(this, left);
+		psr4Section.setEnabled(enabled);
+		
 		psr0Section = new Psr0Section(this, left);
 		psr0Section.setEnabled(enabled);
 		
@@ -61,6 +65,10 @@ public class AutoloadPage extends ComposerFormPage {
 		
 		if (psr0Section != null) {
 			psr0Section.setEnabled(enabled);
+		}
+		
+		if (psr4Section != null) {
+			psr4Section.setEnabled(enabled);
 		}
 	}
 }

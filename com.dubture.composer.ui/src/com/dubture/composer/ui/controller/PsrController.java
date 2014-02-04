@@ -10,20 +10,20 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeItem;
 
 import com.dubture.composer.ui.ComposerUIPluginImages;
-import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.collection.Psr;
 import com.dubture.getcomposer.core.objects.Namespace;
 
-public class Psr0Controller extends StyledCellLabelProvider implements ITreeContentProvider {
+public class PsrController extends StyledCellLabelProvider implements ITreeContentProvider {
 
 	
 
-	private Psr0 psr0;
+	private Psr psr0;
 	private Image namespaceImage = ComposerUIPluginImages.NAMESPACE.createImage();
 	private Image pathImage = ComposerUIPluginImages.PACKAGE_FOLDER.createImage();
 	
 	private TreeViewer viewer;
 
-	public Psr0Controller(TreeViewer viewer) {
+	public PsrController(TreeViewer viewer) {
 		this.viewer = viewer;
 	}
 	
@@ -38,7 +38,7 @@ public class Psr0Controller extends StyledCellLabelProvider implements ITreeCont
 
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		psr0 = (Psr0) newInput;
+		psr0 = (Psr) newInput;
 	}
 
 	public void update(ViewerCell cell) {
@@ -68,8 +68,8 @@ public class Psr0Controller extends StyledCellLabelProvider implements ITreeCont
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof Psr0) {
-			Psr0 psr0 = (Psr0) parentElement;
+		if (parentElement instanceof Psr) {
+			Psr psr0 = (Psr) parentElement;
 			return psr0.getNamespaces().toArray();
 		} else if (parentElement instanceof Namespace) {
 			Namespace model = (Namespace) parentElement;
