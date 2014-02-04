@@ -5,6 +5,7 @@ import java.util.Observable;
 import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.php.internal.ui.wizards.NameGroup;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -19,6 +20,7 @@ import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
 import com.dubture.composer.ui.wizard.AbstractWizardSecondPage;
 import com.dubture.getcomposer.core.objects.Namespace;
 
+@SuppressWarnings("restriction")
 public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 
 	protected AutoloadGroup autoloadGroup;
@@ -40,7 +42,7 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 		final Group group = new Group(composite, SWT.None);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		group.setLayout(new GridLayout(numColumns, false));
-		group.setText("PSR-0");
+		group.setText("PSR-4");
 		
 		autoloadGroup = new AutoloadGroup(group, getShell());
 		autoloadGroup.addObserver(this);
@@ -50,7 +52,8 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 		
 		Dialog.applyDialogFont(composite);
 		setControl(composite);
-		((ComposerProjectWizardFirstPage)firstPage).settingsGroup.addObserver(this);	
+		((ComposerProjectWizardFirstPage)firstPage).settingsGroup.addObserver(this);
+		((ComposerProjectWizardFirstPage)firstPage).nameGroup.addObserver(this);
 		
 		setHelpContext(composite);
 
@@ -59,9 +62,11 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 	@Override
 	public void update(Observable observable, Object object) {
 		
-		if (observable instanceof BasicSettingsGroup) {
+		if (observable instanceof BasicSettingsGroup ||
+				observable instanceof NameGroup) {
 			ComposerProjectWizardFirstPage fPage = (ComposerProjectWizardFirstPage) firstPage;
-			autoloadGroup.setNamespace(WordUtils.capitalize(fPage.settingsGroup.getVendor()));
+			autoloadGroup.setNamespace(WordUtils.capitalize(fPage.settingsGroup.getVendor())
+					+ "\\" + WordUtils.capitalize(fPage.nameGroup.getName()) + "\\");
 			return;
 		}
 		
@@ -74,8 +79,8 @@ public class ComposerProjectWizardSecondPage extends AbstractWizardSecondPage {
 		ns.setNamespace(namespace);
 		ns.add(ComposerPluginConstants.DEFAULT_SRC_FOLDER);
 		
-		firstPage.getPackage().getAutoload().getPsr0().clear();
-		firstPage.getPackage().getAutoload().getPsr0().add(ns);
+		firstPage.getPackage().getAutoload().getPsr4().clear();
+		firstPage.getPackage().getAutoload().getPsr4().add(ns);
 	}
 
 

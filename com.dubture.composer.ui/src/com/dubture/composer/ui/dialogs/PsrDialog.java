@@ -34,7 +34,7 @@ import com.dubture.composer.ui.controller.PathController;
 import com.dubture.composer.ui.utils.WidgetHelper;
 import com.dubture.getcomposer.core.objects.Namespace;
 
-public class Psr0Dialog extends Dialog {
+public class PsrDialog extends Dialog {
 
 	private Text namespaceControl;
 	
@@ -43,7 +43,7 @@ public class Psr0Dialog extends Dialog {
 	
 	private TableViewer pathViewer;
 
-	public Psr0Dialog(Shell parentShell, Namespace namespace, IProject project) {
+	public PsrDialog(Shell parentShell, Namespace namespace, IProject project) {
 		super(parentShell);
 		this.namespace = namespace;
 		this.project = project;

@@ -161,27 +161,28 @@ public abstract class AbstractWizardSecondPage extends CapabilityConfigurationPa
 	protected void addComposerJson(IProgressMonitor monitor) throws CoreException {
 
 		IFile file = getProject().getFile(com.dubture.getcomposer.core.ComposerConstants.COMPOSER_JSON);
-		Namespace ns = firstPage.getPackage().getAutoload().getPsr0().getFirst();
+		Namespace ns = firstPage.getPackage().getAutoload().getPsr4().getFirst();
 
 		if (ns != null) {
-			if (ns.getNamespace().contains("\\")) {
-				String[] split = ns.getNamespace().split("\\\\");
+//			if (ns.getNamespace().contains("\\")) {
+//				String[] split = ns.getNamespace().split("\\\\");
+//				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER);
+//				for (String segment : split) {
+//					path = path.append(segment);
+//					IFolder folder = getProject().getFolder(path);
+//					if (!folder.exists()) {
+//						folder.create(false, true, monitor);
+//					}
+//				}
+//			} else {
+//				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER).append(ns
+//						.getNamespace());
 				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER);
-				for (String segment : split) {
-					path = path.append(segment);
-					IFolder folder = getProject().getFolder(path);
-					if (!folder.exists()) {
-						folder.create(false, true, monitor);
-					}
-				}
-			} else {
-				IPath path = new Path(com.dubture.composer.core.ComposerPluginConstants.DEFAULT_SRC_FOLDER).append(ns
-						.getNamespace());
 				IFolder folder = getProject().getFolder(path);
 				if (!folder.exists()) {
 					folder.create(false, true, monitor);
 				}
-			}
+//			}
 		}
 
 		if (file.exists()) {

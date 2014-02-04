@@ -9,7 +9,7 @@ import org.eclipse.php.internal.core.compiler.ast.nodes.Scalar;
 import org.eclipse.php.internal.core.compiler.ast.visitor.PHPASTVisitor;
 
 import com.dubture.composer.core.model.ModelAccess;
-import com.dubture.getcomposer.core.collection.Psr0;
+import com.dubture.getcomposer.core.collection.Psr;
 import com.dubture.getcomposer.core.objects.Namespace;
 
 @SuppressWarnings("restriction")
@@ -30,7 +30,7 @@ public class AutoloadVisitor extends PHPASTVisitor
         visitor = new NamespaceVisitor();
         s.traverse(visitor);
         
-        Psr0 psr0 = visitor.getPsr0();
+        Psr psr0 = visitor.getPsr0();
         
         if (psr0.size() > 0) {
         	ModelAccess.getInstance().updatePsr0(psr0, source.getScriptProject());
@@ -39,7 +39,7 @@ public class AutoloadVisitor extends PHPASTVisitor
         return true;
     }
     
-    public Psr0 getPsr0() {
+    public Psr getPsr0() {
         
         if (visitor != null) {
             return visitor.getPsr0();
@@ -50,7 +50,7 @@ public class AutoloadVisitor extends PHPASTVisitor
 
     protected class NamespaceVisitor extends PHPASTVisitor {
         
-        protected Psr0 psr0 = new Psr0();
+        protected Psr psr0 = new Psr();
         
         @Override
         public boolean visit(ArrayElement element) throws Exception
@@ -99,7 +99,7 @@ public class AutoloadVisitor extends PHPASTVisitor
             psr0.add(new Namespace(ns, resourcePath));
         }
         
-        public Psr0 getPsr0()
+        public Psr getPsr0()
         {
             return psr0;
         }

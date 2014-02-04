@@ -1,8 +1,9 @@
-package com.dubture.composer.core.internal.resources;
+package com.dubture.composer.internal.core.resources;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IScriptProject;
 
@@ -11,6 +12,9 @@ import com.dubture.composer.core.resources.IComposerProject;
 import com.dubture.getcomposer.core.ComposerConstants;
 import com.dubture.getcomposer.core.ComposerPackage;
 import com.dubture.getcomposer.core.collection.ComposerPackages;
+import com.dubture.getcomposer.core.collection.Psr;
+import com.dubture.getcomposer.core.objects.Autoload;
+import com.dubture.getcomposer.core.objects.Namespace;
 
 public class ComposerProject implements IComposerProject {
 
@@ -32,6 +36,16 @@ public class ComposerProject implements IComposerProject {
 			} catch (Exception e) {
 			}
 		}
+	}
+	
+	public ComposerProject(IScriptProject project) {
+		this(project.getProject());
+		scriptProject = project;
+	}
+	
+	@Override
+	public IPath getFullPath() {
+		return project.getFullPath();
 	}
 	
 	@Override
@@ -160,4 +174,41 @@ public class ComposerProject implements IComposerProject {
 		return new ComposerPackages();
 	}
 
+	@Override
+	public String getNamespace(IPath path) {
+		Autoload autoload = getComposerPackage().getAutoload();
+
+		// look for psr4 first
+		String namespace = getPsrNamespace(path, autoload.getPsr4());
+		
+		if (namespace == null) {
+			namespace = getPsrNamespace(path, autoload.getPsr0());
+		}
+		
+		return namespace;
+	}
+	
+	private String getPsrNamespace(IPath path, Psr psr) {
+		IPath appendix = new Path("");
+		while (!path.isEmpty()) {
+			Namespace namespace = psr.getNamespaceForPath(path.addTrailingSeparator().toString());
+			if (namespace == null) {
+				namespace = psr.getNamespaceForPath(path.removeTrailingSeparator().toString());
+			}
+			if (namespace != null) {
+				String nmspc = namespace.getNamespace();
+				
+				if (appendix.segmentCount() > 1) {
+					nmspc += "\\" + appendix.removeFirstSegments(1).removeTrailingSeparator().toString().replace("/", "\\"); 
+				}
+				
+				return nmspc;
+			}
+			
+			appendix = new Path(path.lastSegment() + "/" + appendix.toString());
+			path = path.removeLastSegments(1);
+		}
+		
+		return null;
+	}
 }

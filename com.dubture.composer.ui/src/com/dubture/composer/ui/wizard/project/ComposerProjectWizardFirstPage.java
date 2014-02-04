@@ -9,7 +9,6 @@ import com.dubture.composer.ui.ComposerUIPlugin;
 import com.dubture.composer.ui.wizard.AbstractValidator;
 import com.dubture.composer.ui.wizard.AbstractWizardFirstPage;
 
-@SuppressWarnings("restriction")
 public class ComposerProjectWizardFirstPage extends AbstractWizardFirstPage {
 
 	public BasicSettingsGroup settingsGroup;

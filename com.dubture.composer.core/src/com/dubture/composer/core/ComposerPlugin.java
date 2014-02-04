@@ -18,12 +18,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-import com.dubture.composer.core.internal.resources.ComposerProject;
 import com.dubture.composer.core.model.ModelAccess;
 import com.dubture.composer.core.resources.IComposerProject;
+import com.dubture.composer.internal.core.resources.ComposerProject;
 
 public class ComposerPlugin extends AbstractUIPlugin {
 
@@ -103,6 +104,13 @@ public class ComposerPlugin extends AbstractUIPlugin {
 	public boolean isBuildpathContainerEnabled() {
 		return getPreferenceStore().getBoolean(
 				ComposerPluginConstants.PREF_BUILDPATH_ENABLE);
+	}
+	
+	public IComposerProject getComposerProject(IScriptProject project) {
+		if (project == null) {
+			return null;
+		}
+		return new ComposerProject(project);
 	}
 	
 	public IComposerProject getComposerProject(IProject project) {
