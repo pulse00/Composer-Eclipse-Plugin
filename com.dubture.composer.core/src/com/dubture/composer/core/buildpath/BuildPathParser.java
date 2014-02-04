@@ -64,6 +64,13 @@ public class BuildPathParser {
 			}
 		}
 		
+		// psr-4
+		for (Namespace namespace : a.getPsr4()) {
+			for (Object path : namespace.getPaths()) {
+				addPath(prefix + path, paths);
+			}
+		}
+		
 		// classmap
 		for (Object path : a.getClassMap()) {
 			String cleanedPath = getDirectory(prefix + (String) path);

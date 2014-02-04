@@ -19,7 +19,7 @@ import org.osgi.service.prefs.BackingStoreException;
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPreferenceConstants;
 import com.dubture.composer.core.buildpath.BuildPathManager;
-import com.dubture.composer.core.internal.resources.ComposerProject;
+import com.dubture.composer.internal.core.resources.ComposerProject;
 
 @SuppressWarnings("restriction")
 public class BuildPathManagementPage extends WizardPropertyPage {

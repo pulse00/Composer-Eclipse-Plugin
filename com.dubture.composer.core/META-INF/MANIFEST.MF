@@ -29,7 +29,6 @@ Export-Package:
  com.dubture.composer.core.builder,
  com.dubture.composer.core.buildpath,
  com.dubture.composer.core.facet,
- com.dubture.composer.core.internal.resources,
  com.dubture.composer.core.launch.environment,
  com.dubture.composer.core.log,
  com.dubture.composer.core.model,
@@ -37,7 +36,8 @@ Export-Package:
  com.dubture.composer.core.resources,
  com.dubture.composer.core.util,
  com.dubture.composer.core.validation,
- com.dubture.composer.core.visitor
+ com.dubture.composer.core.visitor,
+ com.dubture.composer.internal.core.resources
 Bundle-ClassPath: .
 
 

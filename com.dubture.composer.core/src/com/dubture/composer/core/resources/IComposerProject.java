@@ -31,4 +31,13 @@ public interface IComposerProject {
 	public ComposerPackages getInstalledPackages();
 	
 	public boolean isValidComposerJson();
+	
+	public String getNamespace(IPath path);
+	
+	/**
+	 * Returns the full, absolute path of this resource relative to the workspace.
+	 * 
+	 * @return the path
+	 */
+	public IPath getFullPath();
 }
