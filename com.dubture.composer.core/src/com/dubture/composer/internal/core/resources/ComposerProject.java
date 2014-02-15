@@ -195,11 +195,17 @@ public class ComposerProject implements IComposerProject {
 			if (namespace == null) {
 				namespace = psr.getNamespaceForPath(path.removeTrailingSeparator().toString());
 			}
+			
 			if (namespace != null) {
 				String nmspc = namespace.getNamespace();
+				IPath nmspcPath = new Path(nmspc.replace("\\", "/"));
 				
-				if (appendix.segmentCount() > 1) {
-					nmspc += "\\" + appendix.removeFirstSegments(1).removeTrailingSeparator().toString().replace("/", "\\"); 
+				int match = nmspcPath.matchingFirstSegments(appendix);
+				appendix = appendix.removeFirstSegments(match);
+
+				if (appendix.segmentCount() > 0) {
+					nmspc += (!nmspc.isEmpty() ? "\\" : "") +
+						appendix.removeTrailingSeparator().toString().replace("/", "\\"); 
 				}
 				
 				return nmspc;
