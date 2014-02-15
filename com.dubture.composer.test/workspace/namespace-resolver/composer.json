@@ -2,7 +2,8 @@
 	"name": "namespace/resolver",
 	"autoload": {
 	    "psr-0": {
-	        "Foo": "src/"
+	        "Foo": "src/",
+	        "": "src/Null/"
 	    },
 	    "psr-4": {
 	    	"Hello\\World\\": "src/HelloWorld"
