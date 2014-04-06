@@ -60,7 +60,7 @@ public class NamespaceResolverTest extends ComposerModelTests {
 
 		assertEquals("Foo\\Bar", project.getNamespace(new Path("src/Foo/Bar")));
 		assertEquals("Foo\\Bar\\Baz", project.getNamespace(new Path("src/Foo/Bar/Baz")));
-		assertEquals("Hello\\World\\", project.getNamespace(new Path("src/HelloWorld")));
+		assertEquals("Hello\\World", project.getNamespace(new Path("src/HelloWorld")));
 		assertEquals("", project.getNamespace(new Path("src/Null/")));
 		assertEquals("Wurst", project.getNamespace(new Path("src/Null/Wurst")));
 		assertEquals("Blut\\Wurst", project.getNamespace(new Path("src/Null/Blut/Wurst")));
