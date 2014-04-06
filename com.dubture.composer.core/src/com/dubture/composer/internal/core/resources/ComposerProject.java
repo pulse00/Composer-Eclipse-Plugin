@@ -208,6 +208,12 @@ public class ComposerProject implements IComposerProject {
 						appendix.removeTrailingSeparator().toString().replace("/", "\\"); 
 				}
 				
+				
+				nmspc = nmspc.replace("\\\\", "\\");
+				if (nmspc.endsWith("\\")) {
+					nmspc = nmspc.substring(0, nmspc.length() - 1);
+				}
+				
 				return nmspc;
 			}
 			
