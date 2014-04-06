@@ -48,13 +48,13 @@ public abstract class PsrSection extends TreeSection implements PropertyChangeLi
 	private static final int EDIT_INDEX = 1;
 	private static final int REMOVE_INDEX = 2;
 	
-	private Psr psr;
+	protected Psr psr = null;
 
 	public PsrSection(ComposerFormPage page, Composite parent) {
 		super(page, parent, Section.DESCRIPTION, new String[] { "Add...", "Edit...", "Remove" });
-		createClient(getSection(), page.getManagedForm().getToolkit());
 		
 		psr = getPsr();
+		createClient(getSection(), page.getManagedForm().getToolkit());
 	}
 	
 	abstract protected Psr getPsr();
@@ -86,7 +86,7 @@ public abstract class PsrSection extends TreeSection implements PropertyChangeLi
 		section.setClient(container);
 		section.setLayout(FormLayoutFactory.createClearGridLayout(false, 1));
 
-		psrViewer.setInput(composerPackage.getAutoload().getPsr4());
+		psrViewer.setInput(psr);
 		composerPackage.getAutoload().addPropertyChangeListener(this);
 
 		updateButtons();
