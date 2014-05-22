@@ -60,13 +60,7 @@ public class ComposerBuildPathManagementBuilder extends
 			for (IResourceDelta affected : delta.getAffectedChildren()) {
 				String path = affected.getProjectRelativePath().toOSString();
 				
-				if (path.equals("composer.lock")
-//						|| path.equals("composer.json") // see https://github.com/pulse00/Composer-Eclipse-Plugin/issues/88
-						|| path.equals(vendor)
-						|| path.equals(vendor + "/composer/autoload_namespaces.php")
-						|| path.equals(vendor + "/composer/autoload_classmap.php")
-						|| path.equals(vendor + "/composer/autoload_files.php")
-						|| path.equals(vendor + "/composer/installed.json")) {
+				if (path.equals("composer.lock") || path.equals(vendor)) {
 					changed = true;
 				}
 			}

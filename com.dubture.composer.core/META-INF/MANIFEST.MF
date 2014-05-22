@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.apache.commons.logging,
  org.json.simple,
  com.dubture.getcomposer.core,
- org.pdtextensions.core
+ org.pdtextensions.core,
+ org.eclipse.wst.validation
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: 

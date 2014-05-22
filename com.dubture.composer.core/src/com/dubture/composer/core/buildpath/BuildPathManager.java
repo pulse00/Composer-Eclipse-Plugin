@@ -17,6 +17,7 @@ import org.eclipse.dltk.core.DLTKCore;
 import org.eclipse.dltk.core.IBuildpathEntry;
 import org.eclipse.dltk.core.IScriptProject;
 import org.eclipse.php.internal.core.buildpath.BuildPathUtils;
+import org.eclipse.wst.validation.ValidationFramework;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPreferenceConstants;
@@ -112,8 +113,13 @@ public class BuildPathManager {
 
 		IFolder folder = project.getFolder(new Path(composerProject.getVendorDir()));
 		
-		if (folder != null && folder.exists() && !folder.isDerived()) {
-			folder.setDerived(true, monitor);
+		if (folder != null && folder.exists()) {
+			if (!folder.isDerived()) {
+				folder.setDerived(true, monitor);
+			}
+
+			// disable validation in the vendor folder
+			ValidationFramework.getDefault().disableValidation(folder);
 		}
 	}
 	
