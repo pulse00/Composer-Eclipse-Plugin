@@ -19,7 +19,7 @@ public class AutoloadPage extends ComposerFormPage {
 	private Composite right;
 	
 	private Psr0Section psr0Section;
-	private Psr4Section psr4Section;
+	private Psr4Section psr4Section;	
 	
 	public AutoloadPage(ComposerFormEditor editor, String id, String title) {
 		super(editor, id, title);
