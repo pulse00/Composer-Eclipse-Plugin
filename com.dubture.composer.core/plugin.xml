@@ -140,12 +140,6 @@
             file-names="composer.json">
       </file-association>
    </extension>
-   <extension
-         id="com.dubture.composer.core.libraries"
-         name="Library Folders"
-         point="org.eclipse.php.core.libraryFolderNameProviders">
-   	  <provider class="com.dubture.composer.core.model.LibraryFolderNameProvider"/> 
-   </extension>
    
 
 </plugin>
