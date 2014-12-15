@@ -25,13 +25,6 @@
 	</properties>
 
 	<repositories>
-
-		<repository>
-			<id>dubture-osgi</id>
-			<layout>p2</layout>
-			<url>http://dzwiupza59who.cloudfront.net/repository</url>
-		</repository>
-
 		<repository>
 			<id>pex-dev</id>
 			<layout>p2</layout>
@@ -53,14 +46,14 @@
 		<repository>
 			<id>pdt-nightly</id>
 			<layout>p2</layout>
-			<url>http://download.eclipse.org/tools/pdt/updates/3.3-nightly/</url>
+			<url>http://download.eclipse.org/tools/pdt/updates/3.4-nightly/</url>
 		</repository>
 
-        <repository>
-            <id>kepler</id>
-            <layout>p2</layout>
-            <url>http://download.eclipse.org/releases/kepler</url>
-        </repository>
+		<repository>
+			<id>luna</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna</url>
+		</repository>
 
 		<repository>
 			<id>eclipse-tests</id>
