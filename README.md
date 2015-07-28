@@ -1,8 +1,7 @@
 Composer Eclipse Plugin
 =======================
 
-[![Build Status](https://ci.pdt-extensions.org/buildStatus/icon?job=Composer Eclipse Plugin)](https://ci.pdt-extensions.org/view/Plugins/job/Composer%20Eclipse%20Plugin/)
-
+[![Build Status](https://secure.travis-ci.org/pulse00/Composer-Eclipse-Plugin.png)](http://travis-ci.org/pulse00/Composer-Eclipse-Plugin)
 
 Installation and Usage
 ======================

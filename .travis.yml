@@ -7,3 +7,4 @@ install:
     - mvn clean install -DskipTests
     - cd ..
 script: mvn clean install
+sudo: false
