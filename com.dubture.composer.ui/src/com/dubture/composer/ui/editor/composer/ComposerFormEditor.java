@@ -32,7 +32,7 @@ import org.eclipse.ui.forms.editor.SharedHeaderFormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.texteditor.IDocumentProvider;
-import org.sourceforge.jsonedit.core.editors.JsonTextEditor;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import com.dubture.composer.core.ComposerPlugin;
 import com.dubture.composer.core.ComposerPreferenceConstants;
@@ -82,7 +82,7 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 	protected DependenciesPage dependenciesPage;
 	protected ConfigurationPage configurationPage;
 	protected AutoloadPage autoloadPage;
-	protected JsonTextEditor jsonEditor;
+	protected StructuredTextEditor jsonEditor;
 	protected DependencyGraphPage graphPage;
 	
 	protected IToolBarManager toolbarManager;
@@ -99,15 +99,16 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 
 	public ComposerFormEditor() {
 		super();
-		jsonEditor = new JsonTextEditor();
-		documentProvider = jsonEditor.getDocumentProvider();
+		jsonEditor = new StructuredTextEditor();
 	}
 	
 	@Override
 	protected void setInput(IEditorInput input) {
 		super.setInput(input);
-		try {
-			documentProvider.connect(input);
+		//try {
+			//jsonEditor.setInput(input);
+			documentProvider = jsonEditor.getDocumentProvider();
+			//documentProvider.connect(input);
 			documentProvider.getDocument(getEditorInput()).addDocumentListener(new IDocumentListener() {
 				@Override
 				public void documentChanged(DocumentEvent event) {
@@ -119,14 +120,14 @@ public class ComposerFormEditor extends SharedHeaderFormEditor {
 					ComposerFormEditor.this.documentAboutToBeChanged(event);
 				}
 			});
-		} catch (CoreException e) {
-			Logger.logException(e);
-		}
+		//} catch (CoreException e) {
+		//	Logger.logException(e);
+		//}
 	}
-	
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
+		jsonEditor.init(site, input);
 		super.init(site, input);
 
 		if (input instanceof IFileEditorInput) {

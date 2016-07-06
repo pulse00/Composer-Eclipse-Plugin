@@ -80,6 +80,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>WTP38</id>
+			<url>http://download.eclipse.org/webtools/downloads/drops/R3.8.0/I-latest/repository</url>
+			<layout>p2</layout>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
