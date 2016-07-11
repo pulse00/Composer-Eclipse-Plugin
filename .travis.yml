@@ -3,8 +3,12 @@ install:
     - mkdir composer-java-api
     - cd composer-java-api
     - git clone https://github.com/pulse00/Composer-Java-Bindings.git .
-    - git checkout develop
+    - git checkout master
     - mvn clean install -DskipTests
     - cd ..
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
 script: mvn clean install
 sudo: false
