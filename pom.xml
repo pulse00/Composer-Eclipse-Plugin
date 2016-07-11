@@ -23,7 +23,7 @@
 	<properties>
 		<tycho-version>0.23.1</tycho-version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<eclipse.name>mars</eclipse.name>
+		<eclipse.name>neon</eclipse.name>
 		<release>false</release>
 		<bintray.user></bintray.user>
 		<bintray.apikey></bintray.apikey>
@@ -80,11 +80,11 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
+		<!--repository>
 			<id>WTP38</id>
 			<url>http://download.eclipse.org/webtools/downloads/drops/R3.8.0/I-latest/repository</url>
 			<layout>p2</layout>
-		</repository>
+		</repository-->
 	</repositories>
 	<dependencies>
 		<dependency>
