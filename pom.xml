@@ -13,9 +13,9 @@
 	</prerequisites>
 
 	<modules>
-		<module>com.dubture.composer.core</module>
+		<!--module>com.dubture.composer.core</module>
 		<module>com.dubture.composer.ui</module>
-		<module>com.dubture.composer.test</module>
+		<module>com.dubture.composer.test</module-->
 		<module>com.dubture.composer.feature</module>
 		<module>repository</module>
 	</modules>
@@ -86,7 +86,7 @@
 			<layout>p2</layout>
 		</repository-->
 	</repositories>
-	<dependencies>
+	<!--dependencies>
 		<dependency>
 			<groupId>com.dubture</groupId>
 			<artifactId>composer-java-api</artifactId>
@@ -97,7 +97,7 @@
 			<artifactId>org.json.simple</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-	</dependencies>
+	</dependencies-->
 
 	<build>
 		<plugins>

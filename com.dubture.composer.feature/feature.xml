@@ -6,7 +6,7 @@
       provider-name="https://github.com/pulse00">
 
    <description url="https://github.com/pulse00/Composer-Eclipse-Plugin">
-      Add support for the PHP dependency manager Composer.
+    Composer support has been merged to Eclipse PDT. Please use PDT version of plugin.
    </description>
 
    <copyright url="https://github.com/pulse00/Composer-Eclipse-Plugin/contributors">
@@ -42,92 +42,7 @@ THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRES
    </url>
 
    <requires>
-      <import feature="org.eclipse.php" version="3.2.0" match="greaterOrEqual"/>
-      <import feature="org.sourceforge.jsonedit.feature" version="0.9.54" match="greaterOrEqual"/>
-      <import feature="org.pdtextensions.feature" version="0.16.0" match="greaterOrEqual"/>
+      <import feature="org.eclipse.php.composer" version="4.1.0" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="com.dubture.composer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.codec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.exec"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.commons.logging"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.dubture.composer.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.httpcomponents.httpcore.nio"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.httpcomponents.httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.httpcomponents.httpcore"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="com.dubture.getcomposer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
 </feature>
