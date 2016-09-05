@@ -1,7 +1,7 @@
 Composer Eclipse Plugin
 =======================
 
-**Project merged into Eclipse [PHP Development Tools](https://eclipse.org/pdt/) as org.eclipse.php.composer **
+__Project merged into Eclipse [PHP Development Tools](https://eclipse.org/pdt/) as org.eclipse.php.composer __
 
 Installation and Usage
 ======================
